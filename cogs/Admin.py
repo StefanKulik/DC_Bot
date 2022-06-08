@@ -1,7 +1,7 @@
 import asyncio
 
 import discord
-from discord import SlashCommandGroup
+from discord import SlashCommandGroup, Member
 from discord.ext import commands, tasks
 
 
@@ -21,7 +21,8 @@ class Admin(commands.Cog, description='Admin Befehle'):
         channel_total = discord.utils.get(guild.channels, id=877689459804622869)
         channel_human = discord.utils.get(guild.channels, id=877693165325385769)
         channel_bot = discord.utils.get(guild.channels, id=877698704444899349)
-        await channel_online.edit(name=f'Online: {sum(member.status != discord.Status.offline for member in guild.members)}')
+        await channel_online.edit(
+            name=f'Online: {sum(member.status != discord.Status.offline for member in guild.members)}')
         await channel_total.edit(name=f'Gesamt Mitglieder: {guild.member_count}')
         await channel_human.edit(name=f'Menschen: {sum(not member.bot for member in guild.members)}')
         await channel_bot.edit(name=f'Bots: {sum(member.bot for member in guild.members)}')
@@ -43,6 +44,12 @@ class Admin(commands.Cog, description='Admin Befehle'):
     @handlerCog.command()
     async def reload(self, ctx):
         pass
+
+    @commands.command()
+    async def thread(self, ctx, member: Member):
+        # pass
+        message = await ctx.send("lol")
+        await message.create_thread(name=member.name, auto_archive_duration=60)
 
 
 def setup(bot):

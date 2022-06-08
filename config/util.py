@@ -12,6 +12,9 @@ from discord import Member, File
 from PIL import Image, ImageDraw, ImageFont
 
 
+# cogs handling #
+
+
 # allgemein #
 async def get_prefix(bot, msg):
     prefixes = read_json("prefix")

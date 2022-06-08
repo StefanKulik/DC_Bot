@@ -15,7 +15,7 @@ class Test(commands.Cog):
     async def hallo(self, ctx):
         view = discord.ui.View(timeout=None)
         view.add_item(StandardButton())
-        await ctx.send(f"Hallo {ctx.author.mention}!", view=view)
+        await ctx.send(f"Penis {ctx.author.mention}!", view=view)
 
 
 def setup(bot):

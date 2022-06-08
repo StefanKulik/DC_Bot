@@ -2,98 +2,105 @@ import asyncio
 from random import choice
 
 import discord
-from discord import ChannelType
+from discord import ChannelType, ButtonStyle, Embed
 from discord.ext import commands
-from discord.types.components import ButtonStyle
-from discord.ui import Button
+from discord.ui import Button, View, button
+
+
+class RPS(View):
+    def __init__(self, ctx):
+        super().__init__()
+        self.ctx = ctx
+        self.value = None
+
+    @button(label='Schere', style=ButtonStyle.red, custom_id='schere')
+    async def schere_callback(self, button, interaction):
+        self.value = 'Schere'
+        self.stop()
+
+    @button(label='Stein', style=ButtonStyle.primary)
+    async def stein_callback(self, button, interaction):
+        self.value = 'Stein'
+        self.stop()
+
+    @button(label='Papier', style=ButtonStyle.success)
+    async def papier_callback(self, button, interaction):
+        self.value = 'Papier'
+        self.stop()
+
+    @button(label='Ende', style=ButtonStyle.grey)
+    async def ende_callback(self, button, interaction):
+        self.value = 'Ende'
+        self.stop()
+
+    async def interaction_check(self, interaction) -> bool:
+        return interaction.user == self.ctx.author
 
 
 async def rock_paper_scissors(self, ctx):
-    role_channel_name = f"ssp-{ctx.author.name.lower().replace(' ', '_')}"
-    temp_role = discord.utils.get(ctx.guild.roles, name=role_channel_name)
-    channel_id = discord.utils.get(ctx.guild.channels, name=role_channel_name).id
+    await ctx.channel.purge(limit=1)
+    rps = ["Stein", "Papier", "Schere"]
+    comp = ''
+    wins = 0
+    loses = 0
+    ties = 0
+    tos = 0
+    game = True
 
-    if ctx.channel.id == channel_id:
-        wins = 0
-        loses = 0
-        ties = 0
-        tos = 0
-        game = True
-        while game:
-            await ctx.channel.purge(limit=1)
-            rps = ["Stein", "Papier", "Schere"]
-            comp = choice(rps)
-            yet = discord.Embed(title=f"{ctx.author.name}`s Schere Stein Papier!",
-                                description=">Status: Du hast noch keinen Knopf gedrückt!", color=0xFFEA00)
-            win = discord.Embed(title=f"{ctx.author.name}, Sieg!",
-                                description=f">Status: **DU hast gewonnen!** Ich habe ***{comp}*** gewählt",
-                                color=0x00FF00)
-            out = discord.Embed(title=f"{ctx.author.name}, Du hast nicht rechtzeitig gedrückt!",
-                                description=">Status: **Zeitüberschreitung**",
-                                color=discord.Color.red())
-            lost = discord.Embed(title=f"{ctx.author.name}, Verloren!",
-                                 description=f">Status: **Du hast verloren** Ich habe ***{comp}*** gewählt",
-                                 color=discord.Color.red())
-            tie = discord.Embed(title=f"{ctx.author.name}, Unentschieden!",
-                                description=f">Status: **Unentschieden!** Wir beide haben ***{comp}*** gewählt",
-                                color=0x00FF00)
-            end = discord.Embed(title="Danke fürs Spielen von 'Schere Stein Papier'!",
-                                description=f"Siege: {wins}\n Niederlagen: {loses}\n Unentschieden: {ties}\n TOs: {tos}",
-                                color=0xFFEA00)
+    yet = Embed(title=f"{ctx.author.name}`s Schere Stein Papier!",
+                description=">Status: Du hast noch keinen Knopf gedrückt!", color=0xFFEA00)
+    win = Embed(title=f"{ctx.author.name}, Sieg!",
+                description=f">Status: **DU hast gewonnen!** Ich habe ***{comp}*** gewählt",
+                color=0x00FF00)
+    out = Embed(title=f"{ctx.author.name}, Du hast nicht rechtzeitig gedrückt!",
+                description=">Status: **Zeitüberschreitung**",
+                color=discord.Color.red())
+    loss = Embed(title=f"{ctx.author.name}, Verloren!",
+                 description=f">Status: **Du hast verloren** Ich habe ***{comp}*** gewählt",
+                 color=discord.Color.red())
+    tie = Embed(title=f"{ctx.author.name}, Unentschieden!",
+                description=f">Status: **Unentschieden!** Wir beide haben ***{comp}*** gewählt",
+                color=0x00FF00)
+    end = Embed(title="Danke fürs Spielen von 'Schere Stein Papier'!",
+                description=f"Siege: {wins}\n Niederlagen: {loses}\n Unentschieden: {ties}\n",
+                color=0xFFEA00)
 
-            but = [
-                [Button(style=1, label="Stein"),
-                 Button(style=3, label="Papier"),
-                 Button(style=ButtonStyle.red, label="Schere")],
-                [Button(style=ButtonStyle.grey, label="Ende")]
-            ]
+    while game:
+        view = RPS(ctx)
 
-            m = await ctx.send(
-                embed=yet,
-                components=but
-            )
+        m = await ctx.send(
+            embed=yet,
+            view=view
+        )
+        await view.wait()
 
-            def check(res):
-                return ctx.author == res.user and res.channel == ctx.channel
+        player = view.value
+        comp = choice(rps)
 
-            try:
-                res = await self.bot.wait_for("button_click", check=check)
-                player = res.component.label
+        if player == comp:
+            await m.edit(embed=tie, view=view)
+            ties += 1
+            await asyncio.sleep(2)
+            await ctx.channel.purge(1)
 
-                if player == comp:
-                    await m.edit(embed=tie, components=[])
-                    ties += 1
-                    await asyncio.sleep(2)
+        if (player == "Stein" and comp == "Papier") or (player == "Schere" and comp == "Stein") or (
+                            player == "Papier" and comp == "Schere"):
+            await m.edit(embed=loss, view=view)
+            loses += 1
+            await asyncio.sleep(2)
+            await ctx.channel.purge(1)
 
-                if (player == "Stein" and comp == "Papier") or (player == "Schere" and comp == "Stein") or (
-                        player == "Papier" and comp == "Schere"):
-                    await m.edit(embed=lost, components=[])
-                    loses += 1
-                    await asyncio.sleep(2)
+        if (player == "Stein" and comp == "Schere") or (player == "Schere" and comp == "Papier") or (
+                            player == "Papier" and comp == "Stein"):
+            await m.edit(embed=win, view=view)
+            wins += 1
+            await asyncio.sleep(2)
+            await ctx.channel.purge(1)
 
-                if player == "Stein" and comp == "Schere" or (player == "Schere" and comp == "Papier") or (
-                        player == "Papier" and comp == "Stein"):
-                    await m.edit(embed=win, components=[])
-                    wins += 1
-                    await asyncio.sleep(2)
-
-                if player == "Ende":
-                    game = False
-                    await m.edit(embed=end, components=[], delete_after=10)
-
-            except TimeoutError as e:
-                await asyncio.sleep(2)
-                await m.edit(embed=out, components=[])
-                tos += 1
-        await asyncio.sleep(10)
-        if ctx.author.id == 183185835477172226 or 695183644968615988:
-            await ctx.send("fertig")
-        else:
-            await temp_role.delete()
-            await ctx.channel.delete()
-        return
-    msg = discord.Embed(title="'Schere Stein Papier' bitte nur im vorgesehem Channel spielen. Danke :)")
-    await ctx.send(embed=msg)
+        if player == 'Ende':
+            game = False
+            await m.edit(embed=end, view=None, delete_after=10)
+    return
 
 
 class Games(commands.Cog, description="Games Befehle"):
@@ -109,7 +116,8 @@ class Games(commands.Cog, description="Games Befehle"):
 
             channel = ctx.guild.get_channel(876278221878992916)
 
-            await channel.create_thread(name=role_channel_name, message=None, type=ChannelType.public_thread, reason=None)
+            await channel.create_thread(name=role_channel_name, message=None, type=ChannelType.public_thread,
+                                        reason=None)
         else:
             msg = discord.Embed(title="'Schere Stein Papier' bitte nur im vorgesehem Channel spielen. Danke :)",
                                 description="[Schere Stein Papier Channel](https://discord.gg/rkfGskKRxF)")
@@ -121,8 +129,8 @@ class Games(commands.Cog, description="Games Befehle"):
             # await tic_tac_toe(ctx)
             pass
         elif "ssp" in ctx.channel.name:
-            await ctx.send("ssp")
-            # await rock_paper_scissors(self, ctx)
+            # await ctx.send("ssp")
+            await rock_paper_scissors(self, ctx)
         else:
             await ctx.send("Konnte kein Spiel starten")
 
@@ -130,7 +138,7 @@ class Games(commands.Cog, description="Games Befehle"):
     async def end(self, ctx):
         threads = ctx.guild.get_channel(876278221878992916).threads
         for thread in threads:
-            if thread.name == 'ssp-'+ctx.author.name.lower().replace(' ', '_'):
+            if thread.name == 'ssp-' + ctx.author.name.lower().replace(' ', '_'):
                 await thread.delete()
 
 

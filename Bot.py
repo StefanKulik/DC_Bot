@@ -10,7 +10,6 @@ from datetime import datetime
 from config.envirorment import SERVER_INVITE, AUTOROLE
 from config.util import get_prefix, get_globalChat, get_servers, draw_card_welcome, read_json, write_json
 
-
 ###################  function handling  ####################
 
 dotenv.load_dotenv()
@@ -123,9 +122,9 @@ class Bot(commands.Bot):
         guild: Guild = member.guild
         if not member.bot:
             embed = Embed(title=f"Willkommen auf {guild.name}, {member.name}",
-                                  description="Wir heißen dich herzlich Willkommen auf unserem Server! \n"
-                                              "Bitte lies dir die Regeln durch um weiteren Zugriff zu erhalten",
-                                  colour=0x22a7f0)
+                          description="Wir heißen dich herzlich Willkommen auf unserem Server! \n"
+                                      "Bitte lies dir die Regeln durch um weiteren Zugriff zu erhalten",
+                          colour=0x22a7f0)
             try:
                 if not member.dm_channel:
                     await member.create_dm()
@@ -193,6 +192,7 @@ class Bot(commands.Bot):
                                                                        "**Zugriff verweigert!**"),
                                                delete_after=10)
 
+
 ############################################################
 
 
@@ -207,6 +207,7 @@ def main():
     load_extensions()
     print(f"-----")
     bot.run(os.getenv('TOKEN'))
+
 
 ############################################################
 

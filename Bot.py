@@ -1,3 +1,5 @@
+from abc import ABC
+
 import discord
 import os
 import pytz
@@ -10,7 +12,7 @@ from datetime import datetime
 from config.envirorment import SERVER_INVITE, AUTOROLE
 from config.util import get_prefix, get_globalChat, get_servers, draw_card_welcome, read_json, write_json
 
-###################  function handling  ####################
+####################  function handling  ####################
 
 dotenv.load_dotenv()
 
@@ -85,12 +87,14 @@ class StandardButton(discord.ui.Button):
         await interaction.response.send_message("Yeyy! Du hast mich angeklickt.", ephemeral=True)
 
 
-############################################################
+#############################################################
+
 
 class Bot(commands.Bot):
     def __init__(self):
         super().__init__(
             debug_guilds=[615901690536787983],
+            owner_id=183185835477172226,
             command_prefix=get_prefix,
             help_command=commands.DefaultHelpCommand(),
             intents=discord.Intents.all()
@@ -185,12 +189,12 @@ class Bot(commands.Bot):
                                                delete_after=10)
 
 
-############################################################
+#############################################################
 
 
-#################### Bot initialisieren ####################
+##################### Bot  initialising #####################
 
-# bot = commands.Bot(debug_guilds=[615901690536787983], command_prefix='!')
+
 bot = Bot()
 
 
@@ -201,7 +205,7 @@ def main():
     bot.run(os.getenv('TOKEN'))
 
 
-############################################################
+#############################################################
 
 
 if __name__ == "__main__":

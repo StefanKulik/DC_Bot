@@ -6,6 +6,9 @@ from discord import ChannelType, ButtonStyle, Embed, Interaction
 from discord.ext import commands
 from discord.ui import Button, View, button
 
+# TODO: Tic Tac Toe
+######################  RPS handling  #######################
+
 
 class RPS(View):
     def __init__(self, ctx):
@@ -94,6 +97,14 @@ async def rock_paper_scissors(ctx):
     return
 
 
+#############################################################
+
+######################  TTT handling  #######################
+#############################################################
+
+########################  Function  #########################
+
+
 async def delete_thread(ctx):
     threads = ctx.guild.get_channel(876278221878992916).threads
     for thread in threads:
@@ -101,12 +112,15 @@ async def delete_thread(ctx):
             await thread.delete()
 
 
+#############################################################
+
+
 class Games(commands.Cog, description="Games Befehle"):
 
     def __init__(self, bot):
         self.bot = bot
 
-    @commands.slash_command(name="ssp", description="Erstelle ein Raum für dein 'Schere Stein Papier' Spiel")
+    @commands.slash_command(name='ssp', description='Erstelle ein Raum für dein "Schere Stein Papier" Spiel')
     async def ssp_create(self, ctx):
         await ctx.channel.purge(limit=1)
 
@@ -122,6 +136,10 @@ class Games(commands.Cog, description="Games Befehle"):
                                 description="[Schere Stein Papier Channel](https://discord.gg/rkfGskKRxF)")
             await ctx.send(embed=msg)
 
+    @commands.slash_command(name='ttt', description='Erstelle ein Thread für dein "TTT" SPiel')
+    async def ttt_create(self, ctx):
+        pass
+
     @commands.command()
     async def start(self, ctx):
         await ctx.channel.purge(limit=1)
@@ -133,6 +151,6 @@ class Games(commands.Cog, description="Games Befehle"):
             await ctx.send("Konnte kein Spiel starten")
 
 
-############################################################
+#############################################################
 def setup(bot):
     bot.add_cog(Games(bot))

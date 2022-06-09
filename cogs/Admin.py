@@ -2,10 +2,83 @@ import asyncio
 import os
 
 import discord
-from discord import SlashCommandGroup, Member
+from discord import option, Embed, ExtensionAlreadyLoaded, ExtensionNotLoaded
 from discord.ext import commands, tasks
 
-from config.util import is_not_pinned, get_path
+from config.util import is_not_pinned, get_path, read_json, write_json
+
+# TODO: Kick, Ban, Tempban, Unban, Error Handling, changeprefix, Banlist, Mute, Unmute,
+
+
+modules = []
+for file in os.listdir("./cogs"):
+    if file.endswith(".py") and not file.startswith("_"):
+        modules.append(file[:-3])
+
+
+async def load(self, ctx, module: str):
+    if module is None:
+        for cog in os.listdir("./cogs"):
+            if cog.endswith(".py") and not cog.startswith("_"):
+                try:
+                    self.bot.load_extension(f"cogs.{cog[:-3]}")
+                except Exception as e:
+                    if isinstance(e, ExtensionAlreadyLoaded):
+                        await ctx.respond(f'{cog[:-3]} already loaded')
+                    else:
+                        await ctx.respond(f'{format(type(e).__name__)}: {e}')
+                else:
+                    await ctx.respond('\N{OK HAND SIGN}')
+    else:
+        try:
+            self.bot.load_extension(f'cogs.{module}')
+        except Exception as e:
+            await ctx.respond(f'{format(type(e).__name__)}: {e}')
+        else:
+            await ctx.respond('\N{OK HAND SIGN}')
+
+
+async def unload(self, ctx, module: str):
+    if module is None:
+        e = Embed(title='Alle Module wurden entladen...')
+        for cog in os.listdir("./cogs"):
+            if cog.endswith(".py") and not cog.startswith("_"):
+                try:
+                    self.bot.unload_extension(f"cogs.{cog[:-3]}")
+                except Exception as e:
+                    if isinstance(e, ExtensionNotLoaded):
+                        await ctx.respond(f'{cog[:-3]} was not loaded')
+                    else:
+                        await ctx.respond(f'{format(type(e).__name__)}: {e}')
+        await ctx.respond(embed=e)
+    else:
+        try:
+            self.bot.unload_extension(f'cogs.{module}')
+        except Exception as e:
+            await ctx.respond(f'{format(type(e).__name__)}: {e}')
+        else:
+            await ctx.respond('\N{OK HAND SIGN}')
+
+
+async def reload(self, ctx, module: str):
+    if module is None:
+        e = Embed(title='Alle Module werden neugeladen...')
+        for cog in os.listdir("./cogs"):
+            if cog.endswith(".py") and not cog.startswith("_"):
+                try:
+                    self.bot.reload_extension(f"cogs.{cog[:-3]}")
+                except Exception as e:
+                    await ctx.respond(f'{format(type(e).__name__)}: {e}')
+                else:
+                    e.add_field(name=f'{cog[:-3]}', value='\N{OK HAND SIGN}', inline=True)
+        await ctx.respond(embed=e)
+    else:
+        try:
+            self.bot.reload_extension(f'cogs.{module}')
+        except Exception as e:
+            await ctx.respond(f'{format(type(e).__name__)}: {e}')
+        else:
+            await ctx.respond('\N{OK HAND SIGN}')
 
 
 class Admin(commands.Cog, description='Admin Befehle'):
@@ -34,60 +107,38 @@ class Admin(commands.Cog, description='Admin Befehle'):
     async def before_member_channel(self):
         await self.bot.wait_until_ready()
 
-    handlerCog = SlashCommandGroup('cog', 'Cog Handling -> laden / entladen / neuladen')
-
-    @handlerCog.command()
-    async def load(self, ctx, module: str):
-        try:
-            self.bot.load_extension(f'cogs.{module}')
-        except Exception as e:
-            await ctx.respond('\N{PISTOL}')
-            await ctx.respond('{}: {}'.format(type(e).__name__, e))
-        else:
-            await ctx.respond('\N{OK HAND SIGN}')
-
-    @handlerCog.command()
-    async def unload(self, ctx, module: str):
-        try:
-            self.bot.unload_extension(f'cogs.{module}')
-        except Exception as e:
-            await ctx.respond('\N{PISTOL}')
-            await ctx.respond('{}: {}'.format(type(e).__name__, e))
-        else:
-            await ctx.respond('\N{OK HAND SIGN}')
-
-    @handlerCog.command()
-    async def reload(self, ctx, module: str):
-        try:
-            self.bot.unload_extension(f'cogs.{module}')
-            self.bot.load_extension(f'cogs.{module}')
-        except Exception as e:
-            await ctx.respond('\N{PISTOL}')
-            await ctx.respond('{}: {}'.format(type(e).__name__, e))
-        else:
-            await ctx.respond('\N{OK HAND SIGN}')
-
-    @commands.command()
-    async def thread(self, ctx, member: Member):
-        # pass
-        message = await ctx.send("lol")
-        await message.create_thread(name=member.name, auto_archive_duration=60)
+    @commands.slash_command(name='cog', description='Cog load, unload, reload')
+    @option('function', description='choose Function', choices=['load', 'unload', 'reload'])
+    @option('module', description='choose Module', choices=modules)
+    async def _cog(self, ctx, function: str, module: str = None):
+        if function == 'load':
+            await load(self, ctx, module)
+        if function == 'unload':
+            await unload(self, ctx, module)
+        if function == 'reload':
+            await reload(self, ctx, module)
 
     @commands.slash_command(name='clear')
-    async def clear(self, ctx, num: int):
-        if int(num) > 100 or int(num) < 1:
-            await ctx.channel.purge(limit=1, check=is_not_pinned)
-            await ctx.send(
-                embed=discord.Embed(description="Bitte nur zwischen 1 und 100 Nachrichten löschen!"),
-                delete_after=5)
-            return
+    @option('num', description='Enter a number', min_value=1, max_value=100, default=10)
+    async def _clear(self, ctx, num: int):
         if ctx.channel.id == 615901690985447448:
             await ctx.send(embed=discord.Embed(description="Dieser Channel darf nicht geleert werden!"),
                            delete_after=5)
-            return
         await ctx.channel.purge(limit=int(num) + 1, check=is_not_pinned)
         await ctx.channel.send(embed=discord.Embed(description=f"**{int(num)}** Nachrichten gelöscht."),
                                delete_after=5)
+
+    @commands.slash_command(name='changeprefix', description='Prefix ändern')
+    @option('prefix', description='pick Prefix', choices=['!', '<', '>', '-', '.', '?', '$', '#'])
+    async def _changeprefix(self, ctx, prefix: str):
+        await ctx.channel.purge(limit=1)
+        prefixes = read_json("prefix")
+        prefixes[str(ctx.guild.id)] = prefix
+        write_json(prefixes, "prefix")
+        await ctx.respond(embed=discord.Embed(title=f"Prefix geändert zu '{prefix}'",
+                                              description="Schreibe /changeprefix <prefix> zum erneuten ändern."),
+                          delete_after=5,
+                          ephemeral=True)
 
 
 def setup(bot):

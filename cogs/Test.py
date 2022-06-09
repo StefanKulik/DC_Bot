@@ -1,3 +1,5 @@
+import os
+
 import discord
 from discord.ext import commands
 from Bot import StandardButton
@@ -9,7 +11,11 @@ class Test(commands.Cog):
 
     @discord.slash_command(description='test')
     async def test(self, ctx):
-        await ctx.respond('Test', ephemeral=True)
+        modules = []
+        for file in os.listdir("./cogs"):
+            if file.endswith(".py") and not file.startswith("_"):
+                modules.append(file[:-3])
+        print(modules)
 
     @commands.command()
     async def hallo(self, ctx):

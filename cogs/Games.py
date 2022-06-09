@@ -126,7 +126,6 @@ class Games(commands.Cog, description="Games Befehle"):
     async def start(self, ctx):
         await ctx.channel.purge(limit=1)
         if "ttt" in ctx.channel.name:
-            # await tic_tac_toe(ctx)
             pass
         elif "ssp" in ctx.channel.name:
             await rock_paper_scissors(ctx)

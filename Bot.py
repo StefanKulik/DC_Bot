@@ -22,7 +22,7 @@ def load_extensions():
             print(f"Geladen '{file}'")
 
 
-async def sendAll(msg: Message):
+async def send_all(msg: Message):
     servers = get_servers()
     content = msg.content
     author = msg.author
@@ -85,14 +85,6 @@ class StandardButton(discord.ui.Button):
         await interaction.response.send_message("Yeyy! Du hast mich angeklickt.", ephemeral=True)
 
 
-class MyNewHelp(commands.MinimalHelpCommand):
-    async def send_pages(self):
-        destination = self.get_destination()
-        for page in self.paginator.pages:
-            emby = discord.Embed(description=page)
-            await destination.send(embed=emby)
-
-
 ############################################################
 
 class Bot(commands.Bot):
@@ -100,7 +92,7 @@ class Bot(commands.Bot):
         super().__init__(
             debug_guilds=[615901690536787983],
             command_prefix=get_prefix,
-            help_command=MyNewHelp(),
+            help_command=commands.DefaultHelpCommand(),
             intents=discord.Intents.all()
         )
 
@@ -113,7 +105,7 @@ class Bot(commands.Bot):
             return
         if not msg.content.startswith('!'):
             if get_globalChat(msg.guild.id, msg.channel.id):
-                await sendAll(msg)
+                await send_all(msg)
         if bot.user.mentioned_in(msg) and len(msg.content):
             await msg.channel.send(f'Mein Prefix hier: `{await get_prefix(bot, msg)}`', delete_after=15)
         await self.process_commands(msg)
@@ -149,7 +141,7 @@ class Bot(commands.Bot):
         prefixes[str(guild.id)] = "!"
         write_json(prefixes, "prefix")
 
-    async def on_guild_remove(self, guild):
+    async def on_guild_remove(guild):
         prefixes = read_json("prefix")
         prefixes.pop(str(guild.id))
         write_json(prefixes, "prefix")

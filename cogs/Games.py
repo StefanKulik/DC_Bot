@@ -6,6 +6,7 @@ from discord import ChannelType, ButtonStyle, Embed, Interaction, Member, option
 from discord.ext import commands
 from discord.ui import View, Button
 
+
 # TODO: Tic Tac Toe
 ######################  RPS handling  #######################
 
@@ -163,7 +164,6 @@ class TTT(View):
 
     async def interaction_check(self, interaction):
         if self.active == self.player1 and interaction.user == self.player1:
-            await self.switch_player()
             return interaction.user == self.player1
         if self.active == self.player2:
             return interaction.user == self.player2
@@ -185,25 +185,31 @@ class TTT(View):
             button.label = 'O'
             button.style = ButtonStyle.danger
             self.game[num] = self.active.name
-        print(self.game)
         if await self.check_winner():
             for child in self.children:
                 child.disabled = True
-            await self.message.edit(embed=Embed(title='Tic Tac Toe',
-                                                description=f'{self.active.mention} hat das Spiel gewonnen'))
+            if all(x not in ['-'] for x in self.game):
+                await self.message.edit(embed=Embed(title='Tic Tac Toe',
+                                                    description='Das Spiel ist Unentschieden'))
+            else:
+                await self.message.edit(embed=Embed(title='Tic Tac Toe',
+                                                    description=f'{self.active.mention} hat das Spiel gewonnen'))
             await interaction.response.edit_message(view=self)
         else:
             await interaction.response.edit_message(view=self)
+            await self.switch_player()
 
     async def check_winner(self):
         winner = False
-        for condition in self.winning_condition:
-            if self.game[condition[0]] == self.active.name and \
-               self.game[condition[1]] == self.active.name and \
-               self.game[condition[2]] == self.active.name:
-                winner = True
+        if all(x not in ['-'] for x in self.game):
+            winner = True
+        else:
+            for condition in self.winning_condition:
+                if self.game[condition[0]] == self.active.name and \
+                        self.game[condition[1]] == self.active.name and \
+                        self.game[condition[2]] == self.active.name:
+                    winner = True
         return winner
-
 
 
 async def tic_tac_toe(ctx, member):

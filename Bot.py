@@ -12,6 +12,7 @@ from config.util import get_prefix, get_globalChat, get_servers, draw_card_welco
 
 ####################  function handling  ####################
 
+
 dotenv.load_dotenv()
 
 

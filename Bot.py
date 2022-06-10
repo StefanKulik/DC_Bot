@@ -1,5 +1,3 @@
-from abc import ABC
-
 import discord
 import os
 import pytz
@@ -96,7 +94,6 @@ class Bot(commands.Bot):
             debug_guilds=[615901690536787983],
             owner_id=183185835477172226,
             command_prefix=get_prefix,
-            help_command=commands.DefaultHelpCommand(),
             intents=discord.Intents.all()
         )
 
@@ -114,7 +111,7 @@ class Bot(commands.Bot):
             await msg.channel.send(f'Mein Prefix hier: `{await get_prefix(bot, msg)}`', delete_after=15)
         await self.process_commands(msg)
 
-    async def on_member_join(self, member):
+    async def on_member_join(member):
         guild: Guild = member.guild
         if not member.bot:
             embed = Embed(title=f"Willkommen auf {guild.name}, {member.name}",
@@ -145,7 +142,7 @@ class Bot(commands.Bot):
         prefixes[str(guild.id)] = "!"
         write_json(prefixes, "prefix")
 
-    async def on_guild_remove(guild):
+    async def on_guild_remove(self, guild):
         prefixes = read_json("prefix")
         prefixes.pop(str(guild.id))
         write_json(prefixes, "prefix")

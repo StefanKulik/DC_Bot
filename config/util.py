@@ -27,9 +27,9 @@ class RoleButton(discord.ui.Button):
             return
         if role not in user.roles:
             await user.add_roles(role)
-            await interaction.response.send_message(f'🎉 Du bist nun verifiziert!', ephemeral=True)
+            await interaction.response.send_message(f'🎉 Du bist nun verifiziert!', ephemeral=True, delete_after=10)
         else:
-            await interaction.response.send_message(f'❌ Du bist bereits verifiziert!', ephemeral=True)
+            await interaction.response.send_message(f'❌ Du bist bereits verifiziert!', ephemeral=True, delete_after=10)
 
 
 class StandardButton(discord.ui.Button):

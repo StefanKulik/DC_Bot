@@ -12,12 +12,14 @@ class Test(commands.Cog):
         self.bot = bot
 
     @discord.slash_command(description='test')
+    @commands.has_permissions(administrator=True)
     async def test(self, ctx):
         view = discord.ui.View(timeout=None)
         view.add_item(StandardButton())
         await ctx.send(view=view)
 
     @commands.slash_command()
+    @commands.has_permissions(administrator=True)
     async def rules(self, ctx):
         await ctx.channel.purge(limit=1)
         emb = discord.Embed(title=f"Regeln auf {ctx.guild.name}",
@@ -38,7 +40,7 @@ class Test(commands.Cog):
     async def hallo(self, ctx):
         view = discord.ui.View(timeout=None)
         view.add_item(StandardButton())
-        await ctx.send(f"Penis {ctx.author.mention}!", view=view)
+        await ctx.send(f"Hallo {ctx.author.mention}!", view=view)
 
 
 def setup(bot):

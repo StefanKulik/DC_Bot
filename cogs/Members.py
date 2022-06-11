@@ -8,9 +8,9 @@ class Members(commands.Cog):
     def __init__(self, bot):
         self.bot = bot
 
-    @commands.slash_command(name="userinfo",
+    @commands.user_command(name="Userinfo",
                             description="Zeigt Info über ein Mitglied")
-    async def userinfo(self, ctx, member: Member = None):
+    async def _userinfo(self, ctx, member: Member = None):
         if member:
             embed = Embed(title=f"Userinfo für {member.name}",
                           description=f"Dies ist eine Userinfo für den User {member.mention}",

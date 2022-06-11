@@ -4,9 +4,8 @@ import os
 import discord
 from discord import option, Embed, ExtensionAlreadyLoaded, ExtensionNotLoaded, Member
 from discord.ext import commands, tasks
-from discord.ext.commands import has_permissions
 
-from config.util import is_not_pinned, get_path, read_json, write_json
+from config.util import is_not_pinned, read_json, write_json
 
 # TODO: Kick, Ban, Tempban, Unban, Banlist, Mute, Unmute,
 
@@ -111,6 +110,7 @@ class Admin(commands.Cog, description='Admin Befehle'):
     @commands.slash_command(name='cog', description='Cog load, unload, reload')
     @option('function', description='choose Function', choices=['load', 'unload', 'reload'])
     @option('module', description='choose Module', choices=modules)
+    @commands.has_permissions(administrator=True)
     async def _cog(self, ctx, function: str, module: str = None):
         if function == 'load':
             await load(self, ctx, module)
@@ -121,6 +121,7 @@ class Admin(commands.Cog, description='Admin Befehle'):
 
     @commands.slash_command(name='clear')
     @option('num', description='Enter a number', min_value=1, max_value=100, default=10)
+    @commands.has_permissions(administrator=True)
     async def _clear(self, ctx, num: int):
         if ctx.channel.id == 615901690985447448:
             await ctx.send(embed=discord.Embed(description="Dieser Channel darf nicht geleert werden!"),
@@ -131,6 +132,7 @@ class Admin(commands.Cog, description='Admin Befehle'):
 
     @commands.slash_command(name='changeprefix', description='Prefix ändern')
     @option('prefix', description='pick Prefix', choices=['!', '<', '>', '-', '.', '?', '$', '#'])
+    @commands.has_permissions(administrator=True)
     async def _changeprefix(self, ctx, prefix: str):
         await ctx.channel.purge(limit=1)
         prefixes = read_json("prefix")
@@ -142,8 +144,9 @@ class Admin(commands.Cog, description='Admin Befehle'):
                           ephemeral=True)
 
     @commands.slash_command(name="kick",
-                      description="Member vom Server kicken")
+                            description="Member vom Server kicken")
     @option('member', description='auswählen wer gekickt werden soll')
+    @commands.has_permissions(administrator=True)
     async def _kick(self, ctx, member: Member, reason=None):
         if reason is None:
             reason = "LOL"
@@ -161,6 +164,13 @@ class Admin(commands.Cog, description='Admin Befehle'):
                     await member.dm_channel.send(os.getenv("SERVER_INVITE"))
                 except discord.errors.Forbidden:
                     print(f"Es konnte keine Nachricht an {member.mention} gesendet werden.")
+
+    @commands.Cog.listener()
+    async def on_application_command_error(self, ctx, error):
+        if isinstance(error, commands.MissingPermissions):
+            await ctx.respond("Sorry, you can only use this with administrator permissions!", delete_after=1, ephemeral=True)
+        else:
+            raise error  # Here we raise other errors to ensure they aren't ignored
 
 
 def setup(bot):

@@ -340,12 +340,7 @@ class Games(commands.Cog, description="Games Befehle"):
     @option(name='member', description='needed for TTT')
     async def start(self, ctx, member: Member = None):
         await ctx.channel.purge(limit=1)
-        if "ttt" in ctx.channel.name:
-            active = choice([ctx.author, member])
-            e = Embed(title='Tic Tac Toe', description=f'{active.mention} ist an der Reihe')
-            m = await ctx.send(embed=e)
-            await ctx.send(view=TTT(ctx, ctx.author, member, active, m))
-        elif "ssp" in ctx.channel.name:
+        if "ssp" in ctx.channel.name:
             await rock_paper_scissors(ctx)
         else:
             await ctx.send("Konnte kein Spiel starten")

@@ -2,7 +2,7 @@ import asyncio
 from random import choice
 
 import discord
-from discord import ChannelType, ButtonStyle, Embed, Interaction, Member, option, Message
+from discord import ChannelType, ButtonStyle, Embed, Interaction, Member, option, Message, Thread
 from discord.ext import commands
 from discord.ui import View, Button
 
@@ -102,11 +102,12 @@ async def rock_paper_scissors(ctx):
 
 ######################  TTT handling  #######################
 
-
+# TODO: Game Anfrage, Benachrichtung wenn man dran ist
 class TTT(View):
-    def __init__(self, ctx, player1: Member, player2: Member, active: Member, m: Message):
+    def __init__(self, ctx, player1: Member, player2: Member, active: Member, m: Message, thread: Thread):
         super().__init__()
         self.ctx = ctx
+        self.thread = thread
         self.player1 = player1
         self.player2 = player2
         self.active = active
@@ -196,8 +197,8 @@ class TTT(View):
                 await self.message.edit(embed=Embed(title='Tic Tac Toe',
                                                     description=f'{self.active.mention} hat das Spiel gewonnen'))
             await asyncio.sleep(5)
-            await self.ctx.channel.purge(limit=1)
-            await self.ctx.send(view=Restart(self.ctx, self.player1, self.player2, self.message))
+            await self.thread.purge(limit=1)
+            await self.thread.send(view=Restart(self.ctx, self.player1, self.player2, self.message, self.thread))
         else:
             await interaction.response.edit_message(view=self)
             await self.switch_player()
@@ -216,34 +217,77 @@ class TTT(View):
 
 
 class Restart(View):
-    def __init__(self, ctx, player1: Member, player2: Member, m: Message):
+    def __init__(self, ctx, player1: Member, player2: Member, m: Message, thread: Thread):
         super().__init__()
         self.ctx = ctx
+        self.thread = thread
         self.player1 = player1
         self.player2 = player2
         self.active = choice([player1, player2])
         self.message = m
 
-    @discord.ui.button(label='Neustarten', style=ButtonStyle.primary, row=0)
+    @discord.ui.button(label='Neustarten', style=ButtonStyle.success, row=0)
     async def restart_callback(self, button, interaction):
         e = Embed(title='Tic Tac Toe', description=f'{self.active.mention} ist an der Reihe')
         await self.message.edit(embed=e)
-        await interaction.response.edit_message(view=TTT(self.ctx, self.player1, self.player2, self.active, self.message))
+        await interaction.response.edit_message(view=TTT(self.ctx, self.player1, self.player2, self.active, self.message, self.thread))
 
     @discord.ui.button(label='Beenden', style=ButtonStyle.danger, row=0)
     async def end_callback(self, button, interaction):
-        await delete_thread(self.ctx, 'ttt')
+        await delete_thread(self.ctx, 'ttt', self.player2)
+
+    async def interaction_check(self, interaction):
+        if self.active == self.player1 and interaction.user == self.player1:
+            return interaction.user == self.player1
+        if self.active == self.player2:
+            return interaction.user == self.player2
+
+
+class Request(View):
+    def __init__(self, ctx, player2: Member):
+        super().__init__()
+        self.ctx = ctx
+        self.player2 = player2
+
+    @discord.ui.button(label='Annehmen', style=ButtonStyle.success, row=0)
+    async def accept_callback(self, button, interaction):
+        thread_name = f"ttt-{self.ctx.author.name.lower().replace(' ', '_')}-{self.player2.name.lower().replace(' ', '_')}"
+        channel = self.ctx.guild.get_channel(876278253025914911)
+        thread = await channel.create_thread(name=thread_name, message=None, type=ChannelType.public_thread,
+                                    reason=None)
+        await thread.add_user(self.ctx.author)
+        await thread.add_user(self.player2)
+
+        active = choice([self.ctx.author, self.player2])
+        e = Embed(title='Tic Tac Toe', description=f'{active.mention} ist an der Reihe')
+        m = await thread.send(embed=e)
+        await thread.send(view=TTT(self.ctx, self.ctx.author, self.player2, active, m, thread))
+        await self.ctx.channel.purge(limit=4)
+
+    @discord.ui.button(label='Ablehnen', style=ButtonStyle.danger, row=0)
+    async def decline_callback(self, button, interaction):
+        await self.delete(interaction)
+
+    async def interaction_check(self, interaction):
+        return interaction.user == self.player2
+
+    async def delete(self, interaction):
+        await self.ctx.channel.purge(limit=3)
+        await interaction.response.send_message('Duell wurde abgelehnt!')
+        await asyncio.sleep(2)
+        await self.ctx.channel.purge(limit=1)
+
 
 #############################################################
 
 ########################  Function  #########################
 
 
-async def delete_thread(ctx, mode: str):
+async def delete_thread(ctx, mode: str, member: Member = None):
     if mode == 'ttt':
         threads = ctx.guild.get_channel(876278253025914911).threads
         for thread in threads:
-            if thread.name == 'ttt-' + ctx.author.name.lower().replace(' ', '_'):
+            if thread.name == f"ttt-{ctx.author.name.lower().replace(' ', '_')}-{member.name.lower().replace(' ', '_')}":
                 await thread.delete()
     elif mode == 'rps':
         threads = ctx.guild.get_channel(876278221878992916).threads
@@ -277,16 +321,16 @@ class Games(commands.Cog, description="Games Befehle"):
             await ctx.send(embed=msg)
 
     @commands.slash_command(name='ttt', description='Erstelle ein Thread für dein "TTT" SPiel')
-    async def ttt_create(self, ctx):
+    async def ttt_create(self, ctx, enemy: Member):
         await ctx.channel.purge(limit=1)
 
         if ctx.channel.id == 876278253025914911:
-            role_channel_name = f"ttt-{ctx.author.name.lower().replace(' ', '_')}"
-            channel = ctx.guild.get_channel(876278253025914911)
-            await channel.create_thread(name=role_channel_name, message=None, type=ChannelType.public_thread,
-                                        reason=None)
-            await ctx.respond('Thread erstellt!', ephemeral=True)
-
+            await ctx.respond('Duell angefragt', ephemeral=True)
+            await ctx.send(enemy.mention)
+            e = Embed(title=':crossed_swords: Tic Tac Toe Duell',
+                      description=f'{ctx.author.mention} hat dich herausgefordert')
+            await ctx.send(embed=e)
+            await ctx.send(view=Request(ctx, enemy))
         else:
             msg = discord.Embed(title="'Tic Tac Toe' bitte nur im vorgesehem Channel spielen. Danke :)",
                                 description="[Tic Tac Toe Channel](https://discord.gg/fyGp97eXmU)")

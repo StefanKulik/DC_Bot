@@ -1,0 +1,1 @@
+worker: python DC_BOT/Bot.py

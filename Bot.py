@@ -3,13 +3,11 @@ import os
 import pytz
 import dotenv
 
-from discord import Message, Guild, TextChannel, Permissions, Embed
+from discord import *
 from discord.ext import commands
-from datetime import datetime
-
-from cogs.Games import TTT
-from config.envirorment import SERVER_INVITE, AUTOROLE
-from config.util import get_prefix, get_globalChat, get_servers, draw_card_welcome, read_json, write_json
+from datetime import *
+from config.envirorment import *
+from config.util import *
 
 ####################  function handling  ####################
 
@@ -18,10 +16,10 @@ dotenv.load_dotenv()
 
 
 def load_extensions():
-    for file in os.listdir("./cogs"):
-        if file.endswith(".py") and not file.startswith("_"):
-            bot.load_extension(f"cogs.{file[:-3]}")
-            print(f"Geladen '{file}'")
+    for f in os.listdir("./cogs"):
+        if f.endswith(".py") and not f.startswith("_"):
+            bot.load_extension(f"cogs.{f[:-3]}")
+            print(f"Geladen '{f}'")
 
 
 async def send_all(msg: Message):
@@ -36,7 +34,7 @@ async def send_all(msg: Message):
     embed.set_author(name=author.name, icon_url=icon)
 
     icon_url = "https://i.giphy.com/media/xT1XGzYCdltvOd9r4k/source.gif"
-    icon = msg.guild.icon_url
+    icon = msg.guild.icon
     if icon:
         icon_url = icon
     embed.set_thumbnail(url=icon_url)
@@ -46,10 +44,10 @@ async def send_all(msg: Message):
     globalchat = get_globalChat(msg.guild.id, msg.channel.id)
 
     if len(globalchat["invite"]) > 0:
-        invite = globalchat["invite"]
-        if 'discord.gg' not in invite:
-            invite = 'https://discord.gg/{}'.format(invite)
-        links += f'[Server Invite]({invite})'
+        inv = globalchat["invite"]
+        if 'discord.gg' not in inv:
+            inv = 'https://discord.gg/{}'.format(inv)
+        links += f'[Server Invite]({inv})'
 
     embed.add_field(name='⠀', value='⠀', inline=False)
     embed.add_field(name='Links & Hilfe', value=links, inline=False)
@@ -59,38 +57,29 @@ async def send_all(msg: Message):
         embed.set_image(url=img.url)
 
     for server in servers["servers"]:
-        guild: Guild = bot.get_guild(int(server["guildid"]))
-        if guild:
-            channel: TextChannel = guild.get_channel(int(server["channelid"]))
-            if channel:
-                perms: Permissions = channel.permissions_for(guild.get_member(bot.user.id))
+        g: Guild = bot.get_guild(int(server["guildid"]))
+        if g:
+            c: TextChannel = g.get_channel(int(server["channelid"]))
+            if c:
+                perms: Permissions = c.permissions_for(g.get_member(bot.user.id))
                 if perms.send_messages:
                     if perms.embed_links and perms.attach_files and perms.external_emojis:
-                        await channel.send(embed=embed)
+                        await c.send(embed=embed)
                     else:
-                        await channel.send('{0}: {1}'.format(author.name, content))
-                        await channel.send('Es fehlen einige Berechtigungen. '
+                        await c.send('{0}: {1}'.format(author.name, content))
+                        await c.send('Es fehlen einige Berechtigungen. '
                                            '`Nachrichten senden` `Links einbetten` `Datein anhängen`'
                                            '`Externe Emojis verwenden`')
     await msg.delete()
-
-
-class StandardButton(discord.ui.Button):
-    def __init__(self):
-        super().__init__(
-            label="Klicke mich",
-            style=discord.enums.ButtonStyle.blurple,
-            custom_id="interaction:DefaultButton"
-        )
-
-    async def callback(self, interaction: discord.Interaction):
-        await interaction.response.send_message("Yeyy! Du hast mich angeklickt.", ephemeral=True)
 
 
 #############################################################
 
 
 class Bot(commands.Bot):
+    async def sync_commands(self) -> None:
+        pass
+
     def __init__(self):
         super().__init__(
             debug_guilds=[615901690536787983],
@@ -100,92 +89,63 @@ class Bot(commands.Bot):
         )
 
     async def on_ready(self):
-        print(f"{bot.user} is ready and online!")
-        await bot.change_presence(activity=discord.Activity(type=discord.ActivityType.watching, name=f"V2.1"))
+        print(f"{self.user} is ready and online!")
+        await self.change_presence(activity=Activity(type=ActivityType.watching, name=f"V2.1"))
+        view = discord.ui.View(timeout=None)
+        view.add_item(RoleButton())
+        self.add_view(view)
 
     async def on_message(self, msg: Message):
         if msg.author.bot:
             return
-        if not msg.content.startswith('!'):
+        if not msg.content.startswith(await get_prefix(msg)):
             if get_globalChat(msg.guild.id, msg.channel.id):
                 await send_all(msg)
         if bot.user.mentioned_in(msg) and len(msg.content):
-            await msg.channel.send(f'Mein Prefix hier: `{await get_prefix(bot, msg)}`', delete_after=15)
+            await msg.channel.send(f'Mein Prefix hier: `{await get_prefix(msg)}`', delete_after=15)
         await self.process_commands(msg)
 
-    async def on_member_join(member):
-        guild: Guild = member.guild
-        if not member.bot:
-            embed = Embed(title=f"Willkommen auf {guild.name}, {member.name}",
+    async def on_member_join(self, m: Member):
+        g = self.get_guild(m.guild.id)
+        if not m.bot:
+            embed = Embed(title=f"Willkommen auf {g.name}, {m.name}",
                           description="Wir heißen dich herzlich Willkommen auf unserem Server! \n"
                                       "Bitte lies dir die Regeln durch um weiteren Zugriff zu erhalten",
                           colour=0x22a7f0)
             try:
-                if not member.dm_channel:
-                    await member.create_dm()
-                await member.dm_channel.send(embed=embed)
+                if not m.dm_channel:
+                    await m.create_dm()
+                await m.dm_channel.send(embed=embed)
             except discord.errors.Forbidden:
-                print(f"Es konnte keine Willkommensnachricht an {member.mention} gesendet werden.")
+                print(f"Es konnte keine Willkommensnachricht an {m.mention} gesendet werden.")
+
+            for c in m.guild.channels:
+                if c.id == 615901690985447448:
+                    embed = discord.Embed(title="Herzlich Willkommen",
+                                          description=f"{m.mention}, Willkommen auf **{g.name}**",
+                                          colour=0x22a7f0)
+                    embed.set_thumbnail(url=g.icon)
+                    await c.send(embed=embed, delete_after=30)
+                    await draw_card_welcome(c, m)
         else:
-            autoguild = AUTOROLE.get(guild.id)
+            autoguild = AUTOROLE.get(g.id)
             if autoguild and autoguild["botrole"]:
                 for roleId in autoguild["botrole"]:
-                    role = guild.get_role(roleId)
-                    if role:
-                        await member.add_roles(role)
-                        channel: TextChannel = discord.utils.get(member.guild.channels, id=615901690985447448)
-                        await draw_card_welcome(channel, member, True)
+                    r = g.get_role(roleId)
+                    if r:
+                        await m.add_roles(r)
+                        c: TextChannel = discord.utils.get(m.guild.channels, id=615901690985447448)
+                        await draw_card_welcome(c, m, True)
 
-    async def on_member_remove(self, member):
-        pass
-
-    async def on_guild_join(self, guild):
+    async def on_guild_join(self, g: Guild):
         prefixes = read_json("prefix")
-        prefixes[str(guild.id)] = "!"
+        prefixes[str(self.get_guild(g.id))] = "!"
         write_json(prefixes, "prefix")
 
-    async def on_guild_remove(self, guild):
+    async def on_guild_remove(self, g: Guild):
         prefixes = read_json("prefix")
-        prefixes.pop(str(guild.id))
+        prefixes.pop(str(self.get_guild(g.id)))
         write_json(prefixes, "prefix")
-
-    async def on_raw_reaction_add(self, payload):
-        guild = bot.get_guild(payload.guild_id)
-        payload_message_id = payload.message_id
-        target_message_id = 877892113185001553
-        channel = discord.utils.get(guild.channels, id=876149141435187221)
-        if payload_message_id == target_message_id:
-            if payload.emoji.name == "accepted":
-                autoguild = AUTOROLE.get(guild.id)
-                if autoguild and autoguild["memberrole"]:
-                    for roleId in autoguild["memberrole"]:
-                        role = guild.get_role(roleId)
-                        if role:
-                            await payload.member.add_roles(role)
-                            await channel.send(
-                                embed=Embed(description=f"Ich habe {payload.member.mention} die Rolle"
-                                                        f" ***{role}*** hinzugefügt. Zugriff gestattet.")
-                                , delete_after=10)
-
-    async def on_raw_reaction_remove(self, payload):
-        guild = bot.get_guild(payload.guild_id)
-        channel = discord.utils.get(guild.channels, id=876149141435187221)
-        member = discord.utils.find(lambda m: m.id == payload.user_id, guild.members)
-        payload_message_id = payload.message_id
-        target_message_id = 877892113185001553
-
-        if payload_message_id == target_message_id:
-            if payload.emoji.name == "accepted":
-                autoguild = AUTOROLE.get(guild.id)
-                if autoguild and autoguild["memberrole"]:
-                    for roleId in autoguild["memberrole"]:
-                        role = guild.get_role(roleId)
-                        if role:
-                            await member.remove_roles(role)
-                            await channel.send(embed=Embed(description=f"Ich habe von {member.mention} die Rolle "
-                                                                       f"***{role}*** entfernt. \n "
-                                                                       "**Zugriff verweigert!**"),
-                                               delete_after=10)
 
 
 #############################################################

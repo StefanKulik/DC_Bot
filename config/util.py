@@ -2,21 +2,50 @@ import json
 import os
 import io
 import pathlib
-
 import discord
-import urllib.request
 
 from pathlib import Path
-from discord import Forbidden, TextChannel, Embed
+from discord import Forbidden, TextChannel, Embed, ButtonStyle, Interaction
 from discord import Member, File
 from PIL import Image, ImageDraw, ImageFont
 
 
-# cogs handling #
+# Buttons #
+class RoleButton(discord.ui.Button):
+    def __init__(self):
+        super().__init__(
+            label='Verifiziere dich hier!',
+            style=ButtonStyle.blurple,
+            custom_id='interaction:RoleButton'
+        )
+
+    async def callback(self, interaction: Interaction):
+        user = interaction.user
+        role = interaction.guild.get_role(873637097951625216)
+
+        if role is None:
+            return
+        if role not in user.roles:
+            await user.add_roles(role)
+            await interaction.response.send_message(f'🎉 Du bist nun verifiziert!', ephemeral=True)
+        else:
+            await interaction.response.send_message(f'❌ Du bist bereits verifiziert!', ephemeral=True)
+
+
+class StandardButton(discord.ui.Button):
+    def __init__(self):
+        super().__init__(
+            label="Klicke mich",
+            style=discord.enums.ButtonStyle.blurple,
+            custom_id="interaction:DefaultButton"
+        )
+
+    async def callback(self, interaction: discord.Interaction):
+        await interaction.response.send_message("Yeyy! Du hast mich angeklickt.", ephemeral=True)
 
 
 # allgemein #
-async def get_prefix(bot, msg):
+async def get_prefix(msg):
     prefixes = read_json("prefix")
     return prefixes[str(msg.guild.id)]
 
@@ -35,49 +64,49 @@ def get_servers():
     return servers
 
 
-def get_globalChat(guildid, channelid=None):
-    globalChat = None
+def get_globalChat(guild_id, channel_id=None):
+    global_chat = None
     servers = get_servers()
     for server in servers["servers"]:
-        if int(server["guildid"]) == int(guildid):
-            if channelid:
-                if server["channelid"] == int(channelid):
-                    globalChat = server
+        if int(server["guildid"]) == int(guild_id):
+            if channel_id:
+                if server["channelid"] == int(channel_id):
+                    global_chat = server
             else:
-                globalChat = server
-    return globalChat
+                global_chat = server
+    return global_chat
 
 
-def get_globalChat_id(guildid, channelid=None):  # gibt die id des globalchats wieder
-    globalChat = get_globalChat(guildid, channelid=None)
-    if channelid:
-        return channelid
-    return globalChat["channelid"]
+def get_globalChat_id(guild_id, channel_id=None):  # gibt die id des globalchats wieder
+    global_chat = get_globalChat(guild_id, channel_id=None)
+    if channel_id:
+        return channel_id
+    return global_chat["channelid"]
 
 
-def get_globalChat_index(guildid):  # gibt index für server in servers wieder
+def get_globalChat_index(guild_id):  # gibt index für server in servers wieder
     index = -1
     i = 0
     servers = get_servers()
     for server in servers["servers"]:
-        if int(server["guildid"]) == guildid:
+        if int(server["guildid"]) == guild_id:
             index = i
         i += 1
     return index
 
 
-def isGlobalChat(channelid):  # ist dieser channel der globalchat?
+def isGlobalChat(channel_id):  # ist dieser channel der globalchat?
     servers = get_servers()
     for server in servers["servers"]:
-        if int(server["channelid"]) == int(channelid):
+        if int(server["channelid"]) == int(channel_id):
             return True
     return False
 
 
-def globalchatExists(guildid):  # hat der server einen globalchat?
+def globalchatExists(guild_id):  # hat der server einen globalchat?
     servers = get_servers()
     for server in servers["servers"]:
-        if int(server["guildid"]) == int(guildid):
+        if int(server["guildid"]) == int(guild_id):
             return True
     return False
 ############################################################
@@ -160,8 +189,8 @@ background_image = background_image.convert('RGBA')
 
 
 async def draw_card_welcome(channel, member: Member, bot: bool = None):
-    SIZE = 256
-    AVATAR_SIZE = 240
+    size = 256
+    avatar_size = 240
 
     image = background_image.copy()
     image_width, image_height = image.size
@@ -180,19 +209,20 @@ async def draw_card_welcome(channel, member: Member, bot: bool = None):
         text = f'BOT {member} ist dem Server beigetreten'
     else:
         text = f'{member} ist dem Server beigetreten'
-    avatar_asset = member.avatar_url_as(format='jpg', size=SIZE)
+    avatar_asset = member.avatar
+    # avatar_asset = member.avatar_url_as(format='jpg', size=SIZE)
 
     buffer_avatar = io.BytesIO(await avatar_asset.read())
 
     avatar_image = Image.open(buffer_avatar)
 
-    avatar_image = avatar_image.resize((AVATAR_SIZE, AVATAR_SIZE))
+    avatar_image = avatar_image.resize((avatar_size, avatar_size))
 
-    circle_image = Image.new('L', (AVATAR_SIZE, AVATAR_SIZE))
+    circle_image = Image.new('L', (avatar_size, avatar_size))
     circle_draw = ImageDraw.Draw(circle_image)
-    circle_draw.ellipse((0, 0, AVATAR_SIZE, AVATAR_SIZE), fill=255)
+    circle_draw.ellipse((0, 0, avatar_size, avatar_size), fill=255)
 
-    avatar_start_x = (rect_width // 2) + margin_left - (AVATAR_SIZE // 2)
+    avatar_start_x = (rect_width // 2) + margin_left - (avatar_size // 2)
     avatar_start_y = margin_top + 45
     image.paste(avatar_image, (avatar_start_x, avatar_start_y), circle_image)
 
@@ -223,4 +253,3 @@ async def member_channel(member):
     guild = member.guild
     channel = discord.utils.get(guild.channels, id=877689459804622869)
     await channel.edit(name=f'Mitglieder: {guild.member_count}')
-

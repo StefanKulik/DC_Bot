@@ -90,7 +90,7 @@ class Bot(commands.Bot):
 
     async def on_ready(self):
         print(f"{self.user} is ready and online!")
-        await self.change_presence(activity=Activity(type=ActivityType.watching, name=f"V2.1"))
+        await self.change_presence(activity=Activity(type=ActivityType.watching, name=f"V2.2"))
         view = discord.ui.View(timeout=None)
         view.add_item(RoleButton())
         self.add_view(view)

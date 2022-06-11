@@ -3,11 +3,11 @@ import os
 import pytz
 import dotenv
 
-from discord import *
+from discord import Message, ActivityType, Activity, Guild, Permissions, Member, TextChannel, Embed, Forbidden
 from discord.ext import commands
 from datetime import *
-from config.envirorment import *
-from config.util import *
+from config.envirorment import SERVER_INVITE, AUTOROLE
+from config.util import get_servers, get_globalChat, get_prefix, RoleButton, draw_card_welcome, read_json, write_json
 
 ####################  function handling  ####################
 
@@ -57,18 +57,18 @@ async def send_all(msg: Message):
         embed.set_image(url=img.url)
 
     for server in servers["servers"]:
-        g: Guild = bot.get_guild(int(server["guildid"]))
+        g: Guild = bot.get_guild(int(server["guild_id"]))
         if g:
-            c: TextChannel = g.get_channel(int(server["channelid"]))
+            c: TextChannel = g.get_channel(int(server["channel_id"]))
             if c:
-                perms: Permissions = c.permissions_for(g.get_member(bot.user.id))
-                if perms.send_messages:
-                    if perms.embed_links and perms.attach_files and perms.external_emojis:
+                permissions: Permissions = c.permissions_for(g.get_member(bot.user.id))
+                if permissions.send_messages:
+                    if permissions.embed_links and permissions.attach_files and permissions.external_emojis:
                         await c.send(embed=embed)
                     else:
                         await c.send('{0}: {1}'.format(author.name, content))
                         await c.send('Es fehlen einige Berechtigungen. '
-                                           '`Nachrichten senden` `Links einbetten` `Datein anhängen`'
+                                           '`Nachrichten senden` `Links einbetten` `Dateien anhängen`'
                                            '`Externe Emojis verwenden`')
     await msg.delete()
 
@@ -95,56 +95,56 @@ class Bot(commands.Bot):
         view.add_item(RoleButton())
         self.add_view(view)
 
-    async def on_message(self, msg: Message):
-        if msg.author.bot:
+    async def on_message(self, message: Message):
+        if message.author.bot:
             return
-        if not msg.content.startswith(await get_prefix(msg)):
-            if get_globalChat(msg.guild.id, msg.channel.id):
-                await send_all(msg)
-        if bot.user.mentioned_in(msg) and len(msg.content):
-            await msg.channel.send(f'Mein Prefix hier: `{await get_prefix(msg)}`', delete_after=15)
-        await self.process_commands(msg)
+        if not message.content.startswith(await get_prefix(message)):
+            if get_globalChat(message.guild.id, message.channel.id):
+                await send_all(message)
+        if bot.user.mentioned_in(message) and len(message.content):
+            await message.channel.send(f'Mein Prefix hier: `{await get_prefix(message)}`', delete_after=15)
+        await self.process_commands(message)
 
-    async def on_member_join(self, m: Member):
-        g = self.get_guild(m.guild.id)
-        if not m.bot:
-            embed = Embed(title=f"Willkommen auf {g.name}, {m.name}",
+    async def on_member_join(self, member: Member):
+        g = self.get_guild(member.guild.id)
+        if not member.bot:
+            embed = Embed(title=f"Willkommen auf {g.name}, {member.name}",
                           description="Wir heißen dich herzlich Willkommen auf unserem Server! \n"
                                       "Bitte lies dir die Regeln durch um weiteren Zugriff zu erhalten",
                           colour=0x22a7f0)
             try:
-                if not m.dm_channel:
-                    await m.create_dm()
-                await m.dm_channel.send(embed=embed)
-            except discord.errors.Forbidden:
-                print(f"Es konnte keine Willkommensnachricht an {m.mention} gesendet werden.")
+                if not member.dm_channel:
+                    await member.create_dm()
+                await member.dm_channel.send(embed=embed)
+            except Forbidden:
+                print(f"Es konnte keine Willkommensnachricht an {member.mention} gesendet werden.")
 
-            for c in m.guild.channels:
+            for c in member.guild.channels:
                 if c.id == 615901690985447448:
                     embed = discord.Embed(title="Herzlich Willkommen",
-                                          description=f"{m.mention}, Willkommen auf **{g.name}**",
+                                          description=f"{member.mention}, Willkommen auf **{g.name}**",
                                           colour=0x22a7f0)
                     embed.set_thumbnail(url=g.icon)
                     await c.send(embed=embed, delete_after=30)
-                    await draw_card_welcome(c, m)
+                    await draw_card_welcome(c, member)
         else:
             autoguild = AUTOROLE.get(g.id)
             if autoguild and autoguild["botrole"]:
                 for roleId in autoguild["botrole"]:
                     r = g.get_role(roleId)
                     if r:
-                        await m.add_roles(r)
-                        c: TextChannel = discord.utils.get(m.guild.channels, id=615901690985447448)
-                        await draw_card_welcome(c, m, True)
+                        await member.add_roles(r)
+                        c: TextChannel = discord.utils.get(member.guild.channels, id=615901690985447448)
+                        await draw_card_welcome(c, member, True)
 
-    async def on_guild_join(self, g: Guild):
+    async def on_guild_join(self, guild: Guild):
         prefixes = read_json("prefix")
-        prefixes[str(self.get_guild(g.id))] = "!"
+        prefixes[str(self.get_guild(guild.id))] = "!"
         write_json(prefixes, "prefix")
 
-    async def on_guild_remove(self, g: Guild):
+    async def on_guild_remove(self, guild: Guild):
         prefixes = read_json("prefix")
-        prefixes.pop(str(self.get_guild(g.id)))
+        prefixes.pop(str(self.get_guild(guild.id)))
         write_json(prefixes, "prefix")
 
 

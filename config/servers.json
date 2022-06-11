@@ -1,13 +1,13 @@
 {
     "servers": [
         {
-            "guildid": 635761413448663041,
-            "channelid": 639064618471260160,
+            "guild_id": 635761413448663041,
+            "channel_id": 639064618471260160,
             "invite": "https://discord.gg/qy5D9MVvS9"
         },
         {
-            "guildid": 615901690536787983,
-            "channelid": 873990075841667162,
+            "guild_id": 615901690536787983,
+            "channel_id": 873990075841667162,
             "invite": "https://discord.gg/2JwA6xmmP7"
         }
     ]

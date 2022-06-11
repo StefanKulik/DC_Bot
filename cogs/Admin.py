@@ -2,12 +2,13 @@ import asyncio
 import os
 
 import discord
-from discord import option, Embed, ExtensionAlreadyLoaded, ExtensionNotLoaded
+from discord import option, Embed, ExtensionAlreadyLoaded, ExtensionNotLoaded, Member
 from discord.ext import commands, tasks
+from discord.ext.commands import has_permissions
 
 from config.util import is_not_pinned, get_path, read_json, write_json
 
-# TODO: Kick, Ban, Tempban, Unban, Error Handling, changeprefix, Banlist, Mute, Unmute,
+# TODO: Kick, Ban, Tempban, Unban, Banlist, Mute, Unmute,
 
 
 modules = []
@@ -139,6 +140,27 @@ class Admin(commands.Cog, description='Admin Befehle'):
                                               description="Schreibe /changeprefix <prefix> zum erneuten ändern."),
                           delete_after=5,
                           ephemeral=True)
+
+    @commands.slash_command(name="kick",
+                      description="Member vom Server kicken")
+    @option('member', description='auswählen wer gekickt werden soll')
+    async def _kick(self, ctx, member: Member, reason=None):
+        if reason is None:
+            reason = "LOL"
+        if member:
+            await member.kick(reason=reason)
+            await ctx.send(embed=discord.Embed(title=f"Member {member.name} gekickt! Grund: {reason}"),
+                           delete_after=5)
+            if not member.bot:
+                embed = discord.Embed(title=f"Du wurdest von {ctx.guild.name} gekickt!")
+                embed.add_field(name="Grund:", value=f" {reason}")
+                try:
+                    if not member.dm_channel:
+                        await member.create_dm()
+                    await member.dm_channel.send(embed=embed)
+                    await member.dm_channel.send(os.getenv("SERVER_INVITE"))
+                except discord.errors.Forbidden:
+                    print(f"Es konnte keine Nachricht an {member.mention} gesendet werden.")
 
 
 def setup(bot):

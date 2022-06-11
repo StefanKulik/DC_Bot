@@ -101,7 +101,7 @@ class Bot(commands.Bot):
 
     async def on_ready(self):
         print(f"{bot.user} is ready and online!")
-        await bot.change_presence(activity=discord.Activity(type=discord.ActivityType.watching, name=f"V2.0"))
+        await bot.change_presence(activity=discord.Activity(type=discord.ActivityType.watching, name=f"V2.1"))
 
     async def on_message(self, msg: Message):
         if msg.author.bot:

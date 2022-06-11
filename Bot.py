@@ -7,6 +7,7 @@ from discord import Message, Guild, TextChannel, Permissions, Embed
 from discord.ext import commands
 from datetime import datetime
 
+from cogs.Games import TTT
 from config.envirorment import SERVER_INVITE, AUTOROLE
 from config.util import get_prefix, get_globalChat, get_servers, draw_card_welcome, read_json, write_json
 

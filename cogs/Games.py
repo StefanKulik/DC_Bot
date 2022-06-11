@@ -94,7 +94,7 @@ async def rock_paper_scissors(ctx):
             game = False
             await m.edit(embed=end, view=None)
             await asyncio.sleep(10)
-            await delete_thread(ctx)
+            await delete_thread(ctx, 'rps')
     return
 
 
@@ -104,12 +104,12 @@ async def rock_paper_scissors(ctx):
 
 
 class TTT(View):
-    def __init__(self, ctx, member: Member, m: Message):
+    def __init__(self, ctx, player1: Member, player2: Member, active: Member, m: Message):
         super().__init__()
         self.ctx = ctx
-        self.player1 = ctx.author
-        self.player2 = member
-        self.active = self.player1
+        self.player1 = player1
+        self.player2 = player2
+        self.active = active
         self.message = m
         self.game = ['-', '-', '-',
                      '-', '-', '-',
@@ -125,7 +125,6 @@ class TTT(View):
             [2, 4, 6],
         ]
 
-    # ⭕
     @discord.ui.button(label=' ', style=ButtonStyle.grey, row=0)
     async def b1_callback(self, button, interaction):
         await self.logic(button, interaction, 0)
@@ -188,13 +187,17 @@ class TTT(View):
         if await self.check_winner():
             for child in self.children:
                 child.disabled = True
+            await interaction.response.edit_message(view=self)
+            await asyncio.sleep(1)
             if all(x not in ['-'] for x in self.game):
                 await self.message.edit(embed=Embed(title='Tic Tac Toe',
                                                     description='Das Spiel ist Unentschieden'))
             else:
                 await self.message.edit(embed=Embed(title='Tic Tac Toe',
                                                     description=f'{self.active.mention} hat das Spiel gewonnen'))
-            await interaction.response.edit_message(view=self)
+            await asyncio.sleep(5)
+            await self.ctx.channel.purge(limit=1)
+            await self.ctx.send(view=Restart(self.ctx, self.player1, self.player2, self.message))
         else:
             await interaction.response.edit_message(view=self)
             await self.switch_player()
@@ -212,22 +215,41 @@ class TTT(View):
         return winner
 
 
-async def tic_tac_toe(ctx, member):
-    e = Embed(title='Tic Tac Toe', description=f'{ctx.author.mention} ist an der Reihe')
-    m = await ctx.send(embed=e)
-    await ctx.send(view=TTT(ctx, member, m))
+class Restart(View):
+    def __init__(self, ctx, player1: Member, player2: Member, m: Message):
+        super().__init__()
+        self.ctx = ctx
+        self.player1 = player1
+        self.player2 = player2
+        self.active = choice([player1, player2])
+        self.message = m
 
+    @discord.ui.button(label='Neustarten', style=ButtonStyle.primary, row=0)
+    async def restart_callback(self, button, interaction):
+        e = Embed(title='Tic Tac Toe', description=f'{self.active.mention} ist an der Reihe')
+        await self.message.edit(embed=e)
+        await interaction.response.edit_message(view=TTT(self.ctx, self.player1, self.player2, self.active, self.message))
+
+    @discord.ui.button(label='Beenden', style=ButtonStyle.danger, row=0)
+    async def end_callback(self, button, interaction):
+        await delete_thread(self.ctx, 'ttt')
 
 #############################################################
 
 ########################  Function  #########################
 
 
-async def delete_thread(ctx):
-    threads = ctx.guild.get_channel(876278221878992916).threads
-    for thread in threads:
-        if thread.name == 'ssp-' + ctx.author.name.lower().replace(' ', '_'):
-            await thread.delete()
+async def delete_thread(ctx, mode: str):
+    if mode == 'ttt':
+        threads = ctx.guild.get_channel(876278253025914911).threads
+        for thread in threads:
+            if thread.name == 'ttt-' + ctx.author.name.lower().replace(' ', '_'):
+                await thread.delete()
+    elif mode == 'rps':
+        threads = ctx.guild.get_channel(876278221878992916).threads
+        for thread in threads:
+            if thread.name == 'ssp-' + ctx.author.name.lower().replace(' ', '_'):
+                await thread.delete()
 
 
 #############################################################
@@ -275,7 +297,10 @@ class Games(commands.Cog, description="Games Befehle"):
     async def start(self, ctx, member: Member = None):
         await ctx.channel.purge(limit=1)
         if "ttt" in ctx.channel.name:
-            await tic_tac_toe(ctx, member)
+            active = choice([ctx.author, member])
+            e = Embed(title='Tic Tac Toe', description=f'{active.mention} ist an der Reihe')
+            m = await ctx.send(embed=e)
+            await ctx.send(view=TTT(ctx, ctx.author, member, active, m))
         elif "ssp" in ctx.channel.name:
             await rock_paper_scissors(ctx)
         else:

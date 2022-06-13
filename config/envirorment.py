@@ -1,7 +1,7 @@
 import os
 import logging
 from dotenv import load_dotenv
-from config import util
+# from config import util
 
 load_dotenv()
 
@@ -28,9 +28,11 @@ TOKEN = os.getenv("TOKEN")
 VERSION = load_env("VERSION", "unknown")
 SERVER_INVITE = load_env("SERVER_INVITE", "unknown")
 DEFAULT_PREFIX = load_env("DEFAULT_PREFIX", "!")
-CWD = util.get_path()
+# CWD = util.get_path()
 BOT = int(load_env("BOT", "200000000000000000"))
 OWNER = int(load_env("OWNER", "100000000000000000"))
+
+DATABASE_URL = load_env("DATABASE_URL", 'unknown')
 
 COLORS = {
     "WHITE": 0xFFFFFF,

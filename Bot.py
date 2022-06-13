@@ -2,12 +2,14 @@ import discord
 import os
 import pytz
 import dotenv
+import asyncpg
 
 from discord import Message, ActivityType, Activity, Guild, Permissions, Member, TextChannel, Embed, Forbidden
 from discord.ext import commands
 from datetime import *
-from config.envirorment import SERVER_INVITE, AUTOROLE
-from config.util import get_servers, get_globalChat, get_prefix, RoleButton, draw_card_welcome, read_json, write_json
+from config.envirorment import SERVER_INVITE, AUTOROLE, DATABASE_URL, DEFAULT_PREFIX
+from config.util import get_servers, get_globalChat, RoleButton, draw_card_welcome, read_json, write_json, set_prefix, \
+    get_prefix
 
 ####################  function handling  ####################
 
@@ -22,7 +24,13 @@ def load_extensions():
             print(f"Geladen '{f}'")
 
 
-async def send_all(msg: Message):
+async def create_db_pool():
+    print('Connect to database...')
+    bot.db = await asyncpg.create_pool(dsn=DATABASE_URL)
+    print('Connection successful')
+
+
+async def send_all(bot, msg: Message):
     servers = get_servers()
     content = msg.content
     author = msg.author
@@ -84,7 +92,7 @@ class Bot(commands.Bot):
         super().__init__(
             debug_guilds=[615901690536787983],
             owner_id=183185835477172226,
-            command_prefix=get_prefix,
+            command_prefix=set_prefix,
             intents=discord.Intents.all()
         )
 
@@ -98,11 +106,11 @@ class Bot(commands.Bot):
     async def on_message(self, message: Message):
         if message.author.bot:
             return
-        if not message.content.startswith(await get_prefix(message)):
-            if get_globalChat(message.guild.id, message.channel.id):
-                await send_all(message)
+        # if not message.content.startswith(await get_prefix(self, message)):
+        #     if get_globalChat(message.guild.id, message.channel.id):
+        #         await send_all(self, message)
         if bot.user.mentioned_in(message) and len(message.content):
-            await message.channel.send(f'Mein Prefix hier: `{await get_prefix(message)}`', delete_after=15)
+            await message.channel.send(f'Mein Prefix hier: `{await get_prefix(self, message)}`', delete_after=15)
         await self.process_commands(message)
 
     async def on_member_join(self, member: Member):
@@ -161,6 +169,7 @@ def main():
     print("lade Erweiterungen ...")
     load_extensions()
     print(f"-----")
+    bot.loop.run_until_complete(create_db_pool())
     bot.run(os.getenv('TOKEN'))
 
 

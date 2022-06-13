@@ -5,12 +5,14 @@ import pathlib
 import discord
 
 from pathlib import Path
-from discord import Forbidden, TextChannel, Embed, ButtonStyle, Interaction
-from discord import Member, File
+from discord import Forbidden, TextChannel, Embed, ButtonStyle, Interaction, Member, File
+from discord.ext import commands
 from PIL import Image, ImageDraw, ImageFont
-
+from config.envirorment import DEFAULT_PREFIX
 
 # Buttons #
+
+
 class RoleButton(discord.ui.Button):
     def __init__(self):
         super().__init__(
@@ -45,16 +47,28 @@ class StandardButton(discord.ui.Button):
 
 
 # allgemein #
-async def get_prefix(msg):
-    prefixes = read_json("prefix")
-    return prefixes[str(msg.guild.id)]
-
-
 def is_not_pinned(mess):
     return not mess.pinned
 
 
-# GlobalChat_Functions #
+async def set_prefix(bot, message):
+    if not message.guild:
+        return commands.when_mentioned_or(DEFAULT_PREFIX)(bot, message)
+    prefix = await bot.db.fetch('SELECT prefix FROM guilds WHERE guild_id = $1', message.guild.id)
+    if len(prefix) == 0:
+        await bot.db.execute(f'INSERT INTO guilds(guild_id, prefix) VALUES($1, $2)', message.guild.id, DEFAULT_PREFIX)
+        prefix = DEFAULT_PREFIX
+    else:
+        prefix = prefix[0].get('prefix')
+    return commands.when_mentioned_or(prefix)(bot, message)
+
+
+async def get_prefix(bot, message):
+    prefix = await bot.db.fetch('SELECT prefix FROM guilds WHERE guild_id = $1', message.guild.id)
+    return prefix[0]['prefix']
+
+
+# GlobalChat_Functions # TODO: auf DB Abfragen umstellen
 def get_servers():
     if os.path.isfile("config/servers.json"):
         servers = read_json("servers")
@@ -68,9 +82,9 @@ def get_globalChat(guild_id, channel_id=None):
     global_chat = None
     servers = get_servers()
     for server in servers["servers"]:
-        if int(server["guildid"]) == int(guild_id):
+        if int(server["guild_id"]) == int(guild_id):
             if channel_id:
-                if server["channelid"] == int(channel_id):
+                if server["channel_id"] == int(channel_id):
                     global_chat = server
             else:
                 global_chat = server
@@ -81,7 +95,7 @@ def get_globalChat_id(guild_id, channel_id=None):  # gibt die id des globalchats
     global_chat = get_globalChat(guild_id, channel_id=None)
     if channel_id:
         return channel_id
-    return global_chat["channelid"]
+    return global_chat["channel_id"]
 
 
 def get_globalChat_index(guild_id):  # gibt index für server in servers wieder
@@ -89,7 +103,7 @@ def get_globalChat_index(guild_id):  # gibt index für server in servers wieder
     i = 0
     servers = get_servers()
     for server in servers["servers"]:
-        if int(server["guildid"]) == guild_id:
+        if int(server["guild_id"]) == guild_id:
             index = i
         i += 1
     return index
@@ -98,7 +112,7 @@ def get_globalChat_index(guild_id):  # gibt index für server in servers wieder
 def isGlobalChat(channel_id):  # ist dieser channel der globalchat?
     servers = get_servers()
     for server in servers["servers"]:
-        if int(server["channelid"]) == int(channel_id):
+        if int(server["channel_id"]) == int(channel_id):
             return True
     return False
 
@@ -106,7 +120,7 @@ def isGlobalChat(channel_id):  # ist dieser channel der globalchat?
 def globalchatExists(guild_id):  # hat der server einen globalchat?
     servers = get_servers()
     for server in servers["servers"]:
-        if int(server["guildid"]) == int(guild_id):
+        if int(server["guild_id"]) == int(guild_id):
             return True
     return False
 ############################################################

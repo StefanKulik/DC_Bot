@@ -135,9 +135,10 @@ class Admin(commands.Cog, description='Admin Befehle'):
     @commands.has_permissions(administrator=True)
     async def _changeprefix(self, ctx, prefix: str):
         await ctx.channel.purge(limit=1)
-        prefixes = read_json("prefix")
-        prefixes[str(ctx.guild.id)] = prefix
-        write_json(prefixes, "prefix")
+        # prefixes = read_json("prefix")
+        # prefixes[str(ctx.guild.id)] = prefix
+        # write_json(prefixes, "prefix")
+        await self.bot.db.execute('UPDATE guilds SET prefix = $1 WHERE guild_id = $2', prefix, ctx.guild.id)
         await ctx.respond(embed=discord.Embed(title=f"Prefix geändert zu '{prefix}'",
                                               description="Schreibe /changeprefix <prefix> zum erneuten ändern."),
                           delete_after=5,

@@ -1,7 +1,7 @@
 from discord import Member, Embed
 from discord.ext import commands
 
-from config.util import get_prefix, send_embed
+from config.util import send_embed
 
 
 class Members(commands.Cog):

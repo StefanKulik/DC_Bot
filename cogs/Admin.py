@@ -2,7 +2,7 @@ import asyncio
 import os
 
 import discord
-from discord import option, Embed, ExtensionAlreadyLoaded, ExtensionNotLoaded, Member
+from discord import option, Embed, ExtensionAlreadyLoaded, ExtensionNotLoaded, Member, Role
 from discord.ext import commands, tasks
 
 from config.util import is_not_pinned, read_json, write_json
@@ -143,6 +143,15 @@ class Admin(commands.Cog, description='Admin Befehle'):
                                               description="Schreibe /changeprefix <prefix> zum erneuten ändern."),
                           delete_after=5,
                           ephemeral=True)
+
+    @commands.slash_command(name='setautorole')
+    @option('memberrole', desription='choose memberrole')
+    @option('botrole', description='choose botrole')
+    @commands.has_permissions(administrator=True)
+    async def _setautorole(self, ctx, memberrole: Role, botrole: Role):
+        await self.bot.db.execute(f'INSERT INTO autorole(guild_id, memberrole_id, botrole_id) '
+                                  f'VALUES($1, $2, $3)', ctx.guild.id, memberrole.id, botrole.id)
+        await ctx.send('Autorole hinzugefügt')
 
     @commands.slash_command(name="kick",
                             description="Member vom Server kicken")

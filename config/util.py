@@ -65,7 +65,12 @@ async def set_prefix(bot, message):
 
 async def get_prefix(bot, message):
     prefix = await bot.db.fetch('SELECT prefix FROM guilds WHERE guild_id = $1', message.guild.id)
-    return prefix[0]['prefix']
+    if len(prefix) == 0:
+        await bot.db.execute(f'INSERT INTO guilds(guild_id, prefix) VALUES($1, $2)', message.guild.id, DEFAULT_PREFIX)
+        prefix = DEFAULT_PREFIX
+    else:
+        prefix = prefix[0].get('prefix')
+    return prefix
 
 
 # GlobalChat_Functions # TODO: auf DB Abfragen umstellen

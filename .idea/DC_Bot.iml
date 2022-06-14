@@ -3,6 +3,7 @@
   <component name="NewModuleRootManager">
     <content url="file://$MODULE_DIR$">
       <excludeFolder url="file://$MODULE_DIR$/venv" />
+      <excludeFolder url="file://$MODULE_DIR$/.idea/dataSources/d90de6d0-669f-4f55-aa97-17beee704432" />
     </content>
     <orderEntry type="jdk" jdkName="Python 3.10 (DC_Bot)" jdkType="Python SDK" />
     <orderEntry type="sourceFolder" forTests="false" />

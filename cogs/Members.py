@@ -10,7 +10,7 @@ class Members(commands.Cog):
 
     @commands.user_command(name="Userinfo",
                             description="Zeigt Info über ein Mitglied")
-    async def _userinfo(self, ctx, member: Member = None):
+    async def userinfo(self, ctx, member: Member = None):
         if member:
             embed = Embed(title=f"Userinfo für {member.name}",
                           description=f"Dies ist eine Userinfo für den User {member.mention}",

@@ -7,9 +7,9 @@ import asyncpg
 from discord import Message, ActivityType, Activity, Guild, Permissions, Member, TextChannel, Embed, Forbidden
 from discord.ext import commands
 from datetime import *
-from config.envirorment import SERVER_INVITE, AUTOROLE, DATABASE_URL, DEFAULT_PREFIX
-from config.util import get_servers, get_globalChat, RoleButton, draw_card_welcome, read_json, write_json, set_prefix, \
-    get_prefix
+from config.envirorment import SERVER_INVITE, DATABASE_URL, load_env
+from config.util import RoleButton, draw_card_welcome, set_prefix, \
+    get_prefix, get_autorole, get_servers, get_globalchat, is_globalchat
 
 ####################  function handling  ####################
 
@@ -31,14 +31,17 @@ async def create_db_pool():
 
 
 async def send_all(bot, msg: Message):
-    servers = get_servers()
+    servers = []
+    for server in await get_servers(bot):
+        servers.append(server['guild_id'])
+
     content = msg.content
     author = msg.author
     attachments = msg.attachments
     de = pytz.timezone('Europe/Berlin')
     embed = discord.Embed(description=content, timestamp=datetime.now().astimezone(tz=de), color=author.color)
 
-    icon = author.avatar_url
+    icon = author.avatar
     embed.set_author(name=author.name, icon_url=icon)
 
     icon_url = "https://i.giphy.com/media/xT1XGzYCdltvOd9r4k/source.gif"
@@ -49,10 +52,10 @@ async def send_all(bot, msg: Message):
     embed.set_footer(text=f"Gesendet von Server '{msg.guild.name} : {msg.channel.name}'", icon_url=icon_url)
 
     links = f'[Stefans Server]({SERVER_INVITE}) ║ '
-    globalchat = get_globalChat(msg.guild.id, msg.channel.id)
+    globalchat = await get_globalchat(bot, msg.guild.id)
 
-    if len(globalchat["invite"]) > 0:
-        inv = globalchat["invite"]
+    if len(globalchat[0]['invite']) > 0:
+        inv = globalchat[0]['invite']
         if 'discord.gg' not in inv:
             inv = 'https://discord.gg/{}'.format(inv)
         links += f'[Server Invite]({inv})'
@@ -64,10 +67,11 @@ async def send_all(bot, msg: Message):
         img = attachments[0]
         embed.set_image(url=img.url)
 
-    for server in servers["servers"]:
-        g: Guild = bot.get_guild(int(server["guild_id"]))
+    for server in servers:
+        gc = await get_globalchat(bot, server)
+        g: Guild = bot.get_guild(gc[0]['guild_id'])
         if g:
-            c: TextChannel = g.get_channel(int(server["channel_id"]))
+            c: TextChannel = g.get_channel(gc[0]['channel_id'])
             if c:
                 permissions: Permissions = c.permissions_for(g.get_member(bot.user.id))
                 if permissions.send_messages:
@@ -82,7 +86,6 @@ async def send_all(bot, msg: Message):
 
 
 #############################################################
-
 
 class Bot(commands.Bot):
     async def sync_commands(self) -> None:
@@ -100,15 +103,15 @@ class Bot(commands.Bot):
         print(f"{self.user} is ready and online!")
         await self.change_presence(activity=Activity(type=ActivityType.watching, name=f"V2.2"))
         view = discord.ui.View(timeout=None)
-        view.add_item(RoleButton())
+        view.add_item(RoleButton(self))
         self.add_view(view)
 
     async def on_message(self, message: Message):
         if message.author.bot:
             return
-        # if not message.content.startswith(await get_prefix(self, message)):
-        #     if get_globalChat(message.guild.id, message.channel.id):
-        #         await send_all(self, message)
+        if not message.content.startswith(await get_prefix(self, message)):
+            if await is_globalchat(self, message.guild.id, message.channel.id):
+                await send_all(self, message)
         if bot.user.mentioned_in(message) and len(message.content):
             await message.channel.send(f'Mein Prefix hier: `{await get_prefix(self, message)}`', delete_after=15)
         await self.process_commands(message)
@@ -127,7 +130,7 @@ class Bot(commands.Bot):
             except Forbidden:
                 print(f"Es konnte keine Willkommensnachricht an {member.mention} gesendet werden.")
 
-            for c in member.guild.channels:
+            for c in g.channels:
                 if c.id == 615901690985447448:
                     embed = discord.Embed(title="Herzlich Willkommen",
                                           description=f"{member.mention}, Willkommen auf **{g.name}**",
@@ -136,31 +139,16 @@ class Bot(commands.Bot):
                     await c.send(embed=embed, delete_after=30)
                     await draw_card_welcome(c, member)
         else:
-            autoguild = AUTOROLE.get(g.id)
-            if autoguild and autoguild["botrole"]:
-                for roleId in autoguild["botrole"]:
-                    r = g.get_role(roleId)
-                    if r:
-                        await member.add_roles(r)
-                        c: TextChannel = discord.utils.get(member.guild.channels, id=615901690985447448)
-                        await draw_card_welcome(c, member, True)
-
-    async def on_guild_join(self, guild: Guild):
-        prefixes = read_json("prefix")
-        prefixes[str(self.get_guild(guild.id))] = "!"
-        write_json(prefixes, "prefix")
-
-    async def on_guild_remove(self, guild: Guild):
-        prefixes = read_json("prefix")
-        prefixes.pop(str(self.get_guild(guild.id)))
-        write_json(prefixes, "prefix")
-
+            r = g.get_role(await get_autorole(self, member, g))
+            if r:
+                await member.add_roles(r)
+                c: TextChannel = discord.utils.get(member.guild.channels, id=615901690985447448)
+                await draw_card_welcome(c, member, True)
 
 #############################################################
 
 
 ##################### Bot  initialising #####################
-
 
 bot = Bot()
 
@@ -170,8 +158,7 @@ def main():
     load_extensions()
     print(f"-----")
     bot.loop.run_until_complete(create_db_pool())
-    bot.run(os.getenv('TOKEN'))
-
+    bot.run(load_env('TOKEN', 'unknown'))
 
 #############################################################
 

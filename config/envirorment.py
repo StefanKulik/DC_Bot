@@ -1,7 +1,6 @@
 import os
 import logging
 from dotenv import load_dotenv
-# from config import util
 
 load_dotenv()
 
@@ -21,16 +20,15 @@ def load_env(key: str, default: str) -> str:
 
 
 logger = logging.getLogger('bot')
-SPOTIPY_ID = os.getenv("SPOTIPY_ID")
-SPOTIPY_SECRET = os.getenv("SPOTIPY_SECRET")
+SPOTIPY_ID = load_env("SPOTIPY_ID", 'unknown')
+SPOTIPY_SECRET = load_env("SPOTIPY_SECRET", 'unknown')
 
-TOKEN = os.getenv("TOKEN")
+TOKEN = load_env("TOKEN", 'unknown')
 VERSION = load_env("VERSION", "unknown")
 SERVER_INVITE = load_env("SERVER_INVITE", "unknown")
 DEFAULT_PREFIX = load_env("DEFAULT_PREFIX", "!")
-# CWD = util.get_path()
-BOT = int(load_env("BOT", "200000000000000000"))
-OWNER = int(load_env("OWNER", "100000000000000000"))
+BOT = int(load_env("BOT", "unknown"))
+OWNER = int(load_env("OWNER", "unknown"))
 
 DATABASE_URL = load_env("DATABASE_URL", 'unknown')
 
@@ -56,8 +54,3 @@ COLORS = {
     "DARK_NAVY": 0x2C3E50,
 }
 COLOR_LIST = [c for c in COLORS.values()]
-
-AUTOROLE = {
-    615901690536787983: {"memberrole": [873637097951625216], "botrole": [876161971572060160]},
-    635761413448663041: {"memberrole": [696665589338603582]}
-}

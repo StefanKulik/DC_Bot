@@ -1,37 +1,34 @@
-import json
-import os
 import io
 import pathlib
 import discord
 
-from pathlib import Path
 from discord import Forbidden, TextChannel, Embed, ButtonStyle, Interaction, Member, File
 from discord.ext import commands
 from PIL import Image, ImageDraw, ImageFont
 from config.envirorment import DEFAULT_PREFIX
 
-# Buttons #
 
+########################## Button ##########################
 
 class RoleButton(discord.ui.Button):
-    def __init__(self):
+    def __init__(self, bot):
         super().__init__(
             label='Verifiziere dich hier!',
             style=ButtonStyle.blurple,
             custom_id='interaction:RoleButton'
         )
+        self.bot = bot
 
     async def callback(self, interaction: Interaction):
         user = interaction.user
-        role = interaction.guild.get_role(873637097951625216)
-
+        role = interaction.guild.get_role(await get_autorole(self.bot, user, interaction.guild))
         if role is None:
-            return
+            await interaction.response.send_message(f'🎉Verifizierung fehlgeschlagen!', ephemeral=True)
         if role not in user.roles:
             await user.add_roles(role)
-            await interaction.response.send_message(f'🎉 Du bist nun verifiziert!', ephemeral=True, delete_after=10)
+            await interaction.response.send_message(f'🎉 Du bist nun verifiziert!', ephemeral=True)
         else:
-            await interaction.response.send_message(f'❌ Du bist bereits verifiziert!', ephemeral=True, delete_after=10)
+            await interaction.response.send_message(f'❌ Du bist bereits verifiziert!', ephemeral=True)
 
 
 class StandardButton(discord.ui.Button):
@@ -46,7 +43,11 @@ class StandardButton(discord.ui.Button):
         await interaction.response.send_message("Yeyy! Du hast mich angeklickt.", ephemeral=True)
 
 
-# allgemein #
+############################################################
+
+
+########################## common ##########################
+
 def is_not_pinned(mess):
     return not mess.pinned
 
@@ -73,104 +74,51 @@ async def get_prefix(bot, message):
     return prefix
 
 
-# GlobalChat_Functions # TODO: auf DB Abfragen umstellen
-def get_servers():
-    if os.path.isfile("config/servers.json"):
-        servers = read_json("servers")
+############################################################
+
+
+#################### Autorole functions ####################
+
+async def get_autorole(bot, member, guild):
+    if not member.bot:
+        role_id = await bot.db.fetch('SELECT memberrole_id FROM autorole WHERE guild_id = $1', guild.id)
+        return role_id[0].get('memberrole_id')
     else:
-        servers = {"servers": []}
-        write_json(servers, "servers")
-    return servers
+        role_id = await bot.db.fetch('SELECT botrole_id from autorole WHERE guild_id = $1', guild.id)
+        return role_id[0].get('botrole_id')
 
 
-def get_globalChat(guild_id, channel_id=None):
-    global_chat = None
-    servers = get_servers()
-    for server in servers["servers"]:
-        if int(server["guild_id"]) == int(guild_id):
-            if channel_id:
-                if server["channel_id"] == int(channel_id):
-                    global_chat = server
-            else:
-                global_chat = server
-    return global_chat
-
-
-def get_globalChat_id(guild_id, channel_id=None):  # gibt die id des globalchats wieder
-    global_chat = get_globalChat(guild_id, channel_id=None)
-    if channel_id:
-        return channel_id
-    return global_chat["channel_id"]
-
-
-def get_globalChat_index(guild_id):  # gibt index für server in servers wieder
-    index = -1
-    i = 0
-    servers = get_servers()
-    for server in servers["servers"]:
-        if int(server["guild_id"]) == guild_id:
-            index = i
-        i += 1
-    return index
-
-
-def isGlobalChat(channel_id):  # ist dieser channel der globalchat?
-    servers = get_servers()
-    for server in servers["servers"]:
-        if int(server["channel_id"]) == int(channel_id):
-            return True
-    return False
-
-
-def globalchatExists(guild_id):  # hat der server einen globalchat?
-    servers = get_servers()
-    for server in servers["servers"]:
-        if int(server["guild_id"]) == int(guild_id):
-            return True
-    return False
 ############################################################
 
 
-# json functions #
-def get_path():
-    """
-    A function to get the current path to bot.py
-    Returns:
-     - cwd (string) : Path to bot.py directory
-    """
-    cwd = Path(__file__).parents[1]
-    cwd = str(cwd)
-    return cwd
+################### Globalchat functions ################### #TODO: auf DB Abfragen umstellen
+
+async def get_servers(bot):
+    return await bot.db.fetch('SELECT * FROM globalchat')
 
 
-def read_json(filename):
-    """
-    A function to read a json file and return the data.
-    Params:
-     - filename (string) : The name of the file to open
-    Returns:
-     - data (dict) : A dict of the data in the file
-    """
-    cwd = get_path()
-    with open(cwd + "/config/" + filename + ".json", "r") as file:
-        data = json.load(file)
-    return data
+async def get_globalchat(bot, guild_id):
+    return await bot.db.fetch('SELECT * FROM globalchat WHERE guild_id = $1', guild_id)
 
 
-def write_json(data, filename):
-    """
-    A function used to write data to a json file
-    Params:
-     - data (dict) : The data to write to the file
-     - filename (string) : The name of the file to write to
-    """
-    cwd = get_path()
-    with open(cwd + "/config/" + filename + ".json", "w") as file:
-        json.dump(data, file, indent=4)
+# async def get_globalchat_id(bot, guild_id, channel_id=None):  # gibt die id des globalchats wieder
+#     global_chat = get_globalchat(bot, guild_id, channel_id=None)
+#     if channel_id:
+#         return channel_id
+#     return global_chat["channel_id"]
+#
+async def is_globalchat(self, guild_id, channel_id):  # ist dieser channel der globalchat?
+    return channel_id == (await self.db.fetch('SELECT channel_id FROM globalchat WHERE guild_id = $1', guild_id))[0]['channel_id']
+
+
+async def globalchat_exists(self, guild_id):  # hat der server einen globalchat?
+    return len(await self.bot.db.fetch('SELECT guild_id FROM globalchat WHERE guild_id = $1', guild_id)) != 0
+
+
 ############################################################
 
 
-# embeds #
+########################## embeds ##########################
 async def send_embed(ctx, emb: Embed, num: int = None, channel: TextChannel = None):
     try:
         if num:
@@ -194,21 +142,18 @@ async def error_embed(ctx, com: str, des: str):
     e = discord.Embed(title=f"{com} error", description=des)
     e.set_thumbnail(url="https://cdn.discordapp.com/emojis/751739197009690655.gif?v=1")
     await send_embed(ctx, e, 5)
+
+
 ############################################################
 
 
-# welcome card #
-if os.path.isfile("Discord_Bot/config/blankcard.jpg"):
-    blank_card = pathlib.Path("Discord_Bot/config/blankcard.jpg")  #  for heroku
-else:
-    blank_card = pathlib.Path("config/blankcard.jpg")  # for pycharm
-
+####################### welcome card #######################
+blank_card = pathlib.Path("config/blankcard.jpg")
 background_image = Image.open(blank_card)
 background_image = background_image.convert('RGBA')
 
 
 async def draw_card_welcome(channel, member: Member, bot: bool = None):
-    size = 256
     avatar_size = 240
 
     image = background_image.copy()
@@ -229,7 +174,6 @@ async def draw_card_welcome(channel, member: Member, bot: bool = None):
     else:
         text = f'{member} ist dem Server beigetreten'
     avatar_asset = member.avatar
-    # avatar_asset = member.avatar_url_as(format='jpg', size=SIZE)
 
     buffer_avatar = io.BytesIO(await avatar_asset.read())
 
@@ -245,12 +189,7 @@ async def draw_card_welcome(channel, member: Member, bot: bool = None):
     avatar_start_y = margin_top + 45
     image.paste(avatar_image, (avatar_start_x, avatar_start_y), circle_image)
 
-    if os.path.isfile("Discord_Bot/arial.ttf"):
-        font_datei = "Discord_Bot/arial.ttf"
-    else:
-        font_datei = "arial.ttf"
-    font = ImageFont.truetype(font_datei, 40)  # for heroku
-    # font = ImageFont.truetype('arial.ttf', 40)
+    font = ImageFont.truetype('config/arial.ttf', 40)  # for heroku
 
     text_width, text_height = draw.textsize(text, font=font)
     text_start_x = (rect_width // 2) + margin_left - (text_width // 2)
@@ -265,6 +204,8 @@ async def draw_card_welcome(channel, member: Member, bot: bool = None):
     buffer_output.seek(0)
 
     await channel.send(file=File(buffer_output, f'welcome-card.png'))
+
+
 ############################################################
 
 

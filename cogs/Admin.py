@@ -5,7 +5,7 @@ import discord
 from discord import option, Embed, ExtensionAlreadyLoaded, ExtensionNotLoaded, Member, Role
 from discord.ext import commands, tasks
 
-from config.util import is_not_pinned, read_json, write_json
+from config.util import is_not_pinned
 
 # TODO: Kick, Ban, Tempban, Unban, Banlist, Mute, Unmute,
 
@@ -111,7 +111,7 @@ class Admin(commands.Cog, description='Admin Befehle'):
     @option('function', description='choose Function', choices=['load', 'unload', 'reload'])
     @option('module', description='choose Module', choices=modules)
     @commands.has_permissions(administrator=True)
-    async def _cog(self, ctx, function: str, module: str = None):
+    async def cog(self, ctx, function: str, module: str = None):
         if function == 'load':
             await load(self, ctx, module)
         if function == 'unload':
@@ -122,7 +122,7 @@ class Admin(commands.Cog, description='Admin Befehle'):
     @commands.slash_command(name='clear')
     @option('num', description='Enter a number', min_value=1, max_value=100, default=10)
     @commands.has_permissions(administrator=True)
-    async def _clear(self, ctx, num: int):
+    async def clear(self, ctx, num: int):
         if ctx.channel.id == 615901690985447448:
             await ctx.send(embed=discord.Embed(description="Dieser Channel darf nicht geleert werden!"),
                            delete_after=5)
@@ -133,11 +133,8 @@ class Admin(commands.Cog, description='Admin Befehle'):
     @commands.slash_command(name='changeprefix', description='Prefix ändern')
     @option('prefix', description='pick Prefix', choices=['!', '<', '>', '-', '.', '?', '$', '#'])
     @commands.has_permissions(administrator=True)
-    async def _changeprefix(self, ctx, prefix: str):
+    async def changeprefix(self, ctx, prefix: str):
         await ctx.channel.purge(limit=1)
-        # prefixes = read_json("prefix")
-        # prefixes[str(ctx.guild.id)] = prefix
-        # write_json(prefixes, "prefix")
         await self.bot.db.execute('UPDATE guilds SET prefix = $1 WHERE guild_id = $2', prefix, ctx.guild.id)
         await ctx.respond(embed=discord.Embed(title=f"Prefix geändert zu '{prefix}'",
                                               description="Schreibe /changeprefix <prefix> zum erneuten ändern."),
@@ -148,7 +145,7 @@ class Admin(commands.Cog, description='Admin Befehle'):
     @option('memberrole', desription='choose memberrole')
     @option('botrole', description='choose botrole')
     @commands.has_permissions(administrator=True)
-    async def _setautorole(self, ctx, memberrole: Role, botrole: Role):
+    async def setautorole(self, ctx, memberrole: Role, botrole: Role):
         await self.bot.db.execute(f'INSERT INTO autorole(guild_id, memberrole_id, botrole_id) '
                                   f'VALUES($1, $2, $3)', ctx.guild.id, memberrole.id, botrole.id)
         await ctx.send('Autorole hinzugefügt')
@@ -157,7 +154,7 @@ class Admin(commands.Cog, description='Admin Befehle'):
                             description="Member vom Server kicken")
     @option('member', description='auswählen wer gekickt werden soll')
     @commands.has_permissions(administrator=True)
-    async def _kick(self, ctx, member: Member, reason=None):
+    async def kick(self, ctx, member: Member, reason=None):
         if reason is None:
             reason = "LOL"
         if member:

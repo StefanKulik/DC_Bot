@@ -7,102 +7,113 @@ from discord.ext import commands
 from discord.ui import View, Button
 
 
-# TODO: Tic Tac Toe
 ######################  RPS handling  #######################
-
-
 class RPS(View):
-    def __init__(self, ctx):
+    def __init__(self, ctx, m, thread):
         super().__init__()
         self.ctx = ctx
+        self.message = m
+        self.thread = thread
         self.value = None
+        self.rps = ["Stein", "Papier", "Schere"]
+        self.wins = 0
+        self.loses = 0
+        self.ties = 0
+        self.game = True
 
     @discord.ui.button(label='Schere', style=ButtonStyle.red, custom_id='schere')
     async def schere_callback(self, button, interaction):
         self.value = 'Schere'
-        self.stop()
+        await self.logic(interaction)
 
     @discord.ui.button(label='Stein', style=ButtonStyle.primary)
     async def stein_callback(self, button, interaction):
         self.value = 'Stein'
-        self.stop()
+        await self.logic(interaction)
 
     @discord.ui.button(label='Papier', style=ButtonStyle.success)
     async def papier_callback(self, button, interaction):
         self.value = 'Papier'
-        self.stop()
+        await self.logic(interaction)
 
     @discord.ui.button(label='Ende', style=ButtonStyle.grey)
     async def ende_callback(self, button, interaction):
         self.value = 'Ende'
-        self.stop()
+        await self.logic(interaction)
 
-    async def interaction_check(self, interaction) -> bool:
+    async def interaction_check(self, interaction):
         return interaction.user == self.ctx.author
 
+    async def logic(self, interaction: Interaction):
+        comp = choice(self.rps)
+        player = self.value
 
-async def rock_paper_scissors(ctx):
-    rps = ["Stein", "Papier", "Schere"]
-    wins = 0
-    loses = 0
-    ties = 0
-    game = True
-
-    yet = Embed(title=f"{ctx.author.name}`s Schere Stein Papier!",
-                description=">Status: Du hast noch keinen Knopf gedrückt!", color=0xFFEA00)
-
-    m = await ctx.send(embed=yet)
-    await m.pin()
-    while game:
-        view = RPS(ctx)
-        await m.edit(embed=yet, view=view)
-        await view.wait()
-        comp = choice(rps)
-        player = view.value
-
-        win = Embed(title=f"{ctx.author.name}, Sieg!",
+        win = Embed(title=f"{self.ctx.author.name}, Sieg!",
                     description=f">Status: **DU hast gewonnen!** Ich habe ***{comp}*** gewählt",
                     color=0x00FF00)
-        loss = Embed(title=f"{ctx.author.name}, Verloren!",
+        loss = Embed(title=f"{self.ctx.author.name}, Verloren!",
                      description=f">Status: **Du hast verloren** Ich habe ***{comp}*** gewählt",
                      color=discord.Color.red())
-        tie = Embed(title=f"{ctx.author.name}, Unentschieden!",
+        tie = Embed(title=f"{self.ctx.author.name}, Unentschieden!",
                     description=f">Status: **Unentschieden!** Wir beide haben ***{comp}*** gewählt",
                     color=0xFFEA00)
         end = Embed(title="Danke fürs Spielen von 'Schere Stein Papier'!",
-                    description=f"Siege: {wins}\n Niederlagen: {loses}\n Unentschieden: {ties}\n",
+                    description=f"Siege: {self.wins}\n Niederlagen: {self.loses}\n Unentschieden: {self.ties}\n",
                     color=0xFFEA00)
 
         if player == comp:
-            await m.edit(embed=tie, view=view)
-            ties = ties + 1
+            await self.message.edit(embed=tie)
+            self.ties = self.ties + 1
+            await interaction.response.edit_message(view=self)
             await asyncio.sleep(2)
 
         if (player == "Stein" and comp == "Papier") or (player == "Schere" and comp == "Stein") or (
                 player == "Papier" and comp == "Schere"):
-            await m.edit(embed=loss, view=view)
-            loses = loses + 1
+            await self.message.edit(embed=loss)
+            self.loses = self.loses + 1
+            await interaction.response.edit_message(view=self)
             await asyncio.sleep(2)
 
         if (player == "Stein" and comp == "Schere") or (player == "Schere" and comp == "Papier") or (
                 player == "Papier" and comp == "Stein"):
-            await m.edit(embed=win, view=view)
-            wins = wins + 1
+            await self.message.edit(embed=win)
+            self.wins = self.wins + 1
+            await interaction.response.edit_message(view=self)
             await asyncio.sleep(2)
 
         if player == 'Ende':
-            game = False
-            await m.edit(embed=end, view=None)
-            await asyncio.sleep(10)
-            await delete_thread(ctx, 'rps')
-    return
+            self.game = False
+            await interaction.response.edit_message(view=self)
+            await self.message.edit(embed=end)
+            await self.thread.purge(limit=1)
+            await self.thread.send(view=RestartRPS(self.ctx, self.message, self.thread))
 
 
-#############################################################
+class RestartRPS(View):
+    def __init__(self, ctx, m: Message, thread: Thread):
+        super().__init__()
+        self.ctx = ctx
+        self.thread = thread
+        self.message = m
+
+    @discord.ui.button(label='Neustarten', style=ButtonStyle.success, row=0)
+    async def restart_callback(self, button, interaction):
+        e = Embed(title=f"{self.ctx.author.name}`s Schere Stein Papier!",
+                  description=">Status: Du hast noch keinen Knopf gedrückt!", color=0xFFEA00)
+        await self.message.edit(embed=e)
+        await interaction.response.edit_message(
+            view=RPS(self.ctx, self.message, self.thread))
+
+    @discord.ui.button(label='Beenden', style=ButtonStyle.danger, row=0)
+    async def end_callback(self, button, interaction):
+        await delete_thread(self.ctx, 'rps')
+
+    async def interaction_check(self, interaction):
+        return interaction.user == self.ctx.author
+
 
 ######################  TTT handling  #######################
-
-# TODO: Game Anfrage, Benachrichtung wenn man dran ist
+# TODO: Benachrichtigung wenn man dran ist
 class TTT(View):
     def __init__(self, ctx, player1: Member, player2: Member, active: Member, m: Message, thread: Thread):
         super().__init__()
@@ -198,7 +209,7 @@ class TTT(View):
                                                     description=f'{self.active.mention} hat das Spiel gewonnen'))
             await asyncio.sleep(5)
             await self.thread.purge(limit=1)
-            await self.thread.send(view=Restart(self.ctx, self.player1, self.player2, self.message, self.thread))
+            await self.thread.send(view=RestartTTT(self.ctx, self.player1, self.player2, self.message, self.thread))
         else:
             await interaction.response.edit_message(view=self)
             await self.switch_player()
@@ -216,7 +227,7 @@ class TTT(View):
         return winner
 
 
-class Restart(View):
+class RestartTTT(View):
     def __init__(self, ctx, player1: Member, player2: Member, m: Message, thread: Thread):
         super().__init__()
         self.ctx = ctx
@@ -230,7 +241,8 @@ class Restart(View):
     async def restart_callback(self, button, interaction):
         e = Embed(title='Tic Tac Toe', description=f'{self.active.mention} ist an der Reihe')
         await self.message.edit(embed=e)
-        await interaction.response.edit_message(view=TTT(self.ctx, self.player1, self.player2, self.active, self.message, self.thread))
+        await interaction.response.edit_message(
+            view=TTT(self.ctx, self.player1, self.player2, self.active, self.message, self.thread))
 
     @discord.ui.button(label='Beenden', style=ButtonStyle.danger, row=0)
     async def end_callback(self, button, interaction):
@@ -254,7 +266,7 @@ class Request(View):
         thread_name = f"ttt-{self.ctx.author.name.lower().replace(' ', '_')}-{self.player2.name.lower().replace(' ', '_')}"
         channel = self.ctx.guild.get_channel(876278253025914911)
         thread = await channel.create_thread(name=thread_name, message=None, type=ChannelType.public_thread,
-                                    reason=None)
+                                             reason=None)
         await thread.add_user(self.ctx.author)
         await thread.add_user(self.player2)
 
@@ -278,11 +290,7 @@ class Request(View):
         await self.ctx.channel.purge(limit=1)
 
 
-#############################################################
-
 ########################  Function  #########################
-
-
 async def delete_thread(ctx, mode: str, member: Member = None):
     if mode == 'ttt':
         threads = ctx.guild.get_channel(876278253025914911).threads
@@ -296,9 +304,7 @@ async def delete_thread(ctx, mode: str, member: Member = None):
                 await thread.delete()
 
 
-#############################################################
-
-
+########################### Klasse ##########################
 class Games(commands.Cog, description="Games Befehle"):
 
     def __init__(self, bot):
@@ -307,18 +313,25 @@ class Games(commands.Cog, description="Games Befehle"):
     @commands.slash_command(name='ssp', description='Erstelle ein Raum für dein "Schere Stein Papier" Spiel')
     async def ssp_create(self, ctx):
         await ctx.channel.purge(limit=1)
-
         if ctx.channel.id == 876278221878992916:
-            role_channel_name = f"ssp-{ctx.author.name.lower().replace(' ', '_')}"
+            await ctx.respond('Thread erstellt', ephemeral=True)
+            thread_name = f"ssp-{ctx.author.name.lower().replace(' ', '_')}"
             channel = ctx.guild.get_channel(876278221878992916)
-            await channel.create_thread(name=role_channel_name, message=None, type=ChannelType.public_thread,
-                                        reason=None)
-            await ctx.respond('Thread erstellt!', ephemeral=True)
+            thread = await channel.create_thread(name=thread_name, message=None, type=ChannelType.public_thread,
+                                                 reason=None)
+            await thread.add_user(ctx.author)
+
+            e = Embed(title=f"{ctx.author.name}`s Schere Stein Papier!",
+                      description=">Status: Du hast noch keinen Knopf gedrückt!", color=0xFFEA00)
+            m = await thread.send(embed=e)
+            await m.pin()
+            await thread.purge(limit=1)
+            await thread.send(view=RPS(ctx, m, thread))
 
         else:
-            msg = discord.Embed(title="'Schere Stein Papier' bitte nur im vorgesehem Channel spielen. Danke :)",
-                                description="[Schere Stein Papier Channel](https://discord.gg/rkfGskKRxF)")
-            await ctx.send(embed=msg)
+            msg = Embed(title="'Schere Stein Papier' bitte nur im vorgesehem Channel spielen. Danke :)",
+                        description="[Schere Stein Papier Channel](https://discord.gg/rkfGskKRxF)")
+            await ctx.respond(embed=msg, ephemeral=True)
 
     @commands.slash_command(name='ttt', description='Erstelle ein Thread für dein "TTT" SPiel')
     async def ttt_create(self, ctx, enemy: Member):
@@ -335,15 +348,6 @@ class Games(commands.Cog, description="Games Befehle"):
             msg = discord.Embed(title="'Tic Tac Toe' bitte nur im vorgesehem Channel spielen. Danke :)",
                                 description="[Tic Tac Toe Channel](https://discord.gg/fyGp97eXmU)")
             await ctx.send(embed=msg)
-
-    @commands.slash_command()
-    @option(name='member', description='needed for TTT')
-    async def start(self, ctx, member: Member = None):
-        await ctx.channel.purge(limit=1)
-        if "ssp" in ctx.channel.name:
-            await rock_paper_scissors(ctx)
-        else:
-            await ctx.send("Konnte kein Spiel starten")
 
 
 #############################################################

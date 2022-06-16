@@ -1,92 +1,16 @@
 import discord
-import os
-import pytz
 import dotenv
-import asyncpg
 
-from discord import Message, ActivityType, Activity, Guild, Permissions, Member, TextChannel, Embed, Forbidden
+from discord import Message, ActivityType, Activity, Member, TextChannel, Embed, Forbidden
 from discord.ext import commands
-from datetime import *
-from config.envirorment import SERVER_INVITE, DATABASE_URL, load_env
+from config.envirorment import load_env
 from config.util import RoleButton, draw_card_welcome, set_prefix, \
-    get_prefix, get_autorole, get_servers, get_globalchat, is_globalchat
-
-####################  function handling  ####################
-
+    get_prefix, get_autorole, is_globalchat, send_all, load_extensions, create_db_pool
 
 dotenv.load_dotenv()
 
 
-def load_extensions():
-    for f in os.listdir("./cogs"):
-        if f.endswith(".py") and not f.startswith("_"):
-            bot.load_extension(f"cogs.{f[:-3]}")
-            print(f"Geladen '{f}'")
-
-
-async def create_db_pool():
-    print('Connect to database...')
-    bot.db = await asyncpg.create_pool(dsn=DATABASE_URL)
-    print('Connection successful')
-
-
-async def send_all(bot, msg: Message):
-    servers = []
-    for server in await get_servers(bot):
-        servers.append(server['guild_id'])
-
-    content = msg.content
-    author = msg.author
-    attachments = msg.attachments
-    de = pytz.timezone('Europe/Berlin')
-    embed = discord.Embed(description=content, timestamp=datetime.now().astimezone(tz=de), color=author.color)
-
-    icon = author.avatar
-    embed.set_author(name=author.name, icon_url=icon)
-
-    icon_url = "https://i.giphy.com/media/xT1XGzYCdltvOd9r4k/source.gif"
-    icon = msg.guild.icon
-    if icon:
-        icon_url = icon
-    embed.set_thumbnail(url=icon_url)
-    embed.set_footer(text=f"Gesendet von Server '{msg.guild.name} : {msg.channel.name}'", icon_url=icon_url)
-
-    links = f'[Stefans Server]({SERVER_INVITE}) ║ '
-    globalchat = await get_globalchat(bot, msg.guild.id)
-
-    if len(globalchat[0]['invite']) > 0:
-        inv = globalchat[0]['invite']
-        if 'discord.gg' not in inv:
-            inv = 'https://discord.gg/{}'.format(inv)
-        links += f'[Server Invite]({inv})'
-
-    embed.add_field(name='⠀', value='⠀', inline=False)
-    embed.add_field(name='Links & Hilfe', value=links, inline=False)
-
-    if len(attachments) > 0:
-        img = attachments[0]
-        embed.set_image(url=img.url)
-
-    for server in servers:
-        gc = await get_globalchat(bot, server)
-        g: Guild = bot.get_guild(gc[0]['guild_id'])
-        if g:
-            c: TextChannel = g.get_channel(gc[0]['channel_id'])
-            if c:
-                permissions: Permissions = c.permissions_for(g.get_member(bot.user.id))
-                if permissions.send_messages:
-                    if permissions.embed_links and permissions.attach_files and permissions.external_emojis:
-                        await c.send(embed=embed)
-                    else:
-                        await c.send('{0}: {1}'.format(author.name, content))
-                        await c.send('Es fehlen einige Berechtigungen. '
-                                           '`Nachrichten senden` `Links einbetten` `Dateien anhängen`'
-                                           '`Externe Emojis verwenden`')
-    await msg.delete()
-
-
-#############################################################
-
+########################### Klasse ##########################
 class Bot(commands.Bot):
     async def sync_commands(self) -> None:
         pass
@@ -145,23 +69,19 @@ class Bot(commands.Bot):
                 c: TextChannel = discord.utils.get(member.guild.channels, id=615901690985447448)
                 await draw_card_welcome(c, member, True)
 
-#############################################################
-
 
 ##################### Bot  initialising #####################
-
 bot = Bot()
 
 
 def main():
     print("lade Erweiterungen ...")
-    load_extensions()
+    load_extensions(bot)
     print(f"-----")
-    bot.loop.run_until_complete(create_db_pool())
+    bot.loop.run_until_complete(create_db_pool(bot))
     bot.run(load_env('TOKEN', 'unknown'))
 
+
 #############################################################
-
-
 if __name__ == "__main__":
     main()

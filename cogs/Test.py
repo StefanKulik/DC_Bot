@@ -1,5 +1,3 @@
-import os
-
 import discord
 from discord.ext import commands
 from discord.ui import View
@@ -7,6 +5,7 @@ from discord.ui import View
 from config.util import StandardButton, RoleButton
 
 
+########################### Klasse ##########################
 class Test(commands.Cog):
     def __init__(self, bot):
         self.bot = bot
@@ -31,9 +30,8 @@ class Test(commands.Cog):
         emb.add_field(name="Regel 4", value="Regel 1", inline=False)
         emb.add_field(name="\u200b \n\n",
                       value=f"Klicke auf 'Verifizieren' um die Regeln zu akzeptieren und weiteren Zugriff auf den Server zu erhalten")
-
         view = View(timeout=None)
-        view.add_item(RoleButton())
+        view.add_item(RoleButton(self.bot))
         await ctx.send(embed=emb, view=view)
 
     @commands.command()
@@ -43,5 +41,6 @@ class Test(commands.Cog):
         await ctx.send(f"Hallo {ctx.author.mention}!", view=view)
 
 
+#############################################################
 def setup(bot):
     bot.add_cog(Test(bot))

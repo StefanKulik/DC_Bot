@@ -4,6 +4,7 @@ from discord.ext import commands
 from config.util import send_embed
 
 
+########################### Klasse ##########################
 class Members(commands.Cog):
     def __init__(self, bot):
         self.bot = bot
@@ -48,5 +49,6 @@ class Members(commands.Cog):
         await ctx.respond('T')
 
 
+#############################################################
 def setup(bot):
     bot.add_cog(Members(bot))

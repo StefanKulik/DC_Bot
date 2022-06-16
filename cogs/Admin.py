@@ -1,34 +1,33 @@
-import asyncio
 import os
-
 import discord
-from discord import option, Embed, ExtensionAlreadyLoaded, ExtensionNotLoaded, Member, Role
-from discord.ext import commands, tasks
 
+from discord import option, Embed, ExtensionAlreadyLoaded, ExtensionNotLoaded, Member, Role, Forbidden
+from discord.ext import commands, tasks
 from config.util import is_not_pinned
 
-# TODO: Kick, Ban, Tempban, Unban, Banlist, Mute, Unmute,
 
-
-modules = []
-for file in os.listdir("./cogs"):
-    if file.endswith(".py") and not file.startswith("_"):
-        modules.append(file[:-3])
+# TODO: Ban, Tempban, Unban, Banlist, Mute, Unmute
+#############################################################
+def get_modules():
+    modules = []
+    for file in os.listdir("./cogs"):
+        if file.endswith(".py") and not file.startswith("_"):
+            modules.append(file[:-3])
+    return modules
 
 
 async def load(self, ctx, module: str):
     if module is None:
-        for cog in os.listdir("./cogs"):
-            if cog.endswith(".py") and not cog.startswith("_"):
-                try:
-                    self.bot.load_extension(f"cogs.{cog[:-3]}")
-                except Exception as e:
-                    if isinstance(e, ExtensionAlreadyLoaded):
-                        await ctx.respond(f'{cog[:-3]} already loaded')
-                    else:
-                        await ctx.respond(f'{format(type(e).__name__)}: {e}')
+        for cog in get_modules():
+            try:
+                self.bot.load_extension(f"cogs.{cog[:-3]}")
+            except Exception as e:
+                if isinstance(e, ExtensionAlreadyLoaded):
+                    await ctx.respond(f'{cog[:-3]} already loaded')
                 else:
-                    await ctx.respond('\N{OK HAND SIGN}')
+                    await ctx.respond(f'{format(type(e).__name__)}: {e}')
+            else:
+                await ctx.respond('\N{OK HAND SIGN}')
     else:
         try:
             self.bot.load_extension(f'cogs.{module}')
@@ -41,15 +40,14 @@ async def load(self, ctx, module: str):
 async def unload(self, ctx, module: str):
     if module is None:
         e = Embed(title='Alle Module wurden entladen...')
-        for cog in os.listdir("./cogs"):
-            if cog.endswith(".py") and not cog.startswith("_"):
-                try:
-                    self.bot.unload_extension(f"cogs.{cog[:-3]}")
-                except Exception as e:
-                    if isinstance(e, ExtensionNotLoaded):
-                        await ctx.respond(f'{cog[:-3]} was not loaded')
-                    else:
-                        await ctx.respond(f'{format(type(e).__name__)}: {e}')
+        for cog in get_modules():
+            try:
+                self.bot.unload_extension(f"cogs.{cog[:-3]}")
+            except Exception as e:
+                if isinstance(e, ExtensionNotLoaded):
+                    await ctx.respond(f'{cog[:-3]} was not loaded')
+                else:
+                    await ctx.respond(f'{format(type(e).__name__)}: {e}')
         await ctx.respond(embed=e)
     else:
         try:
@@ -63,14 +61,13 @@ async def unload(self, ctx, module: str):
 async def reload(self, ctx, module: str):
     if module is None:
         e = Embed(title='Alle Module werden neugeladen...')
-        for cog in os.listdir("./cogs"):
-            if cog.endswith(".py") and not cog.startswith("_"):
-                try:
-                    self.bot.reload_extension(f"cogs.{cog[:-3]}")
-                except Exception as e:
-                    await ctx.respond(f'{format(type(e).__name__)}: {e}')
-                else:
-                    e.add_field(name=f'{cog[:-3]}', value='\N{OK HAND SIGN}', inline=True)
+        for cog in get_modules():
+            try:
+                self.bot.reload_extension(f"cogs.{cog[:-3]}")
+            except Exception as e:
+                await ctx.respond(f'{format(type(e).__name__)}: {e}')
+            else:
+                e.add_field(name=f'{cog[:-3]}', value='\N{OK HAND SIGN}', inline=True)
         await ctx.respond(embed=e)
     else:
         try:
@@ -81,6 +78,7 @@ async def reload(self, ctx, module: str):
             await ctx.respond('\N{OK HAND SIGN}')
 
 
+########################### Klasse ##########################
 class Admin(commands.Cog, description='Admin Befehle'):
     def __init__(self, bot):
         self.bot = bot
@@ -109,7 +107,7 @@ class Admin(commands.Cog, description='Admin Befehle'):
 
     @commands.slash_command(name='cog', description='Cog load, unload, reload')
     @option('function', description='choose Function', choices=['load', 'unload', 'reload'])
-    @option('module', description='choose Module', choices=modules)
+    @option('module', description='choose Module', choices=get_modules())
     @commands.has_permissions(administrator=True)
     async def cog(self, ctx, function: str, module: str = None):
         if function == 'load':
@@ -119,7 +117,7 @@ class Admin(commands.Cog, description='Admin Befehle'):
         if function == 'reload':
             await reload(self, ctx, module)
 
-    @commands.slash_command(name='clear')
+    @commands.slash_command(name='clear', description='Clear Channel')
     @option('num', description='Enter a number', min_value=1, max_value=100, default=10)
     @commands.has_permissions(administrator=True)
     async def clear(self, ctx, num: int):
@@ -141,7 +139,7 @@ class Admin(commands.Cog, description='Admin Befehle'):
                           delete_after=5,
                           ephemeral=True)
 
-    @commands.slash_command(name='setautorole')
+    @commands.slash_command(name='setautorole', description='Rollen in der DB hitnerlegen')
     @option('memberrole', desription='choose memberrole')
     @option('botrole', description='choose botrole')
     @commands.has_permissions(administrator=True)
@@ -150,8 +148,7 @@ class Admin(commands.Cog, description='Admin Befehle'):
                                   f'VALUES($1, $2, $3)', ctx.guild.id, memberrole.id, botrole.id)
         await ctx.send('Autorole hinzugefügt')
 
-    @commands.slash_command(name="kick",
-                            description="Member vom Server kicken")
+    @commands.slash_command(name="kick", description="Member vom Server kicken")
     @option('member', description='auswählen wer gekickt werden soll')
     @commands.has_permissions(administrator=True)
     async def kick(self, ctx, member: Member, reason=None):
@@ -169,16 +166,17 @@ class Admin(commands.Cog, description='Admin Befehle'):
                         await member.create_dm()
                     await member.dm_channel.send(embed=embed)
                     await member.dm_channel.send(os.getenv("SERVER_INVITE"))
-                except discord.errors.Forbidden:
+                except Forbidden:
                     print(f"Es konnte keine Nachricht an {member.mention} gesendet werden.")
 
     @commands.Cog.listener()
     async def on_application_command_error(self, ctx, error):
         if isinstance(error, commands.MissingPermissions):
-            await ctx.respond("Sorry, you can only use this with administrator permissions!", delete_after=1, ephemeral=True)
+            await ctx.respond("You need administrator permissions!", delete_after=1, ephemeral=True)
         else:
             raise error  # Here we raise other errors to ensure they aren't ignored
 
 
+#############################################################
 def setup(bot):
     bot.add_cog(Admin(bot))

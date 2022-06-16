@@ -1,20 +1,20 @@
 from discord import Embed
 from discord.ext import commands
-from discord.ext.commands import command
 
 from config.util import globalchat_exists, send_embed, is_globalchat
 
 
+########################### Klasse ##########################
 class Globalchat(commands.Cog):
     def __init__(self, bot):
         self.bot = bot
 
-    @command(aliases=['agc'])
-    @commands.has_permissions(administrator=True)
-    async def addglobalchat(self, ctx):
-        invite = (await ctx.channel.create_invite()).url
-        await self.bot.db.execute('INSERT INTO globalchat(guild_id, channel_id, invite, name) '
-                                  'VALUES($1, $2, $3, $4)', ctx.guild.id, ctx.channel.id, invite, ctx.guild.name)
+    # @command(aliases=['agc'])
+    # @commands.has_permissions(administrator=True)
+    # async def addglobalchat(self, ctx):
+    #     invite = (await ctx.channel.create_invite()).url
+    #     await self.bot.db.execute('INSERT INTO globalchat(guild_id, channel_id, invite, name) '
+    #                               'VALUES($1, $2, $3, $4)', ctx.guild.id, ctx.channel.id, invite, ctx.guild.name)
 
     @commands.slash_command(name='addglobal')
     @commands.has_permissions(administrator=True)
@@ -68,5 +68,6 @@ class Globalchat(commands.Cog):
         await send_embed(ctx, embed)
 
 
+#############################################################
 def setup(bot):
     bot.add_cog(Globalchat(bot))

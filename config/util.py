@@ -1,15 +1,19 @@
 import io
+import os
 import pathlib
-import discord
+from datetime import datetime
 
-from discord import Forbidden, TextChannel, Embed, ButtonStyle, Interaction, Member, File
+import asyncpg
+import discord
+import pytz
+
+from discord import Forbidden, TextChannel, Embed, ButtonStyle, Interaction, Member, File, Guild, Permissions
 from discord.ext import commands
 from PIL import Image, ImageDraw, ImageFont
-from config.envirorment import DEFAULT_PREFIX
+from config.envirorment import DEFAULT_PREFIX, SERVER_INVITE, DATABASE_URL
 
 
 ########################## Button ##########################
-
 class RoleButton(discord.ui.Button):
     def __init__(self, bot):
         super().__init__(
@@ -43,13 +47,22 @@ class StandardButton(discord.ui.Button):
         await interaction.response.send_message("Yeyy! Du hast mich angeklickt.", ephemeral=True)
 
 
-############################################################
-
-
 ########################## common ##########################
-
 def is_not_pinned(mess):
     return not mess.pinned
+
+
+def load_extensions(b):
+    for f in os.listdir("./cogs"):
+        if f.endswith(".py") and not f.startswith("_"):
+            b.load_extension(f"cogs.{f[:-3]}")
+            print(f"Geladen '{f}'")
+
+
+async def create_db_pool(b):
+    print('Connect to database...')
+    b.db = await asyncpg.create_pool(dsn=DATABASE_URL)
+    print('Connection successful')
 
 
 async def set_prefix(bot, message):
@@ -74,11 +87,62 @@ async def get_prefix(bot, message):
     return prefix
 
 
-############################################################
+async def send_all(b, msg):
+    servers = []
+    for server in await get_servers(b):
+        servers.append(server['guild_id'])
+
+    content = msg.content
+    author = msg.author
+    attachments = msg.attachments
+    de = pytz.timezone('Europe/Berlin')
+    embed = discord.Embed(description=content, timestamp=datetime.now().astimezone(tz=de), color=author.color)
+
+    icon = author.avatar
+    embed.set_author(name=author.name, icon_url=icon)
+
+    icon_url = "https://i.giphy.com/media/xT1XGzYCdltvOd9r4k/source.gif"
+    icon = msg.guild.icon
+    if icon:
+        icon_url = icon
+    embed.set_thumbnail(url=icon_url)
+    embed.set_footer(text=f"Gesendet von Server '{msg.guild.name} : {msg.channel.name}'", icon_url=icon_url)
+
+    links = f'[Stefans Server]({SERVER_INVITE}) ║ '
+    globalchat = await get_globalchat(b, msg.guild.id)
+
+    if len(globalchat[0]['invite']) > 0:
+        inv = globalchat[0]['invite']
+        if 'discord.gg' not in inv:
+            inv = 'https://discord.gg/{}'.format(inv)
+        links += f'[Server Invite]({inv})'
+
+    embed.add_field(name='⠀', value='⠀', inline=False)
+    embed.add_field(name='Links & Hilfe', value=links, inline=False)
+
+    if len(attachments) > 0:
+        img = attachments[0]
+        embed.set_image(url=img.url)
+
+    for server in servers:
+        gc = await get_globalchat(b, server)
+        g: Guild = b.get_guild(gc[0]['guild_id'])
+        if g:
+            c: TextChannel = g.get_channel(gc[0]['channel_id'])
+            if c:
+                permissions: Permissions = c.permissions_for(g.get_member(b.user.id))
+                if permissions.send_messages:
+                    if permissions.embed_links and permissions.attach_files and permissions.external_emojis:
+                        await c.send(embed=embed)
+                    else:
+                        await c.send('{0}: {1}'.format(author.name, content))
+                        await c.send('Es fehlen einige Berechtigungen. '
+                                           '`Nachrichten senden` `Links einbetten` `Dateien anhängen`'
+                                           '`Externe Emojis verwenden`')
+    await msg.delete()
 
 
 #################### Autorole functions ####################
-
 async def get_autorole(bot, member, guild):
     if not member.bot:
         role_id = await bot.db.fetch('SELECT memberrole_id FROM autorole WHERE guild_id = $1', guild.id)
@@ -86,9 +150,6 @@ async def get_autorole(bot, member, guild):
     else:
         role_id = await bot.db.fetch('SELECT botrole_id from autorole WHERE guild_id = $1', guild.id)
         return role_id[0].get('botrole_id')
-
-
-############################################################
 
 
 ################### Globalchat functions ################### #TODO: auf DB Abfragen umstellen
@@ -101,21 +162,12 @@ async def get_globalchat(bot, guild_id):
     return await bot.db.fetch('SELECT * FROM globalchat WHERE guild_id = $1', guild_id)
 
 
-# async def get_globalchat_id(bot, guild_id, channel_id=None):  # gibt die id des globalchats wieder
-#     global_chat = get_globalchat(bot, guild_id, channel_id=None)
-#     if channel_id:
-#         return channel_id
-#     return global_chat["channel_id"]
-#
 async def is_globalchat(self, guild_id, channel_id):  # ist dieser channel der globalchat?
     return channel_id == (await self.db.fetch('SELECT channel_id FROM globalchat WHERE guild_id = $1', guild_id))[0]['channel_id']
 
 
 async def globalchat_exists(self, guild_id):  # hat der server einen globalchat?
     return len(await self.bot.db.fetch('SELECT guild_id FROM globalchat WHERE guild_id = $1', guild_id)) != 0
-
-
-############################################################
 
 
 ########################## embeds ##########################
@@ -144,11 +196,8 @@ async def error_embed(ctx, com: str, des: str):
     await send_embed(ctx, e, 5)
 
 
-############################################################
-
-
 ####################### welcome card #######################
-blank_card = pathlib.Path("config/blankcard.jpg")
+blank_card = pathlib.Path("config/img/blankcard.jpg")
 background_image = Image.open(blank_card)
 background_image = background_image.convert('RGBA')
 
@@ -207,8 +256,6 @@ async def draw_card_welcome(channel, member: Member, bot: bool = None):
 
 
 ############################################################
-
-
 async def member_channel(member):
     guild = member.guild
     channel = discord.utils.get(guild.channels, id=877689459804622869)

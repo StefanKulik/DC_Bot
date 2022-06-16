@@ -115,14 +115,13 @@ class RestartRPS(View):
 ######################  TTT handling  #######################
 # TODO: Benachrichtigung wenn man dran ist
 class TTT(View):
-    def __init__(self, ctx, player1: Member, player2: Member, active: Member, m: Message, thread: Thread):
+    def __init__(self, ctx, player1: Member, player2: Member, active: Member, thread: Thread):
         super().__init__()
         self.ctx = ctx
         self.thread = thread
         self.player1 = player1
         self.player2 = player2
         self.active = active
-        self.message = m
         self.game = ['-', '-', '-',
                      '-', '-', '-',
                      '-', '-', '-']
@@ -184,8 +183,8 @@ class TTT(View):
             self.active = self.player2
         else:
             self.active = self.player1
-        e = Embed(title='Tic Tac Toe', description=f'{self.active.mention} ist an der Reihe')
-        await self.message.edit(embed=e)
+        await self.thread.purge(limit=1)
+        await self.thread.send(f'{self.active.mention} ist an der Reihe')
 
     async def logic(self, button: Button, interaction: Interaction, num):
         if self.active == self.player1:
@@ -200,62 +199,58 @@ class TTT(View):
             for child in self.children:
                 child.disabled = True
             await interaction.response.edit_message(view=self)
-            await asyncio.sleep(1)
-            if all(x not in ['-'] for x in self.game):
-                await self.message.edit(embed=Embed(title='Tic Tac Toe',
-                                                    description='Das Spiel ist Unentschieden'))
-            else:
-                await self.message.edit(embed=Embed(title='Tic Tac Toe',
-                                                    description=f'{self.active.mention} hat das Spiel gewonnen'))
-            await asyncio.sleep(5)
             await self.thread.purge(limit=1)
-            await self.thread.send(view=RestartTTT(self.ctx, self.player1, self.player2, self.message, self.thread))
+            await self.thread.send(embed=Embed(title=' ', description=f'{self.active.mention} hat das Spiel gewonnen'))
+            await asyncio.sleep(5)
+            await self.thread.send(view=RestartTTT(self.ctx, self.player1, self.player2, self.thread))
+        elif all(x not in ['-'] for x in self.game):
+            for child in self.children:
+                child.disabled = True
+            await interaction.response.edit_message(view=self)
+            await self.thread.purge(limit=1)
+            await self.thread.send(embed=Embed(title=' ', description='Das Spiel ist Unentschieden'))
+            await asyncio.sleep(5)
+            await self.thread.send(view=RestartTTT(self.ctx, self.player1, self.player2, self.thread))
         else:
             await interaction.response.edit_message(view=self)
             await self.switch_player()
 
     async def check_winner(self):
         winner = False
-        if all(x not in ['-'] for x in self.game):
-            winner = True
-        else:
-            for condition in self.winning_condition:
-                if self.game[condition[0]] == self.active.name and \
-                        self.game[condition[1]] == self.active.name and \
-                        self.game[condition[2]] == self.active.name:
-                    winner = True
+        for condition in self.winning_condition:
+            if self.game[condition[0]] == self.active.name and \
+                    self.game[condition[1]] == self.active.name and \
+                    self.game[condition[2]] == self.active.name:
+                winner = True
         return winner
 
 
 class RestartTTT(View):
-    def __init__(self, ctx, player1: Member, player2: Member, m: Message, thread: Thread):
+    def __init__(self, ctx, player1: Member, player2: Member, thread: Thread):
         super().__init__()
         self.ctx = ctx
         self.thread = thread
         self.player1 = player1
         self.player2 = player2
         self.active = choice([player1, player2])
-        self.message = m
 
     @discord.ui.button(label='Neustarten', style=ButtonStyle.success, row=0)
     async def restart_callback(self, button, interaction):
-        e = Embed(title='Tic Tac Toe', description=f'{self.active.mention} ist an der Reihe')
-        await self.message.edit(embed=e)
+        await self.thread.send(f'{self.active.mention} ist an der Reihe')
+        await self.random_symbol()
         await interaction.response.edit_message(
-            view=TTT(self.ctx, self.player1, self.player2, self.active, self.message, self.thread))
+            view=TTT(self.ctx, self.player1, self.player2, self.active, self.thread))
 
     @discord.ui.button(label='Beenden', style=ButtonStyle.danger, row=0)
     async def end_callback(self, button, interaction):
         await delete_thread(self.ctx, 'ttt', self.player2)
 
     async def interaction_check(self, interaction):
-        if self.active == self.player1 and interaction.user == self.player1:
-            return interaction.user == self.player1
-        if self.active == self.player2:
-            return interaction.user == self.player2
+        print(f'{self.active} {self.player1} {self.player2}')
+        return interaction.user == self.player1 or interaction.user == self.player2
 
 
-class Request(View):
+class RequestTTT(View):
     def __init__(self, ctx, player2: Member):
         super().__init__()
         self.ctx = ctx
@@ -271,9 +266,11 @@ class Request(View):
         await thread.add_user(self.player2)
 
         active = choice([self.ctx.author, self.player2])
-        e = Embed(title='Tic Tac Toe', description=f'{active.mention} ist an der Reihe')
-        m = await thread.send(embed=e)
-        await thread.send(view=TTT(self.ctx, self.ctx.author, self.player2, active, m, thread))
+        e = Embed(title=f'Tic Tac Toe', description=f':regional_indicator_x: {self.ctx.author.name} vs. :o2: {self.player2.name}')
+        await thread.send(embed=e)
+        await thread.send(view=TTT(self.ctx, self.ctx.author, self.player2, active, thread))
+        await thread.send(f'{active.mention} ist an der Reihe')
+
         await self.ctx.channel.purge(limit=4)
 
     @discord.ui.button(label='Ablehnen', style=ButtonStyle.danger, row=0)
@@ -310,8 +307,8 @@ class Games(commands.Cog, description="Games Befehle"):
     def __init__(self, bot):
         self.bot = bot
 
-    @commands.slash_command(name='ssp', description='Erstelle ein Raum für dein "Schere Stein Papier" Spiel')
-    async def ssp_create(self, ctx):
+    @commands.slash_command(name='rps', description='Erstelle ein Raum für dein "Schere Stein Papier" Spiel')
+    async def rps_create(self, ctx):
         await ctx.channel.purge(limit=1)
         if ctx.channel.id == 876278221878992916:
             await ctx.respond('Thread erstellt', ephemeral=True)
@@ -343,7 +340,7 @@ class Games(commands.Cog, description="Games Befehle"):
             e = Embed(title=':crossed_swords: Tic Tac Toe Duell',
                       description=f'{ctx.author.mention} hat dich herausgefordert')
             await ctx.send(embed=e)
-            await ctx.send(view=Request(ctx, enemy))
+            await ctx.send(view=RequestTTT(ctx, enemy))
         else:
             msg = discord.Embed(title="'Tic Tac Toe' bitte nur im vorgesehem Channel spielen. Danke :)",
                                 description="[Tic Tac Toe Channel](https://discord.gg/fyGp97eXmU)")

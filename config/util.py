@@ -87,6 +87,16 @@ async def get_prefix(bot, message):
     return prefix
 
 
+async def get_prefix_context(bot, ctx):
+    prefix = await bot.db.fetch('SELECT prefix FROM guilds WHERE guild_id = $1', ctx.guild.id)
+    if len(prefix) == 0:
+        await bot.db.execute(f'INSERT INTO guilds(guild_id, prefix) VALUES($1, $2)', ctx.guild.id, DEFAULT_PREFIX)
+        prefix = DEFAULT_PREFIX
+    else:
+        prefix = prefix[0].get('prefix')
+    return prefix
+
+
 async def send_all(b, msg):
     servers = []
     for server in await get_servers(b):

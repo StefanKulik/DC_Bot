@@ -169,6 +169,11 @@ class Admin(commands.Cog, description='Admin Befehle'):
                 except Forbidden:
                     print(f"Es konnte keine Nachricht an {member.mention} gesendet werden.")
 
+    @commands.slash_command(name='', description='')
+    @commands.has_permissions(administrator=True)
+    async def vorlage(self, ctx):
+        pass
+
     @commands.Cog.listener()
     async def on_application_command_error(self, ctx, error):
         if isinstance(error, commands.MissingPermissions):

@@ -2,6 +2,8 @@ import discord
 from discord import Embed
 
 from discord.ext import commands
+from discord.utils import get
+
 from config.envirorment import OWNER, VERSION,  BOT
 
 from config.util import get_prefix, send_embed
@@ -31,8 +33,8 @@ class Help(commands.Cog, description="Zeigt diese Help Nachricht an"):
     async def help(self, ctx, *input):
         await ctx.channel.purge(limit=1)
         prefix = await get_prefix(self.bot, ctx.message)
-        owner_name = discord.utils.get(ctx.guild.members, id=OWNER).name
-        bot_name = discord.utils.get(ctx.guild.members, id=BOT).name
+        owner_name = get(ctx.guild.members, id=OWNER).name
+        bot_name = get(ctx.guild.members, id=BOT).name
 
         # checks if cog parameter was given
         # if not: sending all modules and commands not associated with a cog

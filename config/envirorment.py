@@ -27,8 +27,8 @@ TOKEN = load_env("TOKEN", 'unknown')
 VERSION = load_env("VERSION", "unknown")
 SERVER_INVITE = load_env("SERVER_INVITE", "unknown")
 DEFAULT_PREFIX = load_env("DEFAULT_PREFIX", "!")
-BOT = int(load_env("BOT", "unknown"))
-OWNER = int(load_env("OWNER", "unknown"))
+BOT = load_env("BOT", "unknown")
+OWNER = load_env("OWNER", "unknown")
 
 DATABASE_URL = load_env("DATABASE_URL", 'unknown')
 

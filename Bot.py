@@ -3,7 +3,9 @@ import dotenv
 
 from discord import Message, ActivityType, Activity, Member, TextChannel, Embed, Forbidden
 from discord.ext import commands
-from config.envirorment import load_env, VERSION
+from discord.utils import get
+
+from config.envirorment import load_env, VERSION, OWNER
 from config.util import RoleButton, draw_card_welcome, set_prefix, \
     get_prefix, get_autorole, is_globalchat, send_all, load_extensions, create_db_pool
 
@@ -25,7 +27,7 @@ class Bot(commands.Bot):
 
     async def on_ready(self):
         print(f"{self.user} is ready and online!")
-        await self.change_presence(activity=Activity(type=ActivityType.watching, name=f'{VERSION}'))
+        await self.change_presence(activity=Activity(type=ActivityType.watching, name=f'{VERSION} by PeeT_Tea#2408'))
         view = discord.ui.View(timeout=None)
         view.add_item(RoleButton(self))
         self.add_view(view)
@@ -73,6 +75,7 @@ class Bot(commands.Bot):
 ##################### Bot  initialising #####################
 bot = Bot()
 bot.remove_command('help')
+
 
 def main():
     print("lade Erweiterungen ...")

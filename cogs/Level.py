@@ -94,13 +94,14 @@ class Level(commands.Cog):
         exp = stats[0]['level_exp']
         lvl_start = stats[0]['level']
         lvl_end = int(exp ** (1 / 4))
+        exp_new = exp - (lvl_start + 1) ** 4
         if lvl_start < lvl_end:
             c = get(message.guild.channels, id=877680622284455948)
             e = Embed(title='', description=f'{message.author.mention} has leveled up to level {lvl_end}')
             await c.send(embed=e)
-            await self.bot.db.execute('UPDATE level SET level = $1 '
-                                      'WHERE member_id = $2 AND guild_id = $3',
-                                      lvl_end, message.author.id, message.guild.id)
+            await self.bot.db.execute('UPDATE level SET level = $1, level_exp = $2 '
+                                      'WHERE member_id = $3 AND guild_id = $4',
+                                      lvl_end, exp_new, message.author.id, message.guild.id)
 
     @commands.slash_command(name='level')
     @option('member')

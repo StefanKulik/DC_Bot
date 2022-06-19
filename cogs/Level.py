@@ -117,6 +117,21 @@ class Level(commands.Cog):
         emb.set_author(name=member.name, icon_url=member.avatar)
         await ctx.respond(embed=emb, delete_after=20)
 
+    @commands.slash_command(name='leaderboard')
+    async def leaderboard(self, ctx):
+        member_list = await self.bot.db.fetch('SELECT * FROM level WHERE guild_id = $1'
+                                         'ORDER BY level DESC, level_exp DESC', ctx.guild.id)
+        embed = Embed(title='Level Leaderboard')
+        platz = 1
+        for member in member_list:
+            mem = get(ctx.guild.members, id=member['member_id']).name
+            lvl = member['level']
+            exp = member['level_exp']
+            exp_need = (lvl + 1) ** 4
+            embed.add_field(name=f'{platz}. {mem}', value=f'Level: {lvl} ({exp}/{exp_need})', inline=False)
+            platz = platz + 1
+        await ctx.respond(embed=embed, delete_after=30)
+
     @commands.command(name='test')
     async def test(self, ctx):
         await draw_card_level(ctx.channel, ctx.author)

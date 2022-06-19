@@ -237,7 +237,6 @@ class RestartTTT(View):
     @discord.ui.button(label='Neustarten', style=ButtonStyle.success, row=0)
     async def restart_callback(self, button, interaction):
         await self.thread.send(f'{self.active.mention} ist an der Reihe')
-        await self.random_symbol()
         await interaction.response.edit_message(
             view=TTT(self.ctx, self.player1, self.player2, self.active, self.thread))
 

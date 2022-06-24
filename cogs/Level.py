@@ -6,7 +6,6 @@ from discord.ext import commands
 from discord.utils import get
 from PIL import Image, ImageDraw, ImageFont
 
-
 ####################### welcome card #######################
 blank_card = pathlib.Path("config/img/level_card.jpg")
 background_image = Image.open(blank_card)
@@ -76,13 +75,13 @@ class Level(commands.Cog):
             await self.add_experience(message, 5)
             await self.level_up(message)
 
-    async def update_data(self, message):
+    async def update_data(self, ctx):
         if len(await self.bot.db.fetch('SELECT member_id FROM level '
                                        'WHERE member_id = $1 AND guild_id = $2',
-                                       message.author.id, message.guild.id)
+                                       ctx.author.id, ctx.guild.id)
                ) == 0:
-            await self.bot.db.execute('INSERT INTO level(guild_id, member_id, level, level_exp) '
-                                      'VALUES($1, $2, $3, $4)', message.guild.id, message.author.id, 1, 0)
+            await self.bot.db.execute('INSERT INTO level(guild_id, member_id, name, level, level_exp) '
+                                      'VALUES($1, $2, $3, $4, $5)', ctx.guild.id, ctx.author.id, ctx.author.name, 1, 0)
 
     async def add_experience(self, message, exp):
         await self.bot.db.execute('UPDATE level SET level_exp = level_exp + $1 '
@@ -108,19 +107,23 @@ class Level(commands.Cog):
     async def level(self, ctx, member: Member = None):
         if not member:
             member = ctx.author
+        await self.update_data(ctx)
         stats = await self.bot.db.fetch('SELECT level, level_exp FROM level WHERE member_id = $1 AND guild_id = $2',
                                         member.id, ctx.guild.id)
-        exp = stats[0]['level_exp']
-        lvl = stats[0]['level']
-        exp_need = (lvl+1)**4
-        emb = Embed(title=f'Level: {lvl}', description=f'{exp}/{exp_need}', color=Color.green())
-        emb.set_author(name=member.name, icon_url=member.avatar)
+        if stats:
+            exp = stats[0]['level_exp']
+            lvl = stats[0]['level']
+            exp_need = (lvl + 1) ** 4
+            emb = Embed(title=f'Level: {lvl}', description=f'{exp}/{exp_need}', color=Color.green())
+            emb.set_author(name=member.name, icon_url=member.avatar)
+        else:
+            emb = Embed(title='', description='Member nicht gefunden!')
         await ctx.respond(embed=emb, delete_after=20)
 
     @commands.slash_command(name='leaderboard')
     async def leaderboard(self, ctx):
         member_list = await self.bot.db.fetch('SELECT * FROM level WHERE guild_id = $1'
-                                         'ORDER BY level DESC, level_exp DESC', ctx.guild.id)
+                                              'ORDER BY level DESC, level_exp DESC', ctx.guild.id)
         embed = Embed(title='Level Leaderboard')
         platz = 1
         for member in member_list:

@@ -2,7 +2,7 @@ import discord
 from discord.ext import commands
 from discord.ui import View
 
-from config.util import StandardButton, RoleButton
+from config.Util import StandardButton, RoleButton
 
 
 ########################### Klasse ##########################
@@ -10,7 +10,7 @@ class Test(commands.Cog):
     def __init__(self, bot):
         self.bot = bot
 
-    @discord.slash_command(description='test')
+    @commands.slash_command(description='test')
     @commands.has_permissions(administrator=True)
     async def test(self, ctx):
         view = discord.ui.View(timeout=None)

@@ -1,12 +1,13 @@
+import asyncio
+
 import discord
 import dotenv
 
 from discord import Message, ActivityType, Activity, Member, TextChannel, Embed, Forbidden
-from discord.ext import commands
-from discord.utils import get
+from discord.ext import commands, tasks
 
-from config.envirorment import load_env, VERSION, OWNER
-from config.util import RoleButton, draw_card_welcome, set_prefix, \
+from config.Environment import load_env, VERSION
+from config.Util import RoleButton, draw_card_welcome, set_prefix, \
     get_prefix, get_autorole, is_globalchat, send_all, load_extensions, create_db_pool
 
 dotenv.load_dotenv()
@@ -14,9 +15,6 @@ dotenv.load_dotenv()
 
 ########################### Klasse ##########################
 class Bot(commands.Bot):
-    async def sync_commands(self) -> None:
-        pass
-
     def __init__(self):
         super().__init__(
             debug_guilds=[615901690536787983],
@@ -24,6 +22,11 @@ class Bot(commands.Bot):
             command_prefix=set_prefix,
             intents=discord.Intents.all()
         )
+        self.stats_channel.start()
+
+    def cog_unload(self):
+        pass
+        self.stats_channel.stop()
 
     async def on_ready(self):
         print(f"{self.user} is ready and online!")
@@ -70,6 +73,24 @@ class Bot(commands.Bot):
                 await member.add_roles(r)
                 c: TextChannel = discord.utils.get(member.guild.channels, id=615901690985447448)
                 await draw_card_welcome(c, member, True)
+
+    # stats channel #
+    @tasks.loop(seconds=150)
+    async def stats_channel(self):
+        guild = self.get_guild(615901690536787983)
+        channel_online = discord.utils.get(guild.channels, id=877700163295125524)
+        channel_total = discord.utils.get(guild.channels, id=877689459804622869)
+        channel_human = discord.utils.get(guild.channels, id=877693165325385769)
+        channel_bot = discord.utils.get(guild.channels, id=877698704444899349)
+        await channel_online.edit(
+            name=f'Online: {sum(member.status != discord.Status.offline for member in guild.members)}')
+        await channel_total.edit(name=f'Gesamt Mitglieder: {guild.member_count}')
+        await channel_human.edit(name=f'Menschen: {sum(not member.bot for member in guild.members)}')
+        await channel_bot.edit(name=f'Bots: {sum(member.bot for member in guild.members)}')
+
+    @stats_channel.before_loop
+    async def before_member_channel(self):
+        await self.wait_until_ready()
 
 
 ##################### Bot  initialising #####################

@@ -1,4 +1,0 @@
-open git bash (wenn terminal oder über pycharm nicht geht)
-$ git add .
-$ git commit -am "[commit name]"
-$ git push heroku main

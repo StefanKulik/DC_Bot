@@ -7,10 +7,13 @@ import asyncpg
 import discord
 import pytz
 
-from discord import Forbidden, TextChannel, Embed, ButtonStyle, Interaction, Member, File, Guild, Permissions
+from discord import Forbidden, TextChannel, Embed, ButtonStyle, Interaction, Member, File, Guild, Permissions, \
+    ExtensionAlreadyLoaded, ExtensionNotLoaded
+from discord.commands import SlashCommandGroup
 from discord.ext import commands
 from PIL import Image, ImageDraw, ImageFont
-from config.envirorment import DEFAULT_PREFIX, SERVER_INVITE, DATABASE_URL
+from config.Environment import DEFAULT_PREFIX, SERVER_INVITE, DATABASE_URL
+
 
 
 ########################## Button ##########################
@@ -53,10 +56,13 @@ def is_not_pinned(mess):
 
 
 def load_extensions(b):
-    for f in os.listdir("./cogs"):
-        if f.endswith(".py") and not f.startswith("_"):
-            b.load_extension(f"cogs.{f[:-3]}")
-            print(f"Geladen '{f}'")
+    cog = "./cogs/"
+    for o in os.listdir(cog):
+        if not o.startswith("_"):
+            for f in os.listdir(cog + o):
+                if f.endswith(".py") and not f.startswith("_"):
+                    b.load_extension(f"cogs.{o}.{f[:-3]}")
+            print(f"Geladen '{o}'")
 
 
 async def create_db_pool(b):
@@ -147,8 +153,8 @@ async def send_all(b, msg):
                     else:
                         await c.send('{0}: {1}'.format(author.name, content))
                         await c.send('Es fehlen einige Berechtigungen. '
-                                           '`Nachrichten senden` `Links einbetten` `Dateien anhängen`'
-                                           '`Externe Emojis verwenden`')
+                                     '`Nachrichten senden` `Links einbetten` `Dateien anhängen`'
+                                     '`Externe Emojis verwenden`')
     await msg.delete()
 
 
@@ -162,7 +168,7 @@ async def get_autorole(bot, member, guild):
         return role_id[0].get('botrole_id')
 
 
-################### Globalchat functions ################### #TODO: auf DB Abfragen umstellen
+################### Globalchat functions ###################
 
 async def get_servers(bot):
     return await bot.db.fetch('SELECT * FROM globalchat')
@@ -173,11 +179,98 @@ async def get_globalchat(bot, guild_id):
 
 
 async def is_globalchat(self, guild_id, channel_id):  # ist dieser channel der globalchat?
-    return channel_id == (await self.db.fetch('SELECT channel_id FROM globalchat WHERE guild_id = $1', guild_id))[0]['channel_id']
+    return channel_id == (await self.db.fetch('SELECT channel_id FROM globalchat WHERE guild_id = $1', guild_id))[0][
+        'channel_id']
 
 
 async def globalchat_exists(self, guild_id):  # hat der server einen globalchat?
     return len(await self.bot.db.fetch('SELECT guild_id FROM globalchat WHERE guild_id = $1', guild_id)) != 0
+
+
+################### Admin functions ###################
+# TODO: Auf neue Ordner Struktur anpassen
+def get_modules():
+    modules = []
+    for file in os.listdir("./cogs"):
+        if file.endswith(".py") and not file.startswith("_"):
+            modules.append(file[:-3])
+    return modules
+
+
+async def load(self, ctx, module: str):
+    if module is None:
+        for cog in get_modules():
+            try:
+                self.bot.load_extension(f"cogs.{cog[:-3]}")
+            except Exception as e:
+                if isinstance(e, ExtensionAlreadyLoaded):
+                    await ctx.respond(f'{cog[:-3]} already loaded')
+                else:
+                    await ctx.respond(f'{format(type(e).__name__)}: {e}')
+            else:
+                await ctx.respond('\N{OK HAND SIGN}')
+    else:
+        try:
+            self.bot.load_extension(f'cogs.{module}')
+        except Exception as e:
+            await ctx.respond(f'{format(type(e).__name__)}: {e}')
+        else:
+            await ctx.respond('\N{OK HAND SIGN}')
+
+
+async def unload(self, ctx, module: str):
+    if module is None:
+        e = Embed(title='Alle Module wurden entladen...')
+        for cog in get_modules():
+            try:
+                self.bot.unload_extension(f"cogs.{cog[:-3]}")
+            except Exception as e:
+                if isinstance(e, ExtensionNotLoaded):
+                    await ctx.respond(f'{cog[:-3]} was not loaded')
+                else:
+                    await ctx.respond(f'{format(type(e).__name__)}: {e}')
+        await ctx.respond(embed=e)
+    else:
+        try:
+            self.bot.unload_extension(f'cogs.{module}')
+        except Exception as e:
+            await ctx.respond(f'{format(type(e).__name__)}: {e}')
+        else:
+            await ctx.respond('\N{OK HAND SIGN}')
+
+
+async def reload(self, ctx, module: str):
+    if module is None:
+        e = Embed(title='Alle Module werden neugeladen...')
+        for cog in get_modules():
+            try:
+                self.bot.reload_extension(f"cogs.{cog[:-3]}")
+            except Exception as e:
+                await ctx.respond(f'{format(type(e).__name__)}: {e}')
+            else:
+                e.add_field(name=f'{cog[:-3]}', value='\N{OK HAND SIGN}', inline=True)
+        await ctx.respond(embed=e)
+    else:
+        try:
+            self.bot.reload_extension(f'cogs.{module}')
+        except Exception as e:
+            await ctx.respond(f'{format(type(e).__name__)}: {e}')
+        else:
+            await ctx.respond('\N{OK HAND SIGN}')
+
+
+########################  Games Functions  #########################
+async def delete_thread(ctx, mode: str, member: Member = None):
+    if mode == 'ttt':
+        threads = ctx.guild.get_channel(876278253025914911).threads
+        for thread in threads:
+            if thread.name == f"ttt-{ctx.author.name.lower().replace(' ', '_')}-{member.name.lower().replace(' ', '_')}":
+                await thread.delete()
+    elif mode == 'rps':
+        threads = ctx.guild.get_channel(876278221878992916).threads
+        for thread in threads:
+            if thread.name == 'ssp-' + ctx.author.name.lower().replace(' ', '_'):
+                await thread.delete()
 
 
 ########################## embeds ##########################

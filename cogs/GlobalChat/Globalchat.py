@@ -1,7 +1,7 @@
 from discord import Embed
 from discord.ext import commands
 
-from config.util import globalchat_exists, send_embed, is_globalchat
+from config.Util import globalchat_exists, send_embed, is_globalchat
 
 
 ########################### Klasse ##########################

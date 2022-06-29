@@ -4,9 +4,9 @@ from discord import Embed
 from discord.ext import commands
 from discord.utils import get
 
-from config.envirorment import OWNER, VERSION,  BOT
+from config.Environment import OWNER, VERSION,  BOT
 
-from config.util import get_prefix, send_embed
+from config.Util import get_prefix, send_embed
 
 
 def cmd_aliases(command):

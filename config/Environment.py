@@ -54,3 +54,6 @@ COLORS = {
     "DARK_NAVY": 0x2C3E50,
 }
 COLOR_LIST = [c for c in COLORS.values()]
+
+PREFIX_LIST = ['!', '<', '>', '-', '.', '?', '$', '#']
+COG_HANDLER = ['load', 'unload', 'reload']

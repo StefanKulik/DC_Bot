@@ -1,7 +1,7 @@
 from discord import Member, Embed, Color
 from discord.ext import commands
 
-from config.util import send_embed, get_prefix, get_prefix_context
+from config.Util import send_embed, get_prefix, get_prefix_context
 
 
 ########################### Klasse ##########################

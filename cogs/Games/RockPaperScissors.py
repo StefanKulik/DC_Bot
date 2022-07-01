@@ -23,22 +23,22 @@ class RPS(View):
         self.game = True
 
     @discord.ui.button(label='Schere', style=ButtonStyle.red, custom_id='schere')
-    async def schere_callback(self, interaction):
+    async def schere_callback(self, button, interaction):
         self.value = 'Schere'
         await self.logic(interaction)
 
     @discord.ui.button(label='Stein', style=ButtonStyle.primary)
-    async def stein_callback(self, interaction):
+    async def stein_callback(self, button, interaction):
         self.value = 'Stein'
         await self.logic(interaction)
 
     @discord.ui.button(label='Papier', style=ButtonStyle.success)
-    async def papier_callback(self, interaction):
+    async def papier_callback(self, button, interaction):
         self.value = 'Papier'
         await self.logic(interaction)
 
     @discord.ui.button(label='Ende', style=ButtonStyle.grey)
-    async def ende_callback(self, interaction):
+    async def ende_callback(self, button, interaction):
         self.value = 'Ende'
         await self.logic(interaction)
 
@@ -98,7 +98,7 @@ class RestartRPS(View):
         self.message = m
 
     @discord.ui.button(label='Neustarten', style=ButtonStyle.success, row=0)
-    async def restart_callback(self, interaction):
+    async def restart_callback(self, button, interaction):
         e = Embed(title=f"{self.ctx.author.name}`s Schere Stein Papier!",
                   description=">Status: Du hast noch keinen Knopf gedrückt!", color=0xFFEA00)
         await self.message.edit(embed=e)
@@ -106,7 +106,7 @@ class RestartRPS(View):
             view=RPS(self.ctx, self.message, self.thread))
 
     @discord.ui.button(label='Beenden', style=ButtonStyle.danger, row=0)
-    async def end_callback(self):
+    async def end_callback(self, button, interaction):
         await delete_thread(self.ctx, 'rps')
 
     async def interaction_check(self, interaction):

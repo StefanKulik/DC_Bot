@@ -15,7 +15,6 @@ from PIL import Image, ImageDraw, ImageFont
 from config.Environment import DEFAULT_PREFIX, SERVER_INVITE, DATABASE_URL
 
 
-
 ########################## Button ##########################
 class RoleButton(discord.ui.Button):
     def __init__(self, bot):
@@ -66,9 +65,10 @@ def load_extensions(b):
 
 
 async def create_db_pool(b):
-    print('Connect to database...')
+    print('connecting to database ...')
     b.db = await asyncpg.create_pool(dsn=DATABASE_URL)
-    print('Connection successful')
+    print('Database connection successful ...')
+    print('-----')
 
 
 async def set_prefix(bot, message):

@@ -132,17 +132,16 @@ class RestartTTT(View):
         self.active = choice([player1, player2])
 
     @discord.ui.button(label='Neustarten', style=ButtonStyle.success, row=0)
-    async def restart_callback(self, interaction):
+    async def restart_callback(self, button, interaction):
         await self.thread.send(f'{self.active.mention} ist an der Reihe')
         await interaction.response.edit_message(
             view=TTT(self.ctx, self.player1, self.player2, self.active, self.thread))
 
     @discord.ui.button(label='Beenden', style=ButtonStyle.danger, row=0)
-    async def end_callback(self):
+    async def end_callback(self, button, interaction):
         await delete_thread(self.ctx, 'ttt', self.player2)
 
     async def interaction_check(self, interaction):
-        print(f'{self.active} {self.player1} {self.player2}')
         return interaction.user == self.player1 or interaction.user == self.player2
 
 
@@ -153,7 +152,7 @@ class RequestTTT(View):
         self.player2 = player2
 
     @discord.ui.button(label='Annehmen', style=ButtonStyle.success, row=0)
-    async def accept_callback(self):
+    async def accept_callback(self, button, interaction):
         thread_name = f"ttt-{self.ctx.author.name.lower().replace(' ', '_')}-{self.player2.name.lower().replace(' ', '_')}"
         channel = self.ctx.guild.get_channel(876278253025914911)
         thread = await channel.create_thread(name=thread_name, message=None, type=ChannelType.public_thread,
@@ -170,7 +169,7 @@ class RequestTTT(View):
         await self.ctx.channel.purge(limit=4)
 
     @discord.ui.button(label='Ablehnen', style=ButtonStyle.danger, row=0)
-    async def decline_callback(self, interaction):
+    async def decline_callback(self, button, interaction):
         await self.delete(interaction)
 
     async def interaction_check(self, interaction):

@@ -1,99 +1,91 @@
-from discord import Member, Embed, Color
+import discord
+from discord import app_commands
 from discord.ext import commands
 
-from config.Util import send_embed, get_prefix, get_prefix_context
+from config.Util import get_prefix_context
 
 
-########################### Klasse ##########################
 class Members(commands.Cog):
-    def __init__(self, bot):
+    def __init__(self, bot: commands.Bot):
         self.bot = bot
+        self._context_menus: list[app_commands.ContextMenu] = []
 
-    @commands.user_command(name='Memberliste', desciption='Listet alle Member auf')
-    async def memberlist(self, ctx, member):
-        member_list = ctx.guild.members
-        member_count = sum(not member.bot for member in member_list)
-        liste = ""
-        for member in member_list:
-            if not member.bot:
-                liste += f"{member.mention}\r\n"
-        embed = Embed(title=f"Member Liste (Anzahl: {member_count})", description=liste)
-        embed.set_footer(text=f"*{await get_prefix_context(self.bot, ctx)}help* for more info")
-        await ctx.respond(embed=embed, ephemeral=True)
+    async def cog_load(self) -> None:
+        self._context_menus = [
+            app_commands.ContextMenu(name="Memberliste", callback=self.memberlist),
+            app_commands.ContextMenu(name="Botliste", callback=self.botliste),
+            app_commands.ContextMenu(name="Userinfo", callback=self.userinfo),
+            app_commands.ContextMenu(name="Serverinfo", callback=self.serverinfo),
+        ]
+        for menu in self._context_menus:
+            self.bot.tree.add_command(menu)
 
-    @commands.user_command(name='Botiste', description='Listet alle Bots auf')
-    async def botliste(self, ctx, member):
-        bot_list = ctx.guild.members
-        _bot_count = sum(bot.bot for bot in bot_list)
-        liste = ""
-        for _bot in bot_list:
-            if _bot.bot:
-                liste += f"{_bot.mention}\r\n"
-        embed = Embed(title=f"Bot Liste (Anzahl: {_bot_count})", description=liste)
-        embed.set_footer(text=f"*{await get_prefix_context(self.bot, ctx)}help* for more info")
-        await ctx.respond(embed=embed, ephemeral=True)
+    async def cog_unload(self) -> None:
+        for menu in self._context_menus:
+            self.bot.tree.remove_command(menu.name, type=menu.type)
 
-    @commands.user_command(name="Userinfo", description="Zeigt Info über ein Mitglied")
-    async def userinfo(self, ctx, member):
-        # if member:
-        embed = Embed(title=f"Userinfo für {member.name}",
-                      description=f"Dies ist eine Userinfo für den User {member.mention}",
-                      color=0x22a7f0)
-        embed.add_field(name="Server beigetreten", value=member.joined_at.strftime("%d/%m/%Y, %H:%M:%S"),
-                        inline=True)
-        embed.add_field(name="Discord beigetreten", value=member.created_at.strftime("%d/%m/%Y, %H:%M:%S"),
-                        inline=True)
-        rollen = ""
-        for role in member.roles:
-            if not role.is_default():
-                rollen += f"{role.mention} \r\n"
-        if rollen:
-            embed.add_field(name="Rollen", value=rollen, inline=False)
-        url = member.avatar
-        if url:
-            embed.set_thumbnail(url=url)
-        embed.set_footer(text=f"*LEL* for more info")
-        # else:
-        #     embed = Embed(title=f"Userinfo für {ctx.author.name}",
-        #                   description=f"Dies ist eine Userinfo für den User {ctx.author.mention}",
-        #                   color=0x22a7f0)
-        #     embed.add_field(name="Server beigetreten", value=ctx.author.joined_at.strftime("%d/%m/%Y, %H:%M:%S"),
-        #                     inline=True)
-        #     embed.add_field(name="Discord beigetreten", value=ctx.author.created_at.strftime("%d/%m/%Y, %H:%M:%S"),
-        #                     inline=True)
-        #     rollen = ""
-        #     for role in ctx.author.roles:
-        #         if not role.is_default():
-        #             rollen += f"{role.mention} \r\n"
-        #     if rollen:
-        #         embed.add_field(name="Rollen", value=rollen, inline=False)
-        #     embed.set_thumbnail(url=ctx.author.avatar)
-        #     embed.set_footer(text=f"*LEL* for more info")
+    async def memberlist(self, interaction: discord.Interaction, member: discord.Member | discord.User) -> None:
+        if interaction.guild is None:
+            await interaction.response.send_message("Dieser Befehl funktioniert nur auf einem Server.", ephemeral=True)
+            return
 
-        await ctx.respond(embed=embed, ephemeral=True)
+        member_list = [guild_member for guild_member in interaction.guild.members if not guild_member.bot]
+        entries = "\n".join(guild_member.mention for guild_member in member_list) or "Keine Member gefunden."
+        embed = discord.Embed(title=f"Member Liste (Anzahl: {len(member_list)})", description=entries)
+        embed.set_footer(text=f"*{await get_prefix_context(self.bot, interaction)}help* for more info")
+        await interaction.response.send_message(embed=embed, ephemeral=True)
 
-    @commands.user_command(name='Serverinfo')
-    async def serverinfo(self, ctx, member):
-        member = member
-        name = ctx.guild.name
-        description = ctx.guild.description
-        region = ctx.guild.region
-        icon = ctx.guild.icon
-        member_count = ctx.guild.member_count
-        owner = ctx.guild.owner
+    async def botliste(self, interaction: discord.Interaction, member: discord.Member | discord.User) -> None:
+        if interaction.guild is None:
+            await interaction.response.send_message("Dieser Befehl funktioniert nur auf einem Server.", ephemeral=True)
+            return
 
-        server = Embed(
-            title=f"*{name}* \u200b Informationen",
-            description=description,
-            color=Color.dark_blue()
+        bot_list = [guild_member for guild_member in interaction.guild.members if guild_member.bot]
+        entries = "\n".join(bot_member.mention for bot_member in bot_list) or "Keine Bots gefunden."
+        embed = discord.Embed(title=f"Bot Liste (Anzahl: {len(bot_list)})", description=entries)
+        embed.set_footer(text=f"*{await get_prefix_context(self.bot, interaction)}help* for more info")
+        await interaction.response.send_message(embed=embed, ephemeral=True)
+
+    async def userinfo(self, interaction: discord.Interaction, member: discord.Member | discord.User) -> None:
+        if interaction.guild is None or not isinstance(member, discord.Member):
+            await interaction.response.send_message("Dieser Befehl funktioniert nur fuer Server-Mitglieder.", ephemeral=True)
+            return
+
+        embed = discord.Embed(
+            title=f"Userinfo fuer {member.name}",
+            description=f"Dies ist eine Userinfo fuer den User {member.mention}",
+            color=0x22A7F0,
         )
-        server.set_thumbnail(url=icon)
-        server.add_field(name="Region", value=region, inline=True)
-        server.add_field(name="Besitzer", value=owner, inline=True)
-        server.add_field(name="Anzahl Mitglieder", value=member_count, inline=False)
-        await ctx.respond(embed=server, ephemeral=True)
+        embed.add_field(name="Server beigetreten", value=member.joined_at.strftime("%d/%m/%Y, %H:%M:%S"), inline=True)
+        embed.add_field(name="Discord beigetreten", value=member.created_at.strftime("%d/%m/%Y, %H:%M:%S"), inline=True)
+
+        roles = "\n".join(role.mention for role in member.roles if not role.is_default())
+        if roles:
+            embed.add_field(name="Rollen", value=roles, inline=False)
+
+        embed.set_thumbnail(url=member.display_avatar.url)
+        embed.set_footer(text="*LEL* for more info")
+        await interaction.response.send_message(embed=embed, ephemeral=True)
+
+    async def serverinfo(self, interaction: discord.Interaction, member: discord.Member | discord.User) -> None:
+        if interaction.guild is None:
+            await interaction.response.send_message("Dieser Befehl funktioniert nur auf einem Server.", ephemeral=True)
+            return
+
+        guild = interaction.guild
+        embed = discord.Embed(
+            title=f"*{guild.name}* \u200b Informationen",
+            description=guild.description or "Keine Beschreibung vorhanden.",
+            color=discord.Color.dark_blue(),
+        )
+        if guild.icon:
+            embed.set_thumbnail(url=guild.icon.url)
+        embed.add_field(name="Sprache", value=guild.preferred_locale, inline=True)
+        embed.add_field(name="Besitzer", value=guild.owner.mention if guild.owner else "Unbekannt", inline=True)
+        embed.add_field(name="Anzahl Mitglieder", value=str(guild.member_count), inline=True)
+        embed.add_field(name="Erstellt am", value=guild.created_at.strftime("%d/%m/%Y"), inline=True)
+        await interaction.response.send_message(embed=embed, ephemeral=True)
 
 
-#############################################################
-def setup(bot):
-    bot.add_cog(Members(bot))
+async def setup(bot: commands.Bot) -> None:
+    await bot.add_cog(Members(bot))

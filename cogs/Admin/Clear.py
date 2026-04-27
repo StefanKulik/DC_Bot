@@ -1,31 +1,44 @@
-from discord import option, Embed
+import discord
+from discord import app_commands
 from discord.ext import commands
 
-from config.Util import is_not_pinned
+from config.Util import handle_app_command_error, is_not_pinned, send_interaction_message
+
+
+PROTECTED_CHANNEL_ID = 615901690985447448
 
 
 class Clear(commands.Cog):
-    def __init__(self, bot):
+    def __init__(self, bot: commands.Bot):
         self.bot = bot
 
-    @commands.slash_command(name='clear', description='Clear Channel')
-    @commands.has_permissions(administrator=True)
-    @option('num', description='Enter a number', min_value=1, max_value=100, default=10)
-    async def clear(self, ctx, num: int):
-        if ctx.channel.id == 615901690985447448:
-            await ctx.send(embed=Embed(description="Dieser Channel darf nicht geleert werden!"),
-                           delete_after=5)
-        await ctx.channel.purge(limit=int(num) + 1, check=is_not_pinned)
-        await ctx.channel.send(embed=Embed(description=f"**{int(num)}** Nachrichten gelöscht."),
-                               delete_after=5)
+    @app_commands.command(name="clear", description="Nachrichten im Channel loeschen")
+    @app_commands.guild_only()
+    @app_commands.default_permissions(administrator=True)
+    @app_commands.checks.has_permissions(administrator=True)
+    @app_commands.describe(num="Anzahl der zu loeschenden Nachrichten")
+    async def clear(self, interaction: discord.Interaction, num: app_commands.Range[int, 1, 100] = 10) -> None:
+        channel = interaction.channel
+        if interaction.guild is None or not isinstance(channel, (discord.TextChannel, discord.Thread)):
+            await send_interaction_message(interaction, content="Dieser Befehl funktioniert nur in Textkanaelen.", ephemeral=True)
+            return
 
-    @commands.Cog.listener()
-    async def on_application_command_error(self, ctx, error):
-        if isinstance(error, commands.MissingPermissions):
-            await ctx.respond("You need administrator permissions!", delete_after=1, ephemeral=True)
-        else:
-            raise error  # Here we raise other errors to ensure they aren't ignored
+        if channel.id == PROTECTED_CHANNEL_ID:
+            embed = discord.Embed(description="Dieser Channel darf nicht geleert werden!")
+            await send_interaction_message(interaction, embed=embed, ephemeral=True, delete_after=5)
+            return
+
+        deleted_messages = await channel.purge(limit=int(num), check=is_not_pinned)
+        embed = discord.Embed(description=f"**{len(deleted_messages)}** Nachrichten geloescht.")
+        await send_interaction_message(interaction, embed=embed, ephemeral=True, delete_after=5)
+
+    async def cog_app_command_error(
+        self,
+        interaction: discord.Interaction,
+        error: app_commands.AppCommandError,
+    ) -> None:
+        await handle_app_command_error(interaction, error)
 
 
-def setup(bot):
-    bot.add_cog(Clear(bot))
+async def setup(bot: commands.Bot) -> None:
+    await bot.add_cog(Clear(bot))

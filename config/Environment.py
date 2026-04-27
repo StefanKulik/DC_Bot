@@ -1,36 +1,46 @@
-import os
 import logging
+import os
+from pathlib import Path
+
 from dotenv import load_dotenv
 
-load_dotenv()
+
+ENV_PATH = Path(__file__).with_name(".env")
+load_dotenv(ENV_PATH)
+
+logger = logging.getLogger("bot")
 
 
 def load_env(key: str, default: str) -> str:
-    """!
-    os.getenv() wrapper that handles the case of None-types for not-set env-variables\n
-    @param key: name of env variable to load
-    @param default: default value if variable couldn't be loaded
-    @return value of env variable or default value
-    """
     value = os.getenv(key)
     if value:
         return value
-    logger.warning(f"Can't load env-variable for: '{key}' - falling back to DEFAULT {key}='{default}'")
+    logger.warning("Can't load env-variable for: '%s' - falling back to DEFAULT %s='%s'", key, key, default)
     return default
 
 
-logger = logging.getLogger('bot')
-SPOTIPY_ID = load_env("SPOTIPY_ID", 'unknown')
-SPOTIPY_SECRET = load_env("SPOTIPY_SECRET", 'unknown')
+def load_int_env(key: str, default: int) -> int:
+    value = os.getenv(key)
+    if value:
+        try:
+            return int(value)
+        except ValueError:
+            logger.warning("Can't parse env-variable '%s' as int - falling back to DEFAULT %s=%s", key, key, default)
+    else:
+        logger.warning("Can't load env-variable for: '%s' - falling back to DEFAULT %s=%s", key, key, default)
+    return default
 
-TOKEN = load_env("TOKEN", 'unknown')
+
+TOKEN = load_env("TOKEN", "unknown")
 VERSION = load_env("VERSION", "unknown")
 SERVER_INVITE = load_env("SERVER_INVITE", "unknown")
 DEFAULT_PREFIX = load_env("DEFAULT_PREFIX", "!")
-BOT = load_env("BOT", "unknown")
-OWNER = load_env("OWNER", "unknown")
+BOT = load_int_env("BOT", 0)
+OWNER = load_int_env("OWNER", 0)
 
-DATABASE_URL = load_env("DATABASE_URL", 'unknown')
+DATABASE_URL = load_env("DATABASE_URL", "unknown")
+SITE_PROJECT_NAME = load_env("SITE_PROJECT_NAME", "Discord Bot Showcase")
+SITE_PROJECT_TAGLINE = load_env("SITE_PROJECT_TAGLINE", "Inhalte aus der Bot-Datenbank")
 
 COLORS = {
     "WHITE": 0xFFFFFF,
@@ -55,5 +65,5 @@ COLORS = {
 }
 COLOR_LIST = [c for c in COLORS.values()]
 
-PREFIX_LIST = ['!', '<', '>', '-', '.', '?', '$', '#']
-COG_HANDLER = ['load', 'unload', 'reload']
+PREFIX_LIST = ["!", "<", ">", "-", ".", "?", "$", "#"]
+COG_HANDLER = ["load", "unload", "reload"]

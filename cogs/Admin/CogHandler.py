@@ -1,33 +1,68 @@
-from discord import option
+import discord
+from discord import app_commands
 from discord.ext import commands
 
 from config.Environment import COG_HANDLER
-from config.Util import get_modules, load, unload, reload
+from config.Util import get_modules, handle_app_command_error, send_interaction_message
+
+
+FUNCTION_CHOICES = [app_commands.Choice(name=value, value=value) for value in COG_HANDLER]
+MODULE_CHOICES = [app_commands.Choice(name=value, value=value) for value in get_modules()]
 
 
 class CogHandler(commands.Cog):
-    def __init__(self, bot):
+    def __init__(self, bot: commands.Bot):
         self.bot = bot
 
-    @commands.slash_command(name='cog', description='Cog load, unload, reload')
-    @commands.has_permissions(administrator=True)
-    @option('function', description='choose Function', choices=COG_HANDLER)
-    @option('module', description='choose Module', choices=get_modules())
-    async def handler(self, ctx, function: str, module: str = None):
-        if function == 'load':
-            await load(self, ctx, module)
-        if function == 'unload':
-            await unload(self, ctx, module)
-        if function == 'reload':
-            await reload(self, ctx, module)
+    @app_commands.command(name="cog", description="Cog load, unload, reload")
+    @app_commands.guild_only()
+    @app_commands.default_permissions(administrator=True)
+    @app_commands.checks.has_permissions(administrator=True)
+    @app_commands.describe(function="Aktion", module="Betroffenes Modul")
+    @app_commands.choices(function=FUNCTION_CHOICES, module=MODULE_CHOICES)
+    async def handler(
+        self,
+        interaction: discord.Interaction,
+        function: str,
+        module: str | None = None,
+    ) -> None:
+        targets = [module] if module else get_modules()
+        results: list[str] = []
 
-    @commands.Cog.listener()
-    async def on_application_command_error(self, ctx, error):
-        if isinstance(error, commands.MissingPermissions):
-            await ctx.respond("You need administrator permissions!", delete_after=1, ephemeral=True)
-        else:
-            raise error  # Here we raise other errors to ensure they aren't ignored
+        for target in targets:
+            extension_name = f"cogs.{target}"
+            try:
+                if function == "load":
+                    await self.bot.load_extension(extension_name)
+                elif function == "unload":
+                    await self.bot.unload_extension(extension_name)
+                else:
+                    await self.bot.reload_extension(extension_name)
+            except commands.ExtensionAlreadyLoaded:
+                results.append(f"{target}: bereits geladen")
+            except commands.ExtensionNotLoaded:
+                results.append(f"{target}: nicht geladen")
+            except commands.ExtensionError as exc:
+                results.append(f"{target}: {type(exc).__name__}: {exc}")
+            else:
+                results.append(f"{target}: OK")
+
+        await self.bot.tree.sync()
+
+        embed = discord.Embed(
+            title=f"Cog {function}",
+            description="\n".join(results) if results else "Keine Module verarbeitet.",
+            colour=discord.Colour.blurple(),
+        )
+        await send_interaction_message(interaction, embed=embed, ephemeral=True)
+
+    async def cog_app_command_error(
+        self,
+        interaction: discord.Interaction,
+        error: app_commands.AppCommandError,
+    ) -> None:
+        await handle_app_command_error(interaction, error)
 
 
-def setup(bot):
-    bot.add_cog(CogHandler(bot))
+async def setup(bot: commands.Bot) -> None:
+    await bot.add_cog(CogHandler(bot))

@@ -1,0 +1,73 @@
+<!DOCTYPE html>
+<html lang="de">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Discord Bot Showcase</title>
+    <link rel="stylesheet" href="./styles.css" />
+  </head>
+  <body>
+    <div class="page-shell">
+      <header class="hero">
+        <p class="eyebrow">Discord Bot + Datenbank + GitHub Pages</p>
+        <h1 id="project-name">Discord Bot Showcase</h1>
+        <p id="project-tagline" class="hero-copy">Inhalte aus der Bot-Datenbank</p>
+        <div class="hero-stats">
+          <article class="stat-card">
+            <span class="stat-label">Server</span>
+            <strong id="guild-count">0</strong>
+          </article>
+          <article class="stat-card">
+            <span class="stat-label">Eintraege</span>
+            <strong id="entry-count">0</strong>
+          </article>
+          <article class="stat-card">
+            <span class="stat-label">Letzter Export</span>
+            <strong id="generated-at">unbekannt</strong>
+          </article>
+        </div>
+      </header>
+
+      <main>
+        <section class="panel">
+          <div class="panel-head">
+            <div>
+              <p class="eyebrow">Live aus der Exportdatei</p>
+              <h2>Community-Inhalte</h2>
+            </div>
+          </div>
+          <div id="content" class="guild-grid"></div>
+          <p id="status" class="status">Lade Daten...</p>
+        </section>
+      </main>
+    </div>
+
+    <template id="guild-template">
+      <article class="guild-card">
+        <div class="guild-card-head">
+          <div>
+            <p class="guild-kicker">Discord Server</p>
+            <h3 class="guild-name"></h3>
+          </div>
+          <a class="guild-link" target="_blank" rel="noreferrer">Beitreten</a>
+        </div>
+        <p class="guild-description"></p>
+        <div class="entry-list"></div>
+      </article>
+    </template>
+
+    <template id="entry-template">
+      <article class="entry-card">
+        <div class="entry-topline">
+          <span class="entry-category"></span>
+          <span class="entry-date"></span>
+        </div>
+        <h4 class="entry-title"></h4>
+        <p class="entry-description"></p>
+        <a class="entry-link" target="_blank" rel="noreferrer">Mehr ansehen</a>
+      </article>
+    </template>
+
+    <script src="./app.js" defer></script>
+  </body>
+</html>

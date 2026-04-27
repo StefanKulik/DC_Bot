@@ -1,5 +1,2 @@
 config/.env
 .idea/
-.venv/
-__pycache__/
-*.pyc

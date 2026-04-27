@@ -39,8 +39,6 @@ BOT = load_int_env("BOT", 0)
 OWNER = load_int_env("OWNER", 0)
 
 DATABASE_URL = load_env("DATABASE_URL", "unknown")
-SITE_PROJECT_NAME = load_env("SITE_PROJECT_NAME", "Discord Bot Showcase")
-SITE_PROJECT_TAGLINE = load_env("SITE_PROJECT_TAGLINE", "Inhalte aus der Bot-Datenbank")
 
 COLORS = {
     "WHITE": 0xFFFFFF,

@@ -21,19 +21,81 @@ class RoleButton(discord.ui.Button):
         self.bot = bot
 
     async def callback(self, interaction: discord.Interaction) -> None:
-        user = interaction.user
-        role_id = await get_autorole(self.bot, user, interaction.guild)
-        role = interaction.guild.get_role(role_id) if role_id else None
+        try:
+            await interaction.response.defer(ephemeral=True)
+            await self._verify_member(interaction)
+        except Exception as exc:
+            print(f"RoleButton failed: {type(exc).__name__}: {exc}")
+            if interaction.response.is_done():
+                await interaction.followup.send("Verifizierung fehlgeschlagen.", ephemeral=True)
+            else:
+                await interaction.response.send_message("Verifizierung fehlgeschlagen.", ephemeral=True)
+
+    async def _verify_member(self, interaction: discord.Interaction) -> None:
+        guild = interaction.guild
+        if guild is None:
+            await interaction.followup.send("Verifizierung funktioniert nur auf einem Server.", ephemeral=True)
+            return
+
+        member = interaction.user if isinstance(interaction.user, discord.Member) else guild.get_member(interaction.user.id)
+        if member is None:
+            try:
+                member = await guild.fetch_member(interaction.user.id)
+            except discord.HTTPException:
+                member = None
+
+        if member is None:
+            await interaction.followup.send("Verifizierung fehlgeschlagen: Member konnte nicht geladen werden.", ephemeral=True)
+            return
+
+        role_id = await get_autorole(self.bot, member, guild)
+        role = guild.get_role(role_id) if role_id else None
         if role is None:
-            await interaction.response.send_message("Verifizierung fehlgeschlagen!", ephemeral=True)
+            await interaction.followup.send("Verifizierung fehlgeschlagen: Member-Rolle nicht gefunden.", ephemeral=True)
             return
 
-        if role not in user.roles:
-            await user.add_roles(role)
-            await interaction.response.send_message("Du bist nun verifiziert!", ephemeral=True)
+        if role in member.roles:
+            await interaction.followup.send("Du bist bereits verifiziert!", ephemeral=True)
             return
 
-        await interaction.response.send_message("Du bist bereits verifiziert!", ephemeral=True)
+        bot_user = self.bot.user
+        bot_member = guild.me
+        if bot_member is None and bot_user is not None:
+            bot_member = guild.get_member(bot_user.id)
+        if bot_member is None and bot_user is not None:
+            try:
+                bot_member = await guild.fetch_member(bot_user.id)
+            except discord.HTTPException:
+                bot_member = None
+
+        if bot_member is None:
+            await interaction.followup.send("Verifizierung fehlgeschlagen: Bot-Member konnte nicht geladen werden.", ephemeral=True)
+            return
+
+        if not bot_member.guild_permissions.manage_roles:
+            await interaction.followup.send(
+                "Verifizierung fehlgeschlagen: Mir fehlt die Berechtigung `Rollen verwalten`.",
+                ephemeral=True,
+            )
+            return
+
+        if role >= bot_member.top_role:
+            await interaction.followup.send(
+                "Verifizierung fehlgeschlagen: Die Member-Rolle liegt ueber oder auf meiner hoechsten Rolle.",
+                ephemeral=True,
+            )
+            return
+
+        try:
+            await member.add_roles(role, reason="Rule verification")
+        except discord.Forbidden:
+            await interaction.followup.send("Verifizierung fehlgeschlagen: Ich darf diese Rolle nicht vergeben.", ephemeral=True)
+            return
+        except discord.HTTPException:
+            await interaction.followup.send("Verifizierung fehlgeschlagen: Discord konnte die Rolle nicht setzen.", ephemeral=True)
+            return
+
+        await interaction.followup.send("Du bist nun verifiziert!", ephemeral=True)
 
 
 class StandardButton(discord.ui.Button):
@@ -55,13 +117,14 @@ def is_not_pinned(message: discord.Message) -> bool:
 def iter_extension_names() -> list[str]:
     extensions: list[str] = []
     cogs_dir = Path("cogs")
-    for category in sorted(cogs_dir.iterdir()):
-        if not category.is_dir() or category.name.startswith("_"):
+    for file in sorted(cogs_dir.rglob("*.py")):
+        relative_path = file.relative_to(cogs_dir)
+        if "__pycache__" in relative_path.parts:
             continue
-        for file in sorted(category.glob("*.py")):
-            if file.stem.startswith("_"):
-                continue
-            extensions.append(f"cogs.{category.name}.{file.stem}")
+        if file.stem.startswith("_") or file.stem == "__init__":
+            continue
+        module_path = ".".join(("cogs", *relative_path.with_suffix("").parts))
+        extensions.append(module_path)
     return extensions
 
 

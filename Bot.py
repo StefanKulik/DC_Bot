@@ -23,7 +23,9 @@ class Bot(commands.Bot):
         print("lade Erweiterungen ...")
         await create_db_pool(self)
         await load_extensions(self)
-        self.add_view(discord.ui.View(timeout=None).add_item(RoleButton(self)))
+        verification_view = discord.ui.View(timeout=None)
+        verification_view.add_item(RoleButton(self))
+        self.add_view(verification_view)
         await self.tree.sync()
         print("-----")
 

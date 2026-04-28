@@ -308,11 +308,12 @@ class PendingMatchView(discord.ui.View):
 
 
 class ResultConfirmationView(discord.ui.View):
-    def __init__(self, cog: Ranked, match_id: int, submission_id: int) -> None:
+    def __init__(self, cog: Ranked, match_id: int, submission_id: int, confirmer_id: int) -> None:
         super().__init__(timeout=None)
         self.cog = cog
         self.match_id = match_id
         self.submission_id = submission_id
+        self.confirmer_id = confirmer_id
 
     async def interaction_check(self, interaction: discord.Interaction) -> bool:
         result = self.cog.pending_results.get(self.match_id)
@@ -330,8 +331,11 @@ class ResultConfirmationView(discord.ui.View):
             await interaction.response.send_message("Nur die beiden Spieler koennen das Ergebnis bestaetigen.", ephemeral=True)
             return False
 
-        if interaction.user.id == result.submitted_by:
-            await interaction.response.send_message("Der andere Spieler muss dieses Ergebnis bestaetigen.", ephemeral=True)
+        if interaction.user.id != self.confirmer_id:
+            await interaction.response.send_message(
+                f"Nur <@{self.confirmer_id}> kann dieses Ergebnis bestaetigen.",
+                ephemeral=True,
+            )
             return False
 
         return True
@@ -436,9 +440,13 @@ class ResultEntryView(discord.ui.View):
             )
             return
 
-        button.disabled = True
-        await self.cog.open_result_modal(interaction, match_id=self.match_id)
         message = interaction.message
+        button.disabled = True
+        await self.cog.open_result_modal(
+            interaction,
+            match_id=self.match_id,
+            entry_message_id=message.id if message is not None else None,
+        )
         if message is not None:
             try:
                 await message.edit(view=self)
@@ -447,16 +455,25 @@ class ResultEntryView(discord.ui.View):
 
 
 class ResultModal(discord.ui.Modal):
-    def __init__(self, cog: Ranked, match: MatchState, guild: discord.Guild) -> None:
+    def __init__(
+        self,
+        cog: Ranked,
+        match: MatchState,
+        guild: discord.Guild,
+        entry_message_id: int | None = None,
+    ) -> None:
         super().__init__(title=f"Ergebnis Match #{match.match_id:03d}")
         self.cog = cog
         self.match = match
         self.guild = guild
+        self.entry_message_id = entry_message_id
 
         player_one = guild.get_member(match.player_ids[0])
         player_two = guild.get_member(match.player_ids[1])
         player_one_name = shorten_label(player_one.display_name if player_one else f"Spieler {match.player_ids[0]}")
         player_two_name = shorten_label(player_two.display_name if player_two else f"Spieler {match.player_ids[1]}")
+        score_player_one_name = shorten_label(player_one_name, 14)
+        score_player_two_name = shorten_label(player_two_name, 14)
 
         self.winner_select = discord.ui.Select(
             placeholder="Gewinner auswaehlen",
@@ -467,7 +484,7 @@ class ResultModal(discord.ui.Modal):
             ],
         )
         self.score_input = discord.ui.TextInput(
-            label="Spielstand (P1:P2, Bo7)",
+            label=f"Spielstand ({score_player_one_name}:{score_player_two_name})",
             placeholder="z. B. 4:2",
             required=True,
             max_length=10,
@@ -496,13 +513,29 @@ class ResultModal(discord.ui.Modal):
         self.add_item(self.average_two_input)
         self.add_item(discord.ui.Label(text="Screenshot", component=self.screenshot_upload))
 
+    async def restore_result_entry_button(self) -> None:
+        if self.entry_message_id is None:
+            return
+
+        thread = await self.cog.fetch_thread(self.match.thread_id)
+        if thread is None:
+            return
+
+        try:
+            message = await thread.fetch_message(self.entry_message_id)
+            await message.edit(view=ResultEntryView(self.cog, self.match.match_id))
+        except (discord.NotFound, discord.Forbidden, discord.HTTPException):
+            pass
+
     async def on_submit(self, interaction: discord.Interaction) -> None:
         if not self.winner_select.values:
+            await self.restore_result_entry_button()
             await interaction.response.send_message("Bitte waehle einen Gewinner aus.", ephemeral=True)
             return
 
         score = parse_best_of_seven_score(self.score_input.value)
         if score is None:
+            await self.restore_result_entry_button()
             await interaction.response.send_message(
                 "Bitte gib einen gueltigen Best-of-7-Spielstand ein, z. B. 4:0 bis 4:3.",
                 ephemeral=True,
@@ -512,6 +545,7 @@ class ResultModal(discord.ui.Modal):
         average_one = normalize_average(self.average_one_input.value)
         average_two = normalize_average(self.average_two_input.value)
         if average_one is None or average_two is None:
+            await self.restore_result_entry_button()
             await interaction.response.send_message(
                 "Die Averages muessen numerisch sein. Punkt und Komma sind erlaubt.",
                 ephemeral=True,
@@ -523,6 +557,7 @@ class ResultModal(discord.ui.Modal):
         left_score, right_score = score
 
         if winner_id == player_one_id and left_score != 4:
+            await self.restore_result_entry_button()
             await interaction.response.send_message(
                 "Der ausgewaehlte Gewinner passt nicht zum Spielstand.",
                 ephemeral=True,
@@ -530,6 +565,7 @@ class ResultModal(discord.ui.Modal):
             return
 
         if winner_id == player_two_id and right_score != 4:
+            await self.restore_result_entry_button()
             await interaction.response.send_message(
                 "Der ausgewaehlte Gewinner passt nicht zum Spielstand.",
                 ephemeral=True,
@@ -563,11 +599,12 @@ class ResultModal(discord.ui.Modal):
         thread = await self.cog.fetch_thread(self.match.thread_id)
         if thread is None:
             self.cog.pending_results.pop(self.match.match_id, None)
+            await self.restore_result_entry_button()
             await interaction.response.send_message("Der Match-Thread konnte nicht gefunden werden.", ephemeral=True)
             return
 
-        confirmation_view = ResultConfirmationView(self.cog, self.match.match_id, submission_id)
         confirmer_id = player_two_id if interaction.user.id == player_one_id else player_one_id
+        confirmation_view = ResultConfirmationView(self.cog, self.match.match_id, submission_id, confirmer_id)
 
         await interaction.response.defer(ephemeral=True, thinking=True)
         try:
@@ -580,6 +617,7 @@ class ResultModal(discord.ui.Modal):
             )
         except discord.HTTPException:
             self.cog.pending_results.pop(self.match.match_id, None)
+            await self.restore_result_entry_button()
             await interaction.followup.send("Das Ergebnis konnte nicht im Match-Thread gesendet werden.", ephemeral=True)
             return
 
@@ -940,9 +978,24 @@ class Ranked(commands.Cog):
             f"{normalize_thread_part(player_two.display_name)}"
         )[:100]
 
+        if not isinstance(queue_message.channel, discord.TextChannel):
+            return False
+
         try:
-            thread = await queue_message.create_thread(name=thread_name, auto_archive_duration=60)
+            thread = await queue_message.channel.create_thread(
+                name=thread_name,
+                type=discord.ChannelType.private_thread,
+                auto_archive_duration=60,
+                invitable=False,
+            )
+            await thread.add_user(player_one)
+            await thread.add_user(player_two)
         except (discord.Forbidden, discord.HTTPException):
+            try:
+                if "thread" in locals():
+                    await thread.delete()
+            except (discord.NotFound, discord.Forbidden, discord.HTTPException):
+                pass
             return False
 
         pending_match = PendingMatchState(
@@ -1129,6 +1182,7 @@ class Ranked(commands.Cog):
         interaction: discord.Interaction,
         *,
         match_id: int | None = None,
+        entry_message_id: int | None = None,
     ) -> None:
         if interaction.guild is None or not isinstance(interaction.channel, discord.Thread):
             await interaction.response.send_message(
@@ -1152,7 +1206,7 @@ class Ranked(commands.Cog):
             )
             return
 
-        await interaction.response.send_modal(ResultModal(self, match, interaction.guild))
+        await interaction.response.send_modal(ResultModal(self, match, interaction.guild, entry_message_id))
 
     @app_commands.command(name="queue_panel", description="Sendet das Queue-Panel in den Chat")
     @has_permissions(administrator=True)

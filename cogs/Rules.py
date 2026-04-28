@@ -5,18 +5,9 @@ from discord.ext import commands
 from config.Util import RoleButton, StandardButton, handle_app_command_error
 
 
-class Test(commands.Cog):
+class Rules(commands.Cog):
     def __init__(self, bot: commands.Bot):
         self.bot = bot
-
-    @app_commands.command(name="test", description="Test command")
-    @app_commands.guild_only()
-    @app_commands.default_permissions(administrator=True)
-    @app_commands.checks.has_permissions(administrator=True)
-    async def test(self, interaction: discord.Interaction) -> None:
-        view = discord.ui.View(timeout=None)
-        view.add_item(StandardButton())
-        await interaction.response.send_message(view=view, ephemeral=True)
 
     @app_commands.command(name="rules", description="Regelwerk senden")
     @app_commands.guild_only()
@@ -48,11 +39,6 @@ class Test(commands.Cog):
         await interaction.channel.send(embed=embed, view=view)
         await interaction.followup.send("Regeln wurden gesendet.", ephemeral=True)
 
-    @commands.command()
-    async def hallo(self, ctx: commands.Context) -> None:
-        view = discord.ui.View(timeout=None)
-        view.add_item(StandardButton())
-        await ctx.send(f"Hallo {ctx.author.mention}!", view=view)
 
     async def cog_app_command_error(
         self,
@@ -63,4 +49,4 @@ class Test(commands.Cog):
 
 
 async def setup(bot: commands.Bot) -> None:
-    await bot.add_cog(Test(bot))
+    await bot.add_cog(Rules(bot))

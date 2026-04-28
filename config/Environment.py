@@ -38,8 +38,6 @@ DEFAULT_PREFIX = load_env("DEFAULT_PREFIX", "!")
 BOT = load_int_env("BOT", 0)
 OWNER = load_int_env("OWNER", 0)
 
-DATABASE_URL = load_env("DATABASE_URL", "unknown")
-
 COLORS = {
     "WHITE": 0xFFFFFF,
     "AQUA": 0x1ABC9C,

@@ -27,12 +27,7 @@ class SetAutorole(commands.Cog):
             await send_interaction_message(interaction, content="Die Datenbank ist aktuell nicht verfuegbar.", ephemeral=True)
             return
 
-        await self.bot.db.execute(
-            "INSERT INTO autorole(guild_id, memberrole_id, botrole_id) VALUES($1, $2, $3)",
-            interaction.guild.id,
-            memberrole.id,
-            botrole.id,
-        )
+        await self.bot.db.set_autorole(interaction.guild.id, memberrole.id, botrole.id)
         await send_interaction_message(interaction, content="Autorole hinzugefuegt.", ephemeral=True)
 
     async def cog_app_command_error(

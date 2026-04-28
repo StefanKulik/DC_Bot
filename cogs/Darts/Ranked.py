@@ -7,7 +7,7 @@ import re
 import discord
 from discord import app_commands
 from discord.ext import commands
-
+from discord.ext.commands import has_permissions
 
 QUEUE_EMPTY_TEXT = "kein spieler"
 MATCHES_FIELD_NAME = ":fire: Aktuelle Matches"
@@ -16,9 +16,6 @@ MENTION_PATTERN = re.compile(r"<@!?(\d+)>")
 THREAD_SAFE_PATTERN = re.compile(r"[^a-z0-9-]")
 SCORE_PATTERN = re.compile(r"^\s*(\d{1,2})\s*[:\-]\s*(\d{1,2})\s*$")
 AVERAGE_PATTERN = re.compile(r"^\s*\d+(?:[.,]\d+)?\s*$")
-MATCH_ID_SEQUENCE_NAME = "ranked_match_id_seq"
-RANKING_START_RATING = 1000
-ELO_K_FACTOR = 32
 
 
 @dataclass(slots=True)
@@ -185,9 +182,9 @@ def panel_state_from_embed(message: discord.Message) -> PanelState:
         return state
 
     for field in message.embeds[0].fields:
-        if field.name == "DartCounter":
+        if "DartCounter" in field.name:
             state.dartcounter_queue = parse_queue(field.value)
-        elif field.name == "Scolia":
+        elif "Scolia" in field.name:
             state.scolia_queue = parse_queue(field.value)
 
     return state
@@ -233,11 +230,6 @@ def get_current_month_key() -> date:
 
 def to_database_average(value: str) -> str:
     return value.replace(",", ".")
-
-
-def calculate_elo_winner_delta(winner_rating: int, loser_rating: int) -> int:
-    expected_winner_score = 1 / (1 + 10 ** ((loser_rating - winner_rating) / 400))
-    return max(1, int(round(ELO_K_FACTOR * (1 - expected_winner_score))))
 
 
 class PendingMatchView(discord.ui.View):
@@ -596,17 +588,33 @@ class ResultModal(discord.ui.Modal):
 
 
 class QueuePanel(discord.ui.View):
-    def __init__(self, cog: Ranked) -> None:
+    def __init__(self, cog: Ranked, panel_state: PanelState | None = None) -> None:
         super().__init__(timeout=None)
         self.cog = cog
+        if panel_state is not None:
+            self.set_both_button_disabled(bool(panel_state.dartcounter_queue and panel_state.scolia_queue))
+
+    def set_both_button_disabled(self, disabled: bool) -> None:
+        for item in self.children:
+            if isinstance(item, discord.ui.Button) and item.custom_id == "queue_panel:both_join":
+                item.disabled = disabled
+                return
 
     @staticmethod
     def find_joined_queue(panel_state: PanelState, user_id: int) -> str | None:
-        if user_id in panel_state.dartcounter_queue:
+        in_dartcounter = user_id in panel_state.dartcounter_queue
+        in_scolia = user_id in panel_state.scolia_queue
+        if in_dartcounter and in_scolia:
+            return "Beides"
+        if in_dartcounter:
             return "DartCounter"
-        if user_id in panel_state.scolia_queue:
+        if in_scolia:
             return "Scolia"
         return None
+
+    @staticmethod
+    def has_waiting_opponent(queue: list[int], user_id: int) -> bool:
+        return any(queued_user_id != user_id for queued_user_id in queue)
 
     async def update_queue(self,  interaction: discord.Interaction, *, queue_name: str | None, join: bool) -> None:
         message = interaction.message
@@ -674,6 +682,51 @@ class QueuePanel(discord.ui.View):
             refresh_all=match_started,
         )
 
+    async def join_both_queues(self, interaction: discord.Interaction) -> None:
+        message = interaction.message
+        if message is None:
+            await interaction.response.send_message("Das Queue-Embed konnte nicht gelesen werden.", ephemeral=True)
+            return
+
+        panel_state = self.cog.get_or_create_panel_state(message)
+        user_id = interaction.user.id
+
+        if self.cog.is_user_locked(user_id):
+            await interaction.response.send_message(
+                "Du bist bereits in einem offenen oder aktiven Match und kannst keiner Queue beitreten.",
+                ephemeral=True,
+                delete_after=10,
+            )
+            return
+
+        dartcounter_has_opponent = self.has_waiting_opponent(panel_state.dartcounter_queue, user_id)
+        scolia_has_opponent = self.has_waiting_opponent(panel_state.scolia_queue, user_id)
+        if dartcounter_has_opponent and scolia_has_opponent:
+            await interaction.response.send_message(
+                "Beides ist gerade nicht moeglich, weil in beiden Queues schon jemand wartet.",
+                ephemeral=True,
+                delete_after=10,
+            )
+            return
+
+        if user_id not in panel_state.dartcounter_queue:
+            panel_state.dartcounter_queue.append(user_id)
+        if user_id not in panel_state.scolia_queue:
+            panel_state.scolia_queue.append(user_id)
+
+        if dartcounter_has_opponent:
+            match_started = await self.cog.try_start_matches(message, panel_state, "DartCounter")
+        elif scolia_has_opponent:
+            match_started = await self.cog.try_start_matches(message, panel_state, "Scolia")
+        else:
+            match_started = False
+
+        await self.cog.refresh_panels(
+            interaction=interaction,
+            current_message_id=message.id,
+            refresh_all=match_started,
+        )
+
     @discord.ui.button(
         label="DartCounter",
         style=discord.ButtonStyle.success,
@@ -693,6 +746,16 @@ class QueuePanel(discord.ui.View):
     async def scolia_join(self, interaction: discord.Interaction, button: discord.ui.Button) -> None:
         del button
         await self.update_queue(interaction, queue_name="Scolia", join=True)
+
+    @discord.ui.button(
+        label="Beides",
+        style=discord.ButtonStyle.secondary,
+        custom_id="queue_panel:both_join",
+        row=0,
+    )
+    async def both_join(self, interaction: discord.Interaction, button: discord.ui.Button) -> None:
+        del button
+        await self.join_both_queues(interaction)
 
     @discord.ui.button(
         label="Leave",
@@ -725,139 +788,7 @@ class Ranked(commands.Cog):
             return
 
         try:
-            await db.execute(
-                f"""
-                CREATE SEQUENCE IF NOT EXISTS {MATCH_ID_SEQUENCE_NAME}
-                START WITH 1
-                INCREMENT BY 1
-                MINVALUE 1
-                """
-            )
-            await db.execute(
-                f"""
-                CREATE TABLE IF NOT EXISTS ranked_players (
-                    user_id BIGINT PRIMARY KEY,
-                    world_rating INTEGER NOT NULL DEFAULT {RANKING_START_RATING},
-                    world_wins INTEGER NOT NULL DEFAULT 0,
-                    world_losses INTEGER NOT NULL DEFAULT 0,
-                    last_known_name TEXT,
-                    created_at TIMESTAMPTZ NOT NULL DEFAULT NOW(),
-                    updated_at TIMESTAMPTZ NOT NULL DEFAULT NOW()
-                )
-                """
-            )
-            await db.execute(
-                f"""
-                CREATE TABLE IF NOT EXISTS ranked_monthly_players (
-                    user_id BIGINT NOT NULL,
-                    month_key DATE NOT NULL,
-                    monthly_rating INTEGER NOT NULL DEFAULT 0,
-                    monthly_wins INTEGER NOT NULL DEFAULT 0,
-                    monthly_losses INTEGER NOT NULL DEFAULT 0,
-                    last_known_name TEXT,
-                    created_at TIMESTAMPTZ NOT NULL DEFAULT NOW(),
-                    updated_at TIMESTAMPTZ NOT NULL DEFAULT NOW(),
-                    PRIMARY KEY (user_id, month_key)
-                )
-                """
-            )
-            await db.execute(
-                """
-                ALTER TABLE ranked_monthly_players
-                ALTER COLUMN monthly_rating SET DEFAULT 0
-                """
-            )
-            await db.execute(
-                """
-                CREATE TABLE IF NOT EXISTS ranked_match_results (
-                    match_id BIGINT PRIMARY KEY,
-                    guild_id BIGINT NOT NULL,
-                    queue_name TEXT NOT NULL,
-                    player_one_user_id BIGINT NOT NULL,
-                    player_two_user_id BIGINT NOT NULL,
-                    winner_user_id BIGINT NOT NULL,
-                    loser_user_id BIGINT NOT NULL,
-                    player_one_score SMALLINT NOT NULL,
-                    player_two_score SMALLINT NOT NULL,
-                    player_one_average NUMERIC(8, 2) NOT NULL,
-                    player_two_average NUMERIC(8, 2) NOT NULL,
-                    world_points_awarded INTEGER NOT NULL,
-                    world_points_deducted INTEGER NOT NULL DEFAULT 0,
-                    monthly_points_awarded INTEGER NOT NULL,
-                    winner_world_rating_before INTEGER,
-                    loser_world_rating_before INTEGER,
-                    winner_world_rating_after INTEGER,
-                    loser_world_rating_after INTEGER,
-                    winner_monthly_rating_before INTEGER,
-                    loser_monthly_rating_before INTEGER,
-                    winner_monthly_rating_after INTEGER,
-                    loser_monthly_rating_after INTEGER,
-                    month_key DATE NOT NULL,
-                    thread_id BIGINT NOT NULL,
-                    submitted_by BIGINT NOT NULL,
-                    confirmed_by BIGINT NOT NULL,
-                    screenshot_url TEXT,
-                    created_at TIMESTAMPTZ NOT NULL DEFAULT NOW(),
-                    published_at TIMESTAMPTZ,
-                    results_channel_id BIGINT,
-                    results_message_id BIGINT
-                )
-                """
-            )
-            await db.execute(
-                """
-                ALTER TABLE ranked_match_results
-                ADD COLUMN IF NOT EXISTS world_points_deducted INTEGER NOT NULL DEFAULT 0
-                """
-            )
-            await db.execute(
-                """
-                ALTER TABLE ranked_match_results
-                ADD COLUMN IF NOT EXISTS winner_world_rating_before INTEGER
-                """
-            )
-            await db.execute(
-                """
-                ALTER TABLE ranked_match_results
-                ADD COLUMN IF NOT EXISTS loser_world_rating_before INTEGER
-                """
-            )
-            await db.execute(
-                """
-                ALTER TABLE ranked_match_results
-                ADD COLUMN IF NOT EXISTS winner_world_rating_after INTEGER
-                """
-            )
-            await db.execute(
-                """
-                ALTER TABLE ranked_match_results
-                ADD COLUMN IF NOT EXISTS loser_world_rating_after INTEGER
-                """
-            )
-            await db.execute(
-                """
-                ALTER TABLE ranked_match_results
-                ADD COLUMN IF NOT EXISTS winner_monthly_rating_before INTEGER
-                """
-            )
-            await db.execute(
-                """
-                ALTER TABLE ranked_match_results
-                ADD COLUMN IF NOT EXISTS loser_monthly_rating_before INTEGER
-                """
-            )
-            await db.execute(
-                """
-                ALTER TABLE ranked_match_results
-                ADD COLUMN IF NOT EXISTS winner_monthly_rating_after INTEGER
-                """
-            )
-            await db.execute(
-                """
-                ALTER TABLE ranked_match_results
-                ADD COLUMN IF NOT EXISTS loser_monthly_rating_after INTEGER
-                """
-            )
+            await db.ensure_ranked_storage()
             await self.rebuild_current_month_rankings()
         except Exception as exc:
             print(f"Ranked DB persistence unavailable, falling back where possible: {type(exc).__name__}: {exc}")
@@ -870,7 +801,7 @@ class Ranked(commands.Cog):
             return match_id
 
         try:
-            match_id = await db.fetchval(f"SELECT nextval('{MATCH_ID_SEQUENCE_NAME}')")
+            match_id = await db.get_next_match_id()
         except Exception as exc:
             print(f"Ranked match-id fetch failed, falling back to memory: {type(exc).__name__}: {exc}")
             match_id = self.next_match_id
@@ -885,38 +816,7 @@ class Ranked(commands.Cog):
             return
 
         month_key = get_current_month_key()
-        await db.execute(
-            """
-            WITH stats AS (
-                SELECT winner_user_id AS user_id, month_key, world_points_awarded AS won_points, 1 AS wins, 0 AS losses
-                FROM ranked_match_results
-                WHERE month_key = $1
-                UNION ALL
-                SELECT loser_user_id AS user_id, month_key, 0 AS won_points, 0 AS wins, 1 AS losses
-                FROM ranked_match_results
-                WHERE month_key = $1
-            ),
-            aggregated AS (
-                SELECT
-                    user_id,
-                    month_key,
-                    COALESCE(SUM(won_points), 0)::INTEGER AS monthly_rating,
-                    COALESCE(SUM(wins), 0)::INTEGER AS monthly_wins,
-                    COALESCE(SUM(losses), 0)::INTEGER AS monthly_losses
-                FROM stats
-                GROUP BY user_id, month_key
-            )
-            INSERT INTO ranked_monthly_players(user_id, month_key, monthly_rating, monthly_wins, monthly_losses)
-            SELECT user_id, month_key, monthly_rating, monthly_wins, monthly_losses
-            FROM aggregated
-            ON CONFLICT (user_id, month_key) DO UPDATE
-            SET monthly_rating = EXCLUDED.monthly_rating,
-                monthly_wins = EXCLUDED.monthly_wins,
-                monthly_losses = EXCLUDED.monthly_losses,
-                updated_at = NOW()
-            """,
-            month_key,
-        )
+        await db.rebuild_current_month_rankings(month_key)
 
     async def persist_match_result(
         self,
@@ -933,7 +833,6 @@ class Ranked(commands.Cog):
         month_key = get_current_month_key()
         player_one_id, player_two_id = match.player_ids
         winner_id = result.winner_id
-        loser_id = player_two_id if winner_id == player_one_id else player_one_id
 
         guild = self.bot.get_guild(guild_id)
         player_one = guild.get_member(player_one_id) if guild is not None else None
@@ -941,199 +840,24 @@ class Ranked(commands.Cog):
         player_one_name = player_one.display_name if player_one is not None else None
         player_two_name = player_two.display_name if player_two is not None else None
 
-        async with db.acquire() as connection:
-            async with connection.transaction():
-                existing = await connection.fetchrow(
-                    """
-                    SELECT published_at
-                    FROM ranked_match_results
-                    WHERE match_id = $1
-                    """,
-                    match.match_id,
-                )
-                if existing is not None:
-                    return True, existing["published_at"] is not None
-
-                await connection.execute(
-                    f"""
-                    INSERT INTO ranked_players(user_id, last_known_name)
-                    VALUES($1, $2), ($3, $4)
-                    ON CONFLICT (user_id) DO UPDATE
-                    SET last_known_name = EXCLUDED.last_known_name,
-                        updated_at = NOW()
-                    """,
-                    player_one_id,
-                    player_one_name,
-                    player_two_id,
-                    player_two_name,
-                )
-                await connection.execute(
-                    f"""
-                    INSERT INTO ranked_monthly_players(user_id, month_key, last_known_name)
-                    VALUES($1, $2, $3), ($4, $5, $6)
-                    ON CONFLICT (user_id, month_key) DO UPDATE
-                    SET last_known_name = EXCLUDED.last_known_name,
-                        updated_at = NOW()
-                    """,
-                    player_one_id,
-                    month_key,
-                    player_one_name,
-                    player_two_id,
-                    month_key,
-                    player_two_name,
-                )
-                world_ratings = await connection.fetch(
-                    """
-                    SELECT user_id, world_rating
-                    FROM ranked_players
-                    WHERE user_id = ANY($1::BIGINT[])
-                    """,
-                    [player_one_id, player_two_id],
-                )
-                world_rating_map = {row["user_id"]: int(row["world_rating"]) for row in world_ratings}
-
-                monthly_ratings = await connection.fetch(
-                    """
-                    SELECT user_id, monthly_rating
-                    FROM ranked_monthly_players
-                    WHERE month_key = $1 AND user_id = ANY($2::BIGINT[])
-                    """,
-                    month_key,
-                    [player_one_id, player_two_id],
-                )
-                monthly_rating_map = {row["user_id"]: int(row["monthly_rating"]) for row in monthly_ratings}
-
-                winner_world_rating_before = world_rating_map[winner_id]
-                loser_world_rating_before = world_rating_map[loser_id]
-                winner_monthly_rating_before = monthly_rating_map[winner_id]
-                loser_monthly_rating_before = monthly_rating_map[loser_id]
-
-                world_points_awarded = calculate_elo_winner_delta(
-                    winner_world_rating_before,
-                    loser_world_rating_before,
-                )
-                world_points_deducted = -world_points_awarded
-                monthly_points_awarded = world_points_awarded
-                monthly_points_deducted = 0
-
-                winner_world_rating_after = winner_world_rating_before + world_points_awarded
-                loser_world_rating_after = loser_world_rating_before + world_points_deducted
-                winner_monthly_rating_after = winner_monthly_rating_before + monthly_points_awarded
-                loser_monthly_rating_after = loser_monthly_rating_before + monthly_points_deducted
-
-                await connection.execute(
-                    """
-                    INSERT INTO ranked_match_results(
-                        match_id,
-                        guild_id,
-                        queue_name,
-                        player_one_user_id,
-                        player_two_user_id,
-                        winner_user_id,
-                        loser_user_id,
-                        player_one_score,
-                        player_two_score,
-                        player_one_average,
-                        player_two_average,
-                        world_points_awarded,
-                        world_points_deducted,
-                        monthly_points_awarded,
-                        monthly_points_deducted,
-                        winner_world_rating_before,
-                        loser_world_rating_before,
-                        winner_world_rating_after,
-                        loser_world_rating_after,
-                        winner_monthly_rating_before,
-                        loser_monthly_rating_before,
-                        winner_monthly_rating_after,
-                        loser_monthly_rating_after,
-                        month_key,
-                        thread_id,
-                        submitted_by,
-                        confirmed_by,
-                        screenshot_url
-                    )
-                    VALUES(
-                        $1, $2, $3, $4, $5, $6, $7, $8, $9,
-                        $10, $11, $12, $13, $14, $15, $16, $17, $18,
-                        $19, $20, $21, $22, $23, $24, $25, $26, $27, $28
-                    )
-                    """,
-                    match.match_id,
-                    guild_id,
-                    match.queue_name,
-                    player_one_id,
-                    player_two_id,
-                    winner_id,
-                    loser_id,
-                    result.score[0],
-                    result.score[1],
-                    to_database_average(result.averages[player_one_id]),
-                    to_database_average(result.averages[player_two_id]),
-                    world_points_awarded,
-                    world_points_deducted,
-                    monthly_points_awarded,
-                    monthly_points_deducted,
-                    winner_world_rating_before,
-                    loser_world_rating_before,
-                    winner_world_rating_after,
-                    loser_world_rating_after,
-                    winner_monthly_rating_before,
-                    loser_monthly_rating_before,
-                    winner_monthly_rating_after,
-                    loser_monthly_rating_after,
-                    month_key,
-                    match.thread_id,
-                    result.submitted_by,
-                    confirmed_by,
-                    result.screenshot.url if result.screenshot is not None else None,
-                )
-                await connection.execute(
-                    """
-                    UPDATE ranked_players
-                    SET world_rating = world_rating + $1,
-                        world_wins = world_wins + 1,
-                        updated_at = NOW()
-                    WHERE user_id = $2
-                    """,
-                    world_points_awarded,
-                    winner_id,
-                )
-                await connection.execute(
-                    """
-                    UPDATE ranked_players
-                    SET world_rating = world_rating + $1,
-                        world_losses = world_losses + 1,
-                        updated_at = NOW()
-                    WHERE user_id = $2
-                    """,
-                    world_points_deducted,
-                    loser_id,
-                )
-                await connection.execute(
-                    """
-                    UPDATE ranked_monthly_players
-                    SET monthly_rating = monthly_rating + $1,
-                        monthly_wins = monthly_wins + 1,
-                        updated_at = NOW()
-                    WHERE user_id = $2 AND month_key = $3
-                    """,
-                    monthly_points_awarded,
-                    winner_id,
-                    month_key,
-                )
-                await connection.execute(
-                    """
-                    UPDATE ranked_monthly_players
-                    SET monthly_losses = monthly_losses + 1,
-                        updated_at = NOW()
-                    WHERE user_id = $1 AND month_key = $2
-                    """,
-                    loser_id,
-                    month_key,
-                )
-
-        return True, False
+        return await db.persist_ranked_match_result(
+            match_id=match.match_id,
+            guild_id=guild_id,
+            queue_name=match.queue_name,
+            player_one_id=player_one_id,
+            player_two_id=player_two_id,
+            player_one_name=player_one_name,
+            player_two_name=player_two_name,
+            winner_id=winner_id,
+            score=result.score,
+            player_one_average=to_database_average(result.averages[player_one_id]),
+            player_two_average=to_database_average(result.averages[player_two_id]),
+            month_key=month_key,
+            thread_id=match.thread_id,
+            submitted_by=result.submitted_by,
+            confirmed_by=confirmed_by,
+            screenshot_url=result.screenshot.url if result.screenshot is not None else None,
+        )
 
     async def mark_match_result_published(self, match_id: int, channel_id: int, message_id: int) -> None:
         db = getattr(self.bot, "db", None)
@@ -1141,18 +865,7 @@ class Ranked(commands.Cog):
             return
 
         try:
-            await db.execute(
-                """
-                UPDATE ranked_match_results
-                SET published_at = NOW(),
-                    results_channel_id = $1,
-                    results_message_id = $2
-                WHERE match_id = $3
-                """,
-                channel_id,
-                message_id,
-                match_id,
-            )
+            await db.mark_match_result_published(match_id, channel_id, message_id)
         except Exception as exc:
             print(f"Ranked match-result publish tracking failed: {type(exc).__name__}: {exc}")
 
@@ -1161,24 +874,7 @@ class Ranked(commands.Cog):
         if db is None:
             return []
 
-        rows = await db.fetch(
-            """
-            SELECT user_id, world_rating, world_wins, world_losses
-            FROM ranked_players
-            ORDER BY world_rating DESC, world_wins DESC, user_id ASC
-            LIMIT $1
-            """,
-            limit,
-        )
-        return [
-            (
-                int(row["user_id"]),
-                int(row["world_rating"]),
-                int(row["world_wins"]),
-                int(row["world_losses"]),
-            )
-            for row in rows
-        ]
+        return await db.fetch_world_ranking(limit)
 
     async def fetch_monthly_ranking(self, limit: int = 10) -> list[tuple[int, int, int, int]]:
         db = getattr(self.bot, "db", None)
@@ -1186,26 +882,7 @@ class Ranked(commands.Cog):
             return []
 
         month_key = get_current_month_key()
-        rows = await db.fetch(
-            """
-            SELECT user_id, monthly_rating, monthly_wins, monthly_losses
-            FROM ranked_monthly_players
-            WHERE month_key = $1
-            ORDER BY monthly_rating DESC, monthly_wins DESC, user_id ASC
-            LIMIT $2
-            """,
-            month_key,
-            limit,
-        )
-        return [
-            (
-                int(row["user_id"]),
-                int(row["monthly_rating"]),
-                int(row["monthly_wins"]),
-                int(row["monthly_losses"]),
-            )
-            for row in rows
-        ]
+        return await db.fetch_monthly_ranking(month_key, limit)
 
     def get_or_create_panel_state(self, message: discord.Message) -> PanelState:
         panel_state = self.panel_states.get(message.id)
@@ -1422,7 +1099,7 @@ class Ranked(commands.Cog):
         if current_message_id is not None and current_message_id in self.panel_states and interaction is not None:
             await interaction.response.edit_message(
                 embed=self.build_embed_for_panel(current_message_id),
-                view=QueuePanel(self),
+                view=QueuePanel(self, self.panel_states[current_message_id]),
             )
         elif interaction is not None and not interaction.response.is_done():
             await interaction.response.send_message("Queue aktualisiert.", ephemeral=True)
@@ -1440,7 +1117,7 @@ class Ranked(commands.Cog):
                 continue
 
             try:
-                await message.edit(embed=self.build_embed_for_panel(message_id), view=QueuePanel(self))
+                await message.edit(embed=self.build_embed_for_panel(message_id), view=QueuePanel(self, panel_state))
             except (discord.NotFound, discord.Forbidden, discord.HTTPException):
                 stale_message_ids.append(message_id)
 
@@ -1478,22 +1155,25 @@ class Ranked(commands.Cog):
         await interaction.response.send_modal(ResultModal(self, match, interaction.guild))
 
     @app_commands.command(name="queue_panel", description="Sendet das Queue-Panel in den Chat")
+    @has_permissions(administrator=True)
     @app_commands.guild_only()
     async def queue_panel(self, interaction: discord.Interaction) -> None:
         panel_state = PanelState(channel_id=interaction.channel_id)
         embed = build_queue_embed(panel_state, sorted(self.active_matches.values(), key=lambda match: match.match_id))
-        view = QueuePanel(self)
+        view = QueuePanel(self, panel_state)
 
         await interaction.response.send_message(embed=embed, view=view)
         message = await interaction.original_response()
         self.panel_states[message.id] = panel_state
 
     @app_commands.command(name="result", description="Oeffnet im Match-Thread das Ergebnisformular")
+    @has_permissions(administrator=True)
     @app_commands.guild_only()
     async def result(self, interaction: discord.Interaction) -> None:
         await self.open_result_modal(interaction)
 
     @app_commands.command(name="world_ranking", description="Zeigt das aktuelle World Ranking")
+    @has_permissions(administrator=True)
     @app_commands.guild_only()
     async def world_ranking(self, interaction: discord.Interaction) -> None:
         if getattr(self.bot, "db", None) is None:
@@ -1509,6 +1189,7 @@ class Ranked(commands.Cog):
         await interaction.response.send_message(embed=embed)
 
     @app_commands.command(name="monthly_ranking", description="Zeigt das aktuelle Monatsranking")
+    @has_permissions(administrator=True)
     @app_commands.guild_only()
     async def monthly_ranking(self, interaction: discord.Interaction) -> None:
         if getattr(self.bot, "db", None) is None:

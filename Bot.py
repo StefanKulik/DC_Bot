@@ -27,6 +27,12 @@ class Bot(commands.Bot):
         await self.tree.sync()
         print("-----")
 
+    async def close(self) -> None:
+        db = getattr(self, "db", None)
+        if db is not None:
+            await db.close()
+        await super().close()
+
     async def on_ready(self) -> None:
         print(f"{self.user} is ready and online!")
         await self.change_presence(

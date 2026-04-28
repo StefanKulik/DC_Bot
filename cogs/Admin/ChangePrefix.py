@@ -27,7 +27,7 @@ class Prefix(commands.Cog):
             await send_interaction_message(interaction, content="Die Datenbank ist aktuell nicht verfuegbar.", ephemeral=True)
             return
 
-        await self.bot.db.execute("UPDATE guilds SET prefix = $1 WHERE guild_id = $2", prefix, interaction.guild.id)
+        await self.bot.db.set_prefix(interaction.guild.id, prefix)
         embed = discord.Embed(
             title=f"Prefix geaendert zu '{prefix}'",
             description="Schreibe /changeprefix <prefix> zum erneuten Aendern.",

@@ -1,14 +1,14 @@
 import io
 from pathlib import Path
 
-import asyncpg
 import discord
 
 from discord import app_commands
 from discord.ext import commands
 from PIL import Image, ImageDraw, ImageFont
 
-from config.Environment import DATABASE_URL, DEFAULT_PREFIX
+from config.Environment import DEFAULT_PREFIX
+from config.SqliteStore import SqliteDatabase
 
 
 class RoleButton(discord.ui.Button):
@@ -76,20 +76,15 @@ async def load_extensions(bot: commands.Bot) -> None:
 
 
 async def create_db_pool(bot: commands.Bot) -> None:
-    print("Connect to database...")
+    print("Connect to SQLite database...")
     try:
-        bot.db = await asyncpg.create_pool(
-            dsn=DATABASE_URL,
-            min_size=1,
-            max_size=5,
-            command_timeout=30,
-            server_settings={"search_path": "discord"},
-        )
+        bot.db = SqliteDatabase("datenbank.db")
+        await bot.db.connect()
     except Exception as exc:
         bot.db = None
         print(f"Database unavailable, continuing without DB features: {type(exc).__name__}: {exc}")
     else:
-        print("Connection successful")
+        print("SQLite database connected")
 
 
 async def _resolve_prefix(bot: commands.Bot, guild_id: int) -> str:
@@ -98,11 +93,7 @@ async def _resolve_prefix(bot: commands.Bot, guild_id: int) -> str:
         return DEFAULT_PREFIX
 
     try:
-        prefix = await db.fetch("SELECT prefix FROM guilds WHERE guild_id = $1", guild_id)
-        if len(prefix) == 0:
-            await db.execute("INSERT INTO guilds(guild_id, prefix) VALUES($1, $2)", guild_id, DEFAULT_PREFIX)
-            return DEFAULT_PREFIX
-        return prefix[0].get("prefix", DEFAULT_PREFIX)
+        return await db.get_prefix(guild_id)
     except Exception:
         return DEFAULT_PREFIX
 
@@ -128,12 +119,7 @@ async def get_autorole(bot: commands.Bot, member: discord.Member, guild: discord
         return None
 
     try:
-        if not member.bot:
-            role_id = await db.fetchrow("SELECT memberrole_id FROM autorole WHERE guild_id = $1", guild.id)
-            return role_id.get("memberrole_id") if role_id else None
-
-        role_id = await db.fetchrow("SELECT botrole_id FROM autorole WHERE guild_id = $1", guild.id)
-        return role_id.get("botrole_id") if role_id else None
+        return await db.get_autorole(guild.id, is_bot=member.bot)
     except Exception:
         return None
 

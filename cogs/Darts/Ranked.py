@@ -117,6 +117,7 @@ async def build_player_profiles(
     world_stats = {user_id: (rating, wins, losses) for user_id, rating, wins, losses in player_data}
     monthly_stats = {user_id: (rating, wins, losses) for user_id, rating, wins, losses in monthly_data}
     player_ids = sorted(set(world_stats) | set(monthly_stats), key=lambda user_id: world_ranks.get(user_id, 999999))
+    current_month = get_current_ranked_month_key().isoformat()
 
     profiles: dict[str, dict] = {}
     db = getattr(bot, "db", None)
@@ -125,11 +126,15 @@ async def build_player_profiles(
         name, avatar = await get_player_display(user_id)
         world_rating, world_wins, world_losses = world_stats.get(user_id, (1000, 0, 0))
         monthly_rating, monthly_wins, monthly_losses = monthly_stats.get(user_id, (0, 0, 0))
-        total = world_wins + world_losses
         averages: list[float] = []
         matches: list[dict] = []
+        monthly_rating_from_latest_match = False
 
         if db is not None:
+            world_wins = 0
+            world_losses = 0
+            monthly_wins = 0
+            monthly_losses = 0
             async with db._lock:
                 rows = db.connection.execute(
                     """
@@ -139,7 +144,7 @@ async def build_player_profiles(
                            world_points_awarded, world_points_deducted,
                            winner_world_rating_after, loser_world_rating_after,
                            winner_monthly_rating_after, loser_monthly_rating_after,
-                           queue_name, match_id
+                           queue_name, match_id, month_key
                     FROM ranked_match_results
                     WHERE player_one_user_id = ? OR player_two_user_id = ?
                     ORDER BY match_id DESC
@@ -152,6 +157,18 @@ async def build_player_profiles(
                 opponent_id = int(row["player_two_user_id"] if is_player_one else row["player_one_user_id"])
                 opponent_name, _opponent_avatar = await get_player_display(opponent_id)
                 won = int(row["winner_user_id"]) == user_id
+                if won:
+                    world_wins += 1
+                else:
+                    world_losses += 1
+
+                is_current_month = row["month_key"] == current_month
+                if is_current_month:
+                    if won:
+                        monthly_wins += 1
+                    else:
+                        monthly_losses += 1
+
                 player_average = row["player_one_average"] if is_player_one else row["player_two_average"]
                 parsed_average = parse_stored_average(player_average)
                 if parsed_average is not None:
@@ -177,13 +194,19 @@ async def build_player_profiles(
                     if won:
                         if row["winner_world_rating_after"] is not None:
                             world_rating = int(row["winner_world_rating_after"])
-                        if row["winner_monthly_rating_after"] is not None:
-                            monthly_rating = int(row["winner_monthly_rating_after"])
                     else:
                         if row["loser_world_rating_after"] is not None:
                             world_rating = int(row["loser_world_rating_after"])
-                        if row["loser_monthly_rating_after"] is not None:
-                            monthly_rating = int(row["loser_monthly_rating_after"])
+
+                if is_current_month and not monthly_rating_from_latest_match:
+                    if won and row["winner_monthly_rating_after"] is not None:
+                        monthly_rating = int(row["winner_monthly_rating_after"])
+                        monthly_rating_from_latest_match = True
+                    elif not won and row["loser_monthly_rating_after"] is not None:
+                        monthly_rating = int(row["loser_monthly_rating_after"])
+                        monthly_rating_from_latest_match = True
+
+        total = world_wins + world_losses
 
         profiles[str(user_id)] = {
             "userId": user_id,

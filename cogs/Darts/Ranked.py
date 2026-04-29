@@ -122,7 +122,7 @@ async def build_player_profiles(
     db = getattr(bot, "db", None)
 
     for user_id in player_ids:
-        name, avatar = get_player_display(user_id)
+        name, avatar = await get_player_display(user_id)
         world_rating, world_wins, world_losses = world_stats.get(user_id, (1000, 0, 0))
         monthly_rating, monthly_wins, monthly_losses = monthly_stats.get(user_id, (0, 0, 0))
         total = world_wins + world_losses
@@ -137,6 +137,8 @@ async def build_player_profiles(
                            player_one_score, player_two_score,
                            player_one_average, player_two_average,
                            world_points_awarded, world_points_deducted,
+                           winner_world_rating_after, loser_world_rating_after,
+                           winner_monthly_rating_after, loser_monthly_rating_after,
                            queue_name, match_id
                     FROM ranked_match_results
                     WHERE player_one_user_id = ? OR player_two_user_id = ?
@@ -145,10 +147,10 @@ async def build_player_profiles(
                     (user_id, user_id),
                 ).fetchall()
 
-            for row in rows:
+            for row_index, row in enumerate(rows):
                 is_player_one = int(row["player_one_user_id"]) == user_id
                 opponent_id = int(row["player_two_user_id"] if is_player_one else row["player_one_user_id"])
-                opponent_name, _opponent_avatar = get_player_display(opponent_id)
+                opponent_name, _opponent_avatar = await get_player_display(opponent_id)
                 won = int(row["winner_user_id"]) == user_id
                 player_average = row["player_one_average"] if is_player_one else row["player_two_average"]
                 parsed_average = parse_stored_average(player_average)
@@ -170,6 +172,18 @@ async def build_player_profiles(
                             "queue": row["queue_name"],
                         }
                     )
+
+                if row_index == 0:
+                    if won:
+                        if row["winner_world_rating_after"] is not None:
+                            world_rating = int(row["winner_world_rating_after"])
+                        if row["winner_monthly_rating_after"] is not None:
+                            monthly_rating = int(row["winner_monthly_rating_after"])
+                    else:
+                        if row["loser_world_rating_after"] is not None:
+                            world_rating = int(row["loser_world_rating_after"])
+                        if row["loser_monthly_rating_after"] is not None:
+                            monthly_rating = int(row["loser_monthly_rating_after"])
 
         profiles[str(user_id)] = {
             "userId": user_id,
@@ -195,22 +209,32 @@ async def build_player_profiles(
 async def generate_html(bot: commands.Bot):
     guild = bot.guilds[0] if bot.guilds else None
 
-    def get_player_display(user_id: int) -> tuple[str, str]:
+    async def get_player_display(user_id: int) -> tuple[str, str]:
         name = f"User {user_id}"
         avatar = "https://cdn.discordapp.com/embed/avatars/0.png"
 
-        if guild:
-            member = guild.get_member(user_id)
-            if member:
-                name = member.display_name
-                avatar = member.display_avatar.url
-        elif db is not None:
+        row = None
+        if db is not None:
             row = db.connection.execute(
                 "SELECT last_known_name FROM ranked_players WHERE user_id = ?",
                 (user_id,),
             ).fetchone()
-            if row is not None and row["last_known_name"]:
+
+        if guild:
+            member = guild.get_member(user_id)
+            if member is None:
+                try:
+                    member = await guild.fetch_member(user_id)
+                except (discord.NotFound, discord.Forbidden, discord.HTTPException):
+                    member = None
+
+            if member is not None:
+                name = member.display_name
+                avatar = member.display_avatar.url
+            elif row is not None and row["last_known_name"]:
                 name = str(row["last_known_name"])
+        elif row is not None and row["last_known_name"]:
+            name = str(row["last_known_name"])
 
         return name, avatar
 
@@ -226,12 +250,7 @@ async def generate_html(bot: commands.Bot):
         player_data = await fetch_world_ranking(bot)
         monthly_data = await fetch_monthly_ranking(bot)
 
-    player_profiles = await build_player_profiles(bot, player_data, monthly_data, get_player_display)
-
     top3 = player_data[:3]
-
-    with open(PLAYER_DATA_FILE, "w", encoding="utf-8") as f:
-        json.dump({"players": player_profiles}, f, ensure_ascii=False, indent=2)
 
     # =============================
     # HTML START
@@ -247,7 +266,7 @@ async def generate_html(bot: commands.Bot):
 
     .podium {display:flex;justify-content:center;gap:30px;margin-top:30px;}
 
-    .card {background:#161b22;padding:20px;border-radius:20px;width:180px;transition:0.3s;}
+    .card {background:#161b22;padding:20px;border-radius:20px;width:180px;transition:0.3s;cursor:pointer;}
     .card:hover {transform:scale(1.05);}
 
     .gold {border:2px solid gold;}
@@ -259,6 +278,7 @@ async def generate_html(bot: commands.Bot):
     table {width:100%;border-collapse:collapse;margin-top:20px;}
     td {padding:10px;border-bottom:1px solid #222;}
 
+    tr[data-player-id] {cursor:pointer;}
     tr:hover {background:#161b22;}
 
     a {color:#58a6ff;text-decoration:none;font-weight:bold;}
@@ -292,10 +312,10 @@ async def generate_html(bot: commands.Bot):
     classes = ["gold", "silver", "bronze"]
 
     for i, (user_id, world_rating, wins, losses) in enumerate(top3):
-        name, avatar = get_player_display(user_id)
+        name, avatar = await get_player_display(user_id)
 
         html += f"""
-        <div class='card {classes[i]}'>
+        <div class='card {classes[i]}' data-player-id="{user_id}">
         <img src="{avatar}" class="avatar"><br>
         <h2>#{i+1}</h2>
         <button type="button" class="player-link" data-player-id="{user_id}">{escape(name)}</button>
@@ -316,10 +336,10 @@ async def generate_html(bot: commands.Bot):
     html += "<div style='width:40%'><h2>🌍 World Ranking</h2><table>"
 
     for i, (user_id, world_rating, wins, losses) in enumerate(player_data, 1):
-        name, avatar = get_player_display(user_id)
+        name, avatar = await get_player_display(user_id)
 
         html += f"""
-        <tr>
+        <tr data-player-id="{user_id}">
         <td>{i}</td>
         <td><img src="{avatar}" class="avatar"></td>
         <td><button type="button" class="player-link" data-player-id="{user_id}">{escape(name)}</button></td>
@@ -334,10 +354,10 @@ async def generate_html(bot: commands.Bot):
     html += "<div style='width:40%'><h2>🗓️ Monatsranking</h2><table>"
 
     for i, (user_id, monthly_rating, wins, losses) in enumerate(monthly_data, 1):
-        name, avatar = get_player_display(user_id)
+        name, avatar = await get_player_display(user_id)
 
         html += f"""
-        <tr>
+        <tr data-player-id="{user_id}">
         <td>{i}</td>
         <td><img src="{avatar}" class="avatar"></td>
         <td><button type="button" class="player-link" data-player-id="{user_id}">{escape(name)}</button></td>
@@ -349,6 +369,14 @@ async def generate_html(bot: commands.Bot):
     html += "</table></div>"
 
     html += "</div>"
+
+    # =============================
+    # Player Profiles
+    # =============================
+
+    player_profiles = await build_player_profiles(bot, player_data, monthly_data, get_player_display)
+    with open(PLAYER_DATA_FILE, "w", encoding="utf-8") as f:
+        json.dump({"players": player_profiles}, f, ensure_ascii=False, indent=2)
 
     # =============================
     # SAVE
@@ -388,13 +416,14 @@ async def generate_html(bot: commands.Bot):
         return value ? "#" + value : "N/A";
     }
 
-    function openPlayerModal(userId) {
+    function openPlayerModal(userId, fallbackAvatar) {
         const player = playerProfiles[String(userId)];
         if (!player) {
             return;
         }
 
-        document.getElementById("modal-avatar").src = player.avatar;
+        const jsonAvatarIsDefault = player.avatar && player.avatar.includes("/embed/avatars/0.png");
+        document.getElementById("modal-avatar").src = jsonAvatarIsDefault && fallbackAvatar ? fallbackAvatar : player.avatar;
         text("modal-player-name", player.name);
         text("modal-ranks", "World " + rankText(player.worldRank) + " | Monat " + rankText(player.monthlyRank));
         text("modal-world-rating", player.worldRating + " ELO");
@@ -438,9 +467,13 @@ async def generate_html(bot: commands.Bot):
         .catch(error => console.error("players.json konnte nicht geladen werden", error));
 
     document.addEventListener("click", event => {
-        const playerButton = event.target.closest("[data-player-id]");
-        if (playerButton) {
-            openPlayerModal(playerButton.dataset.playerId);
+        const playerTarget = event.target.closest("[data-player-id]");
+        if (playerTarget) {
+            const avatar =
+                playerTarget.querySelector("img")?.src ||
+                playerTarget.closest("tr")?.querySelector("img")?.src ||
+                playerTarget.closest(".card")?.querySelector("img")?.src;
+            openPlayerModal(playerTarget.dataset.playerId, avatar);
             return;
         }
 

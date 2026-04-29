@@ -40,7 +40,7 @@ class Bot(commands.Bot):
         await self.change_presence(
             activity=discord.Activity(
                 type=discord.ActivityType.watching,
-                name=f"{VERSION} by PeeT_Tea#2408",
+                name=f"{VERSION} by peet_tea",
             )
         )
 

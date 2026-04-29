@@ -1,5 +1,7 @@
 import io
 from pathlib import Path
+from datetime import date, datetime, timezone
+from typing import Any
 
 import discord
 
@@ -185,6 +187,134 @@ async def get_autorole(bot: commands.Bot, member: discord.Member, guild: discord
         return await db.get_autorole(guild.id, is_bot=member.bot)
     except Exception:
         return None
+
+
+# ranked-bot-db-zugriff
+def get_current_ranked_month_key() -> date:
+    return datetime.now(timezone.utc).date().replace(day=1)
+
+
+# ranked-bot-db-zugriff
+def to_ranked_database_average(value: str) -> str:
+    return value.replace(",", ".")
+
+
+# ranked-bot-db-zugriff
+async def ensure_ranked_storage(bot: commands.Bot) -> None:
+    db = getattr(bot, "db", None)
+    if db is None:
+        return
+
+    try:
+        await db.ensure_ranked_storage()
+        await rebuild_current_month_rankings(bot)
+    except Exception as exc:
+        print(f"Ranked DB persistence unavailable, falling back where possible: {type(exc).__name__}: {exc}")
+
+
+# ranked-bot-db-zugriff
+async def get_next_ranked_match_id(bot: commands.Bot, fallback_match_id: int) -> tuple[int, int]:
+    db = getattr(bot, "db", None)
+    if db is None:
+        return fallback_match_id, fallback_match_id + 1
+
+    try:
+        match_id = await db.get_next_match_id()
+    except Exception as exc:
+        print(f"Ranked match-id fetch failed, falling back to memory: {type(exc).__name__}: {exc}")
+        return fallback_match_id, fallback_match_id + 1
+
+    return int(match_id), fallback_match_id
+
+
+# ranked-bot-db-zugriff
+async def rebuild_current_month_rankings(bot: commands.Bot) -> None:
+    db = getattr(bot, "db", None)
+    if db is None:
+        return
+
+    month_key = get_current_ranked_month_key()
+    await db.rebuild_current_month_rankings(month_key)
+
+
+# ranked-bot-db-zugriff
+async def persist_ranked_match_result(
+    bot: commands.Bot,
+    match: Any,
+    result: Any,
+    *,
+    guild_id: int,
+    confirmed_by: int,
+) -> tuple[bool, bool]:
+    db = getattr(bot, "db", None)
+    if db is None:
+        return False, False
+
+    month_key = get_current_ranked_month_key()
+    player_one_id, player_two_id = match.player_ids
+    winner_id = result.winner_id
+
+    guild = bot.get_guild(guild_id)
+    player_one = guild.get_member(player_one_id) if guild is not None else None
+    player_two = guild.get_member(player_two_id) if guild is not None else None
+    player_one_name = player_one.display_name if player_one is not None else None
+    player_two_name = player_two.display_name if player_two is not None else None
+
+    return await db.persist_ranked_match_result(
+        match_id=match.match_id,
+        guild_id=guild_id,
+        queue_name=match.queue_name,
+        player_one_id=player_one_id,
+        player_two_id=player_two_id,
+        player_one_name=player_one_name,
+        player_two_name=player_two_name,
+        winner_id=winner_id,
+        score=result.score,
+        player_one_average=to_ranked_database_average(result.averages[player_one_id]),
+        player_two_average=to_ranked_database_average(result.averages[player_two_id]),
+        month_key=month_key,
+        thread_id=match.thread_id,
+        submitted_by=result.submitted_by,
+        confirmed_by=confirmed_by,
+        screenshot_url=result.screenshot.url if result.screenshot is not None else None,
+    )
+
+
+# ranked-bot-db-zugriff
+async def mark_ranked_match_result_published(
+    bot: commands.Bot,
+    match_id: int,
+    channel_id: int,
+    message_id: int,
+) -> None:
+    db = getattr(bot, "db", None)
+    if db is None:
+        return
+
+    try:
+        await db.mark_match_result_published(match_id, channel_id, message_id)
+    except Exception as exc:
+        print(f"Ranked match-result publish tracking failed: {type(exc).__name__}: {exc}")
+
+
+# ranked-bot-db-zugriff
+async def fetch_world_ranking(bot: commands.Bot) -> list[tuple[int, int, int, int]]:
+    db = getattr(bot, "db", None)
+    if db is None:
+        return []
+
+    return await db.fetch_world_ranking()
+
+
+# ranked-bot-db-zugriff
+async def fetch_monthly_ranking(bot: commands.Bot, month_key: int=None) -> list[tuple[int, int, int, int]]:
+    db = getattr(bot, "db", None)
+    if db is None:
+        return []
+
+    if month_key is None:
+        month_key = get_current_ranked_month_key()
+    return await db.fetch_monthly_ranking(month_key)
 
 
 async def handle_app_command_error(

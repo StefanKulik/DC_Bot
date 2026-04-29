@@ -1,7 +1,8 @@
 from __future__ import annotations
 
+import os
 from dataclasses import dataclass, field
-from datetime import date, datetime, timezone
+from datetime import datetime
 import re
 
 import discord
@@ -9,6 +10,18 @@ from discord import app_commands
 from discord.ext import commands
 from discord.ext.commands import has_permissions
 
+from config.Util import (
+    ensure_ranked_storage,
+    fetch_monthly_ranking,
+    fetch_world_ranking,
+    get_next_ranked_match_id,
+    mark_ranked_match_result_published,
+    persist_ranked_match_result,
+)
+
+# =============================
+# Konstanten und Parser-Patterns fuer Queue, Threads und Ergebnisse.
+# =============================
 QUEUE_EMPTY_TEXT = "kein spieler"
 MATCHES_FIELD_NAME = ":fire: Aktuelle Matches"
 RESULTS_CHANNEL_ID = 1496937438025879723
@@ -17,6 +30,285 @@ THREAD_SAFE_PATTERN = re.compile(r"[^a-z0-9-]")
 SCORE_PATTERN = re.compile(r"^\s*(\d{1,2})\s*[:\-]\s*(\d{1,2})\s*$")
 AVERAGE_PATTERN = re.compile(r"^\s*\d+(?:[.,]\d+)?\s*$")
 
+
+# =============================
+# WEBSITE - generate static html for displaying ranking on web
+# =============================
+
+def upload():
+    os.system("git add .")
+    os.system('git commit -m "update leaderboard"')
+    os.system("git push")
+
+async def generate_html(bot: commands.Bot):
+    guild = bot.guilds[0] if bot.guilds else None
+
+    # =============================
+    # DATA
+    # =============================
+
+    player_data = await fetch_world_ranking(bot)
+    monthly_data = await fetch_monthly_ranking(bot)
+
+    top3 = player_data[:3]
+    rest = player_data[3:]
+
+    # =============================
+    # HTML START
+    # =============================
+
+    html = """
+    <html>
+    <head>
+    <style>
+    body {background:#0b0f14;color:white;font-family:Segoe UI;text-align:center;}
+
+    .container {display:flex;justify-content:center;gap:50px;margin-top:40px;}
+
+    .podium {display:flex;justify-content:center;gap:30px;margin-top:30px;}
+
+    .card {background:#161b22;padding:20px;border-radius:20px;width:180px;transition:0.3s;}
+    .card:hover {transform:scale(1.05);}
+
+    .gold {border:2px solid gold;}
+    .silver {border:2px solid silver;}
+    .bronze {border:2px solid #cd7f32;}
+
+    .avatar {width:70px;height:70px;border-radius:50%;}
+
+    table {width:100%;border-collapse:collapse;margin-top:20px;}
+    td {padding:10px;border-bottom:1px solid #222;}
+
+    tr:hover {background:#161b22;}
+
+    a {color:#58a6ff;text-decoration:none;font-weight:bold;}
+    </style>
+    </head>
+
+    <body>
+
+    <h1>🏆 RANKED DARTS Dashboard</h1>
+    """
+
+    # =============================
+    # PODIUM
+    # =============================
+
+    html += "<div class='podium'>"
+    classes = ["gold", "silver", "bronze"]
+
+    for i, (user_id, world_rating) in enumerate(top3):
+
+        name = f"User {user_id}"
+        avatar = "https://cdn.discordapp.com/embed/avatars/0.png"
+
+        if guild:
+            m = guild.get_member(user_id)
+            if m:
+                name = m.display_name
+                avatar = m.display_avatar.url
+
+        html += f"""
+        <div class='card {classes[i]}'>
+        <img src="{avatar}" class="avatar"><br>
+        <h2>#{i+1}</h2>
+        <a href='player_{user_id}.html'>{name}</a>
+        <p>{world_rating} ELO</p>
+        </div>
+        """
+
+    html += "</div>"
+
+    # =============================
+    # TABLES
+    # =============================
+
+    html += "<div class='container'>"
+
+    # 🌍 WORLD
+    html += "<div style='width:40%'><h2>🌍 World Ranking</h2><table>"
+
+    for i, (user_id, world_rating) in enumerate(player_data, 1):
+
+        name = f"User {user_id}"
+        avatar = "https://cdn.discordapp.com/embed/avatars/0.png"
+
+        if guild:
+            m = guild.get_member(user_id)
+            if m:
+                name = m.display_name
+                avatar = m.display_avatar.url
+
+        html += f"""
+        <tr>
+        <td>{i}</td>
+        <td><img src="{avatar}" class="avatar"></td>
+        <td><a href='player_{user_id}.html'>{name}</a></td>
+        <td>{world_rating}</td>
+        </tr>
+        """
+
+    html += "</table></div>"
+
+    # 🗓️ MONTHLY
+    html += "<div style='width:40%'><h2>🗓️ Monatsranking</h2><table>"
+
+    for i, (user_id, monthly_rating) in enumerate(monthly_data, 1):
+
+        name = f"User {user_id}"
+        avatar = "https://cdn.discordapp.com/embed/avatars/0.png"
+
+        if guild:
+            m = guild.get_member(user_id)
+            if m:
+                name = m.display_name
+                avatar = m.display_avatar.url
+
+        html += f"""
+        <tr>
+        <td>{i}</td>
+        <td><img src="{avatar}" class="avatar"></td>
+        <td><a href='player_{user_id}.html'>{name}</a></td>
+        <td>{monthly_rating}</td>
+        </tr>
+        """
+
+    html += "</table></div>"
+
+    html += "</div>"
+
+    # =============================
+    # PLAYER PROFILES
+    # =============================
+
+    # for i, (user_id, world_rating) in enumerate(player_data, 1):
+    #
+    #     name = f"User {user_id}"
+    #     avatar = "https://cdn.discordapp.com/embed/avatars/0.png"
+    #
+    #     if guild:
+    #         m = guild.get_member(user_id)
+    #         if m:
+    #             name = m.display_name
+    #             avatar = m.display_avatar.url
+    #
+    #     # Stats
+    #     c.execute("SELECT COUNT(*) FROM matches WHERE winner_id=? AND status='confirmed'", (user_id,))
+    #     wins = c.fetchone()[0]
+    #
+    #     c.execute("SELECT COUNT(*) FROM matches WHERE loser_id=? AND status='confirmed'", (user_id,))
+    #     losses = c.fetchone()[0]
+    #
+    #     total = wins + losses
+    #     winrate = round((wins / total) * 100, 1) if total > 0 else 0
+    #
+    #     # Monthly rank
+    #     c.execute("SELECT user_id FROM monthly_points WHERE month=? ORDER BY monthly_rating DESC", (month,))
+    #     monthly = [r[0] for r in c.fetchall()]
+    #     monthly_rank = monthly.index(user_id) + 1 if user_id in monthly else "N/A"
+    #
+    #     # Average
+    #     c.execute("""
+    #         SELECT winner_id, winner_avg, loser_id, loser_avg
+    #         FROM matches
+    #         WHERE status='confirmed'
+    #         AND (winner_id=? OR loser_id=?)
+    #     """, (user_id, user_id))
+    #
+    #     rows = c.fetchall()
+    #
+    #     avgs = []
+    #
+    #     for winner_id, winner_avg, loser_id, loser_avg in rows:
+    #
+    #         # Spieler ist Gewinner
+    #         if winner_id == user_id and winner_avg is not None:
+    #             avgs.append(float(winner_avg))
+    #
+    #         # Spieler ist Verlierer
+    #         if loser_id == user_id and loser_avg is not None:
+    #             avgs.append(float(loser_avg))
+    #
+    #     # FINALER AVERAGE
+    #     overall_avg = round(sum(avgs) / len(avgs), 2) if avgs else 0
+    #
+    #     history = ""
+    #
+    #     for p1, p2, winner, score, platform, wa, la, elo_gain, mid in c.execute("""
+    #         SELECT player1_id, player2_id, winner_id, score, platform, winner_avg, loser_avg, elo_change, id
+    #         FROM matches
+    #         WHERE status='confirmed'
+    #         AND (player1_id=? OR player2_id=?)
+    #         ORDER BY id DESC
+    #         LIMIT 5
+    #     """, (user_id, user_id)):
+    #
+    #         opponent_id = p2 if user_id == p1 else p1
+    #
+    #         name_opponent = f"User {opponent_id}"
+    #         if guild:
+    #             m2 = guild.get_member(opponent_id)
+    #             if m2:
+    #                 name_opponent = m2.display_name
+    #
+    #         elo_gain = elo_gain if elo_gain else 0
+    #
+    #         if winner == user_id:
+    #             result = "🟢 Win"
+    #             match_avg = wa
+    #             elo_text = f"+{elo_gain}"
+    #         else:
+    #             result = "🔴 Loss"
+    #             match_avg = la
+    #             elo_text = f"-{elo_gain}"
+    #
+    #         history += f"<li>{result} vs {name_opponent} ({score}) → {match_avg} ({elo_text} ELO)</li>"
+    #
+    #     profile_html = f"""
+    #     <html>
+    #     <body style='background:#0b0f14;color:white;font-family:Segoe UI;text-align:center'>
+    #
+    #     <div style="background:#161b22;padding:30px;margin:auto;margin-top:50px;width:400px;border-radius:20px;">
+    #
+    #     <img src="{avatar}" style="width:120px;height:120px;border-radius:50%;">
+    #
+    #     <h1>{name}</h1>
+    #
+    #     <p>🏆 Rating: {world_rating}</p>
+    #     <p>🌍 Rank: {i}</p>
+    #     <p>🗓️ Monatsrang: {monthly_rank}</p>
+    #
+    #     <p>🎯 Spiele: {total}</p>
+    #     <p>📈 Winrate: {winrate}%</p>
+    #
+    #     <p>🎯 Ø Average: {overall_avg}</p>
+    #
+    #     <h3>🔥 Letzte Matches</h3>
+    #     <ul>{history}</ul>
+    #
+    #     <br><a href="leaderboard.html">⬅ Zurück</a>
+    #
+    #     </div>
+    #     </body>
+    #     </html>
+    #     """
+    #
+    #     with open(f"player_{user_id}.html", "w", encoding="utf-8") as f:
+    #         f.write(profile_html)
+
+    # =============================
+    # SAVE
+    # =============================
+
+    html += "</body></html>"
+
+    with open("leaderboard.html", "w", encoding="utf-8") as f:
+        f.write(html)
+
+
+# =============================
+# Datenmodelle fuer den Laufzeit-Zustand von Panels, Matches und Ergebnissen.
+# =============================
 
 @dataclass(slots=True)
 class MatchState:
@@ -60,6 +352,10 @@ class PanelState:
             return self.dartcounter_queue
         return self.scolia_queue
 
+
+# =============================
+# Darstellung: Queue-, Match-, Ergebnis- und Ranking-Embeds.
+# =============================
 
 def format_queue(queue: list[int]) -> str:
     if not queue:
@@ -163,6 +459,10 @@ def build_ranking_embed(
     return embed
 
 
+# =============================
+# Parser und Normalisierung fuer Queue-Embeds, Thread-Namen und Formularwerte.
+# =============================
+
 def parse_queue(value: str) -> list[int]:
     if value.strip().lower() == QUEUE_EMPTY_TEXT:
         return []
@@ -224,13 +524,9 @@ def shorten_label(value: str, limit: int = 28) -> str:
     return value[: limit - 3] + "..."
 
 
-def get_current_month_key() -> date:
-    return datetime.now(timezone.utc).date().replace(day=1)
-
-
-def to_database_average(value: str) -> str:
-    return value.replace(",", ".")
-
+# =============================
+# Match-Bestaetigung: Buttons fuer Annahme oder Rueckzug eines neuen Matches.
+# =============================
 
 class PendingMatchView(discord.ui.View):
     def __init__(self, cog: Ranked, match_id: int) -> None:
@@ -307,6 +603,10 @@ class PendingMatchView(discord.ui.View):
                 pass
 
 
+# =============================
+# Ergebnis-Bestaetigung: Gegenspieler prueft und bestaetigt den Vorschlag.
+# =============================
+
 class ResultConfirmationView(discord.ui.View):
     def __init__(self, cog: Ranked, match_id: int, submission_id: int, confirmer_id: int) -> None:
         super().__init__(timeout=None)
@@ -360,7 +660,8 @@ class ResultConfirmationView(discord.ui.View):
 
         await interaction.response.defer(ephemeral=True, thinking=True)
 
-        persisted, already_published = await self.cog.persist_match_result(
+        persisted, already_published = await persist_ranked_match_result(
+            self.cog.bot,
             match,
             result,
             guild_id=interaction.guild_id,
@@ -396,7 +697,7 @@ class ResultConfirmationView(discord.ui.View):
             )
             return
 
-        await self.cog.mark_match_result_published(match.match_id, results_channel.id, results_message.id)
+        await mark_ranked_match_result_published(self.cog.bot, match.match_id, results_channel.id, results_message.id)
 
         self.stop()
         self.cog.pending_results.pop(self.match_id, None)
@@ -412,6 +713,11 @@ class ResultConfirmationView(discord.ui.View):
         await self.cog.refresh_panels(refresh_all=True)
         await interaction.followup.send("Ergebnis bestaetigt und gepostet.", ephemeral=True)
 
+
+
+# =============================
+# Ergebnis-Erfassung: Button im Match-Thread und Modal fuer Score, Average und Screenshot.
+# =============================
 
 class ResultEntryView(discord.ui.View):
     def __init__(self, cog: Ranked, match_id: int) -> None:
@@ -625,6 +931,10 @@ class ResultModal(discord.ui.Modal):
         await interaction.followup.send("Ergebnis zur Bestaetigung in den Match-Thread gesendet.", ephemeral=True)
 
 
+# =============================
+# Queue-Panel: Beitreten, Verlassen und automatisches Starten passender Matches.
+# =============================
+
 class QueuePanel(discord.ui.View):
     def __init__(self, cog: Ranked, panel_state: PanelState | None = None) -> None:
         super().__init__(timeout=None)
@@ -806,6 +1116,9 @@ class QueuePanel(discord.ui.View):
         await self.update_queue(interaction, queue_name=None, join=False)
 
 
+# =============================
+# Ranked-Cog: verbindet UI, Match-Status, Discord-Threads und Ranked-DB-Helper.
+# =============================
 class Ranked(commands.Cog):
     def __init__(self, bot: commands.Bot):
         self.bot = bot
@@ -817,111 +1130,10 @@ class Ranked(commands.Cog):
         self.panel_states: dict[int, PanelState] = {}
 
     async def cog_load(self) -> None:
-        await self.ensure_ranked_storage()
+        await ensure_ranked_storage(self.bot)
         self.bot.add_view(QueuePanel(self))
 
-    async def ensure_ranked_storage(self) -> None:
-        db = getattr(self.bot, "db", None)
-        if db is None:
-            return
-
-        try:
-            await db.ensure_ranked_storage()
-            await self.rebuild_current_month_rankings()
-        except Exception as exc:
-            print(f"Ranked DB persistence unavailable, falling back where possible: {type(exc).__name__}: {exc}")
-
-    async def get_next_match_id(self) -> int:
-        db = getattr(self.bot, "db", None)
-        if db is None:
-            match_id = self.next_match_id
-            self.next_match_id += 1
-            return match_id
-
-        try:
-            match_id = await db.get_next_match_id()
-        except Exception as exc:
-            print(f"Ranked match-id fetch failed, falling back to memory: {type(exc).__name__}: {exc}")
-            match_id = self.next_match_id
-            self.next_match_id += 1
-            return match_id
-
-        return int(match_id)
-
-    async def rebuild_current_month_rankings(self) -> None:
-        db = getattr(self.bot, "db", None)
-        if db is None:
-            return
-
-        month_key = get_current_month_key()
-        await db.rebuild_current_month_rankings(month_key)
-
-    async def persist_match_result(
-        self,
-        match: MatchState,
-        result: PendingResultState,
-        *,
-        guild_id: int,
-        confirmed_by: int,
-    ) -> tuple[bool, bool]:
-        db = getattr(self.bot, "db", None)
-        if db is None:
-            return False, False
-
-        month_key = get_current_month_key()
-        player_one_id, player_two_id = match.player_ids
-        winner_id = result.winner_id
-
-        guild = self.bot.get_guild(guild_id)
-        player_one = guild.get_member(player_one_id) if guild is not None else None
-        player_two = guild.get_member(player_two_id) if guild is not None else None
-        player_one_name = player_one.display_name if player_one is not None else None
-        player_two_name = player_two.display_name if player_two is not None else None
-
-        return await db.persist_ranked_match_result(
-            match_id=match.match_id,
-            guild_id=guild_id,
-            queue_name=match.queue_name,
-            player_one_id=player_one_id,
-            player_two_id=player_two_id,
-            player_one_name=player_one_name,
-            player_two_name=player_two_name,
-            winner_id=winner_id,
-            score=result.score,
-            player_one_average=to_database_average(result.averages[player_one_id]),
-            player_two_average=to_database_average(result.averages[player_two_id]),
-            month_key=month_key,
-            thread_id=match.thread_id,
-            submitted_by=result.submitted_by,
-            confirmed_by=confirmed_by,
-            screenshot_url=result.screenshot.url if result.screenshot is not None else None,
-        )
-
-    async def mark_match_result_published(self, match_id: int, channel_id: int, message_id: int) -> None:
-        db = getattr(self.bot, "db", None)
-        if db is None:
-            return
-
-        try:
-            await db.mark_match_result_published(match_id, channel_id, message_id)
-        except Exception as exc:
-            print(f"Ranked match-result publish tracking failed: {type(exc).__name__}: {exc}")
-
-    async def fetch_world_ranking(self, limit: int = 10) -> list[tuple[int, int, int, int]]:
-        db = getattr(self.bot, "db", None)
-        if db is None:
-            return []
-
-        return await db.fetch_world_ranking(limit)
-
-    async def fetch_monthly_ranking(self, limit: int = 10) -> list[tuple[int, int, int, int]]:
-        db = getattr(self.bot, "db", None)
-        if db is None:
-            return []
-
-        month_key = get_current_month_key()
-        return await db.fetch_monthly_ranking(month_key, limit)
-
+    # In-Memory-Zustand fuer Panels, Queues und laufende Matches.
     def get_or_create_panel_state(self, message: discord.Message) -> PanelState:
         panel_state = self.panel_states.get(message.id)
         if panel_state is None:
@@ -954,6 +1166,7 @@ class Ranked(commands.Cog):
                 user_id for user_id in panel_state.scolia_queue if user_id not in matched_players
             ]
 
+    # Match-Erstellung und Statuswechsel von offen zu aktiv.
     async def create_pending_match(
         self,
         queue_message: discord.Message,
@@ -970,7 +1183,7 @@ class Ranked(commands.Cog):
         if player_one is None or player_two is None:
             return False
 
-        match_id = await self.get_next_match_id()
+        match_id, self.next_match_id = await get_next_ranked_match_id(self.bot, self.next_match_id)
 
         thread_name = (
             f"match-{match_id:03d}-"
@@ -1065,6 +1278,7 @@ class Ranked(commands.Cog):
         active_matches = sorted(self.active_matches.values(), key=lambda match: match.match_id)
         return build_queue_embed(panel_state, active_matches)
 
+    # Discord-Objekte sicher nachladen, ohne bei fehlenden Rechten abzubrechen.
     async def fetch_panel_message(self, channel_id: int, message_id: int) -> discord.Message | None:
         channel = self.bot.get_channel(channel_id)
         if channel is None:
@@ -1126,6 +1340,7 @@ class Ranked(commands.Cog):
         embed.set_image(url=f"attachment://{file.filename}")
         return await channel.send(content=content, embed=embed, file=file, view=view)
 
+    # Ergebnisvorschlaege und Panel-Aktualisierung nach Interaktionen.
     async def mark_result_submission_obsolete(self, result: PendingResultState) -> None:
         if result.confirmation_message_id is None:
             return
@@ -1208,8 +1423,9 @@ class Ranked(commands.Cog):
 
         await interaction.response.send_modal(ResultModal(self, match, interaction.guild, entry_message_id))
 
+    # Slash-Commands fuer Admins.
     @app_commands.command(name="queue_panel", description="Sendet das Queue-Panel in den Chat")
-    @has_permissions(administrator=True)
+    @app_commands.checks.has_permissions(administrator=True)
     @app_commands.guild_only()
     async def queue_panel(self, interaction: discord.Interaction) -> None:
         panel_state = PanelState(channel_id=interaction.channel_id)
@@ -1221,20 +1437,20 @@ class Ranked(commands.Cog):
         self.panel_states[message.id] = panel_state
 
     @app_commands.command(name="result", description="Oeffnet im Match-Thread das Ergebnisformular")
-    @has_permissions(administrator=True)
+    @app_commands.checks.has_permissions(administrator=True)
     @app_commands.guild_only()
     async def result(self, interaction: discord.Interaction) -> None:
         await self.open_result_modal(interaction)
 
     @app_commands.command(name="world_ranking", description="Zeigt das aktuelle World Ranking")
-    @has_permissions(administrator=True)
+    @app_commands.checks.has_permissions(administrator=True)
     @app_commands.guild_only()
     async def world_ranking(self, interaction: discord.Interaction) -> None:
         if getattr(self.bot, "db", None) is None:
             await interaction.response.send_message("Die Datenbank ist aktuell nicht verfuegbar.", ephemeral=True)
             return
 
-        rows = await self.fetch_world_ranking()
+        rows = await fetch_world_ranking(self.bot)
         embed = build_ranking_embed(
             title="World Ranking",
             rows=rows,
@@ -1243,14 +1459,14 @@ class Ranked(commands.Cog):
         await interaction.response.send_message(embed=embed)
 
     @app_commands.command(name="monthly_ranking", description="Zeigt das aktuelle Monatsranking")
-    @has_permissions(administrator=True)
+    @app_commands.checks.has_permissions(administrator=True)
     @app_commands.guild_only()
     async def monthly_ranking(self, interaction: discord.Interaction) -> None:
         if getattr(self.bot, "db", None) is None:
             await interaction.response.send_message("Die Datenbank ist aktuell nicht verfuegbar.", ephemeral=True)
             return
 
-        rows = await self.fetch_monthly_ranking()
+        rows = await fetch_monthly_ranking(self.bot)
         embed = build_ranking_embed(
             title="Monatsranking",
             rows=rows,
@@ -1258,6 +1474,11 @@ class Ranked(commands.Cog):
         )
         await interaction.response.send_message(embed=embed)
 
+    ## command
+    # - stats
+    # - match verlauf (letzten 10)
+    # - top10 ranking
+    # - export matches
 
 async def setup(bot: commands.Bot) -> None:
     await bot.add_cog(Ranked(bot))

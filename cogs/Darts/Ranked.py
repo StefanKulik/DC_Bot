@@ -1,9 +1,10 @@
 from __future__ import annotations
 
-import os
+import subprocess
 from dataclasses import dataclass, field
 from datetime import datetime
 from html import escape
+from pathlib import Path
 import re
 
 import discord
@@ -36,15 +37,48 @@ AVERAGE_PATTERN = re.compile(r"^\s*\d+(?:[.,]\d+)?\s*$")
 # WEBSITE - generate static html for displaying ranking on web
 # =============================
 
-def upload():
-    os.system("git add .")
-    os.system('git commit -m "update leaderboard"')
-    os.system("git push")
+REPO_ROOT = Path(__file__).resolve().parents[2]
+LEADERBOARD_FILE = "leaderboard.html"
+
+
+def run_git_command(*args: str) -> subprocess.CompletedProcess[str]:
+    return subprocess.run(
+        ["git", *args],
+        cwd=REPO_ROOT,
+        text=True,
+        capture_output=True,
+    )
+
+
+def upload() -> bool:
+    add_result = run_git_command("add", LEADERBOARD_FILE)
+    if add_result.returncode != 0:
+        print(f"git add failed: {add_result.stderr.strip()}")
+        return False
+
+    diff_result = run_git_command("diff", "--cached", "--quiet", "--", LEADERBOARD_FILE)
+    if diff_result.returncode == 0:
+        print("leaderboard unchanged")
+        return False
+    if diff_result.returncode != 1:
+        print(f"git diff failed: {diff_result.stderr.strip()}")
+        return False
+
+    commit_result = run_git_command("commit", "-m", "update leaderboard")
+    if commit_result.returncode != 0:
+        print(f"git commit failed: {commit_result.stderr.strip()}")
+        return False
+
+    push_result = run_git_command("push")
+    if push_result.returncode != 0:
+        print(f"git push failed: {push_result.stderr.strip()}")
+        return False
+
     print("update pushed")
+    return True
 
 async def generate_html(bot: commands.Bot):
     guild = bot.guilds[0] if bot.guilds else None
-    print("1")
 
     def get_player_display(user_id: int) -> tuple[str, str]:
         name = f"User {user_id}"
@@ -65,12 +99,8 @@ async def generate_html(bot: commands.Bot):
     player_data = await fetch_world_ranking(bot)
     monthly_data = await fetch_monthly_ranking(bot)
 
-    print("2")
-
     top3 = player_data[:3]
     rest = player_data[3:]
-
-    print("3")
 
     # =============================
     # HTML START
@@ -113,8 +143,6 @@ async def generate_html(bot: commands.Bot):
     # PODIUM
     # =============================
 
-    print("4")
-
     html += "<div class='podium'>"
     classes = ["gold", "silver", "bronze"]
 
@@ -137,8 +165,6 @@ async def generate_html(bot: commands.Bot):
     # TABLES
     # =============================
 
-    print("5")
-
     html += "<div class='container'>"
 
     # 🌍 WORLD
@@ -158,8 +184,6 @@ async def generate_html(bot: commands.Bot):
         """
 
     html += "</table></div>"
-
-    print("6")
 
     # 🗓️ MONTHLY
     html += "<div style='width:40%'><h2>🗓️ Monatsranking</h2><table>"
@@ -306,12 +330,9 @@ async def generate_html(bot: commands.Bot):
 
     html += "</body></html>"
 
-    print("7")
-
     with open("leaderboard.html", "w", encoding="utf-8") as f:
         f.write(html)
         print("html generated")
-    print("8")
 
 
 # =============================

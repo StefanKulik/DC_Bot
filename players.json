@@ -3,19 +3,29 @@
     "183185835477172226": {
       "userId": 183185835477172226,
       "name": "Stefan",
-      "avatar": "https://cdn.discordapp.com/embed/avatars/0.png",
-      "worldRating": 1115,
+      "avatar": "https://cdn.discordapp.com/avatars/183185835477172226/a_a7eb60fc18a3a42d57f399df216629b2.gif?size=1024",
+      "worldRating": 1122,
       "worldRank": 1,
-      "worldWins": 13,
+      "worldWins": 14,
       "worldLosses": 2,
-      "monthlyRating": 152,
+      "monthlyRating": 159,
       "monthlyRank": 1,
-      "monthlyWins": 13,
+      "monthlyWins": 14,
       "monthlyLosses": 2,
-      "games": 15,
-      "winrate": 86.7,
-      "overallAverage": 68.25,
+      "games": 16,
+      "winrate": 87.5,
+      "overallAverage": 68.67,
       "recentMatches": [
+        {
+          "matchId": 1013,
+          "result": "Win",
+          "opponentId": 695183644968615988,
+          "opponentName": "Stefan Kulik",
+          "score": "4:0",
+          "average": "75",
+          "eloChange": 7,
+          "queue": "Scolia"
+        },
         {
           "matchId": 1012,
           "result": "Win",
@@ -55,35 +65,35 @@
           "average": "70",
           "eloChange": 9,
           "queue": "DartCounter"
-        },
-        {
-          "matchId": 1007,
-          "result": "Win",
-          "opponentId": 695183644968615988,
-          "opponentName": "Stefan Kulik",
-          "score": "4:2",
-          "average": "70",
-          "eloChange": 10,
-          "queue": "DartCounter"
         }
       ]
     },
     "695183644968615988": {
       "userId": 695183644968615988,
       "name": "Stefan Kulik",
-      "avatar": "https://cdn.discordapp.com/embed/avatars/0.png",
-      "worldRating": 885,
+      "avatar": "https://cdn.discordapp.com/avatars/695183644968615988/b2eafe4deabc453207aae96d9cf6f488.png?size=1024",
+      "worldRating": 878,
       "worldRank": 2,
       "worldWins": 2,
-      "worldLosses": 13,
+      "worldLosses": 14,
       "monthlyRating": 37,
       "monthlyRank": 2,
       "monthlyWins": 2,
-      "monthlyLosses": 13,
-      "games": 15,
-      "winrate": 13.3,
-      "overallAverage": 61.22,
+      "monthlyLosses": 14,
+      "games": 16,
+      "winrate": 12.5,
+      "overallAverage": 61.7,
       "recentMatches": [
+        {
+          "matchId": 1013,
+          "result": "Loss",
+          "opponentId": 183185835477172226,
+          "opponentName": "Stefan",
+          "score": "4:0",
+          "average": "69",
+          "eloChange": -7,
+          "queue": "Scolia"
+        },
         {
           "matchId": 1012,
           "result": "Loss",
@@ -122,16 +132,6 @@
           "score": "4:0",
           "average": "60",
           "eloChange": -9,
-          "queue": "DartCounter"
-        },
-        {
-          "matchId": 1007,
-          "result": "Loss",
-          "opponentId": 183185835477172226,
-          "opponentName": "Stefan",
-          "score": "4:2",
-          "average": "67",
-          "eloChange": -10,
           "queue": "DartCounter"
         }
       ]

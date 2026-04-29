@@ -175,7 +175,9 @@ async def build_player_profiles(
                     averages.append(parsed_average)
 
                 if len(matches) < 5:
-                    score = f"{row['player_one_score']}:{row['player_two_score']}"
+                    player_score = row["player_one_score"] if is_player_one else row["player_two_score"]
+                    opponent_score = row["player_two_score"] if is_player_one else row["player_one_score"]
+                    score = f"{player_score}:{opponent_score}"
                     elo_change = int(row["world_points_awarded"] if won else row["world_points_deducted"])
                     matches.append(
                         {
@@ -482,7 +484,7 @@ async def generate_html(bot: commands.Bot):
         backdrop.setAttribute("aria-hidden", "true");
     }
 
-    fetch("players.json")
+    fetch("players.json?v=" + Date.now(), { cache: "no-store" })
         .then(response => response.json())
         .then(data => {
             playerProfiles = data.players || {};

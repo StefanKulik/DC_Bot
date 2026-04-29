@@ -169,7 +169,7 @@
         backdrop.setAttribute("aria-hidden", "true");
     }
 
-    fetch("players.json")
+    fetch("players.json?v=" + Date.now(), { cache: "no-store" })
         .then(response => response.json())
         .then(data => {
             playerProfiles = data.players || {};

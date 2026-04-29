@@ -41,7 +41,7 @@
           "result": "Win",
           "opponentId": 695183644968615988,
           "opponentName": "Stefan Kulik",
-          "score": "2:4",
+          "score": "4:2",
           "average": "69",
           "eloChange": 6,
           "queue": "DartCounter"
@@ -89,7 +89,7 @@
           "result": "Loss",
           "opponentId": 183185835477172226,
           "opponentName": "Stefan",
-          "score": "4:0",
+          "score": "0:4",
           "average": "69",
           "eloChange": -8,
           "queue": "DartCounter"
@@ -99,7 +99,7 @@
           "result": "Win",
           "opponentId": 183185835477172226,
           "opponentName": "Stefan",
-          "score": "3:4",
+          "score": "4:3",
           "average": "70",
           "eloChange": 26,
           "queue": "DartCounter"
@@ -119,7 +119,7 @@
           "result": "Loss",
           "opponentId": 183185835477172226,
           "opponentName": "Stefan",
-          "score": "4:0",
+          "score": "0:4",
           "average": "69",
           "eloChange": -7,
           "queue": "Scolia"
@@ -129,7 +129,7 @@
           "result": "Loss",
           "opponentId": 183185835477172226,
           "opponentName": "Stefan",
-          "score": "4:0",
+          "score": "0:4",
           "average": "60",
           "eloChange": -7,
           "queue": "DartCounter"

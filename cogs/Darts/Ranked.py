@@ -713,6 +713,9 @@ class ResultConfirmationView(discord.ui.View):
         await self.cog.refresh_panels(refresh_all=True)
         await interaction.followup.send("Ergebnis bestaetigt und gepostet.", ephemeral=True)
 
+        await generate_html(self.cog.bot)
+        upload()
+
 
 
 # =============================

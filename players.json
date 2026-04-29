@@ -1,0 +1,140 @@
+{
+  "players": {
+    "183185835477172226": {
+      "userId": 183185835477172226,
+      "name": "Stefan",
+      "avatar": "https://cdn.discordapp.com/embed/avatars/0.png",
+      "worldRating": 1115,
+      "worldRank": 1,
+      "worldWins": 13,
+      "worldLosses": 2,
+      "monthlyRating": 152,
+      "monthlyRank": 1,
+      "monthlyWins": 13,
+      "monthlyLosses": 2,
+      "games": 15,
+      "winrate": 86.7,
+      "overallAverage": 68.25,
+      "recentMatches": [
+        {
+          "matchId": 1012,
+          "result": "Win",
+          "opponentId": 695183644968615988,
+          "opponentName": "Stefan Kulik",
+          "score": "4:0",
+          "average": "70",
+          "eloChange": 7,
+          "queue": "DartCounter"
+        },
+        {
+          "matchId": 1011,
+          "result": "Win",
+          "opponentId": 695183644968615988,
+          "opponentName": "Stefan Kulik",
+          "score": "4:0",
+          "average": "70",
+          "eloChange": 8,
+          "queue": "DartCounter"
+        },
+        {
+          "matchId": 1009,
+          "result": "Win",
+          "opponentId": 695183644968615988,
+          "opponentName": "Stefan Kulik",
+          "score": "4:0",
+          "average": "70",
+          "eloChange": 8,
+          "queue": "DartCounter"
+        },
+        {
+          "matchId": 1008,
+          "result": "Win",
+          "opponentId": 695183644968615988,
+          "opponentName": "Stefan Kulik",
+          "score": "4:0",
+          "average": "70",
+          "eloChange": 9,
+          "queue": "DartCounter"
+        },
+        {
+          "matchId": 1007,
+          "result": "Win",
+          "opponentId": 695183644968615988,
+          "opponentName": "Stefan Kulik",
+          "score": "4:2",
+          "average": "70",
+          "eloChange": 10,
+          "queue": "DartCounter"
+        }
+      ]
+    },
+    "695183644968615988": {
+      "userId": 695183644968615988,
+      "name": "Stefan Kulik",
+      "avatar": "https://cdn.discordapp.com/embed/avatars/0.png",
+      "worldRating": 885,
+      "worldRank": 2,
+      "worldWins": 2,
+      "worldLosses": 13,
+      "monthlyRating": 37,
+      "monthlyRank": 2,
+      "monthlyWins": 2,
+      "monthlyLosses": 13,
+      "games": 15,
+      "winrate": 13.3,
+      "overallAverage": 61.22,
+      "recentMatches": [
+        {
+          "matchId": 1012,
+          "result": "Loss",
+          "opponentId": 183185835477172226,
+          "opponentName": "Stefan",
+          "score": "4:0",
+          "average": "60",
+          "eloChange": -7,
+          "queue": "DartCounter"
+        },
+        {
+          "matchId": 1011,
+          "result": "Loss",
+          "opponentId": 183185835477172226,
+          "opponentName": "Stefan",
+          "score": "4:0",
+          "average": "60",
+          "eloChange": -8,
+          "queue": "DartCounter"
+        },
+        {
+          "matchId": 1009,
+          "result": "Loss",
+          "opponentId": 183185835477172226,
+          "opponentName": "Stefan",
+          "score": "4:0",
+          "average": "60",
+          "eloChange": -8,
+          "queue": "DartCounter"
+        },
+        {
+          "matchId": 1008,
+          "result": "Loss",
+          "opponentId": 183185835477172226,
+          "opponentName": "Stefan",
+          "score": "4:0",
+          "average": "60",
+          "eloChange": -9,
+          "queue": "DartCounter"
+        },
+        {
+          "matchId": 1007,
+          "result": "Loss",
+          "opponentId": 183185835477172226,
+          "opponentName": "Stefan",
+          "score": "4:2",
+          "average": "67",
+          "eloChange": -10,
+          "queue": "DartCounter"
+        }
+      ]
+    }
+  }
+}

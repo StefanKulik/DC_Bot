@@ -1,6 +1,7 @@
 from __future__ import annotations
 
 import subprocess
+import json
 from dataclasses import dataclass, field
 from datetime import datetime
 from html import escape
@@ -16,6 +17,7 @@ from config.Util import (
     ensure_ranked_storage,
     fetch_monthly_ranking,
     fetch_world_ranking,
+    get_current_ranked_month_key,
     get_next_ranked_match_id,
     mark_ranked_match_result_published,
     persist_ranked_match_result,
@@ -33,6 +35,7 @@ SCORE_PATTERN = re.compile(r"^\s*(\d{1,2})\s*[:\-]\s*(\d{1,2})\s*$")
 AVERAGE_PATTERN = re.compile(r"^\s*\d+(?:[.,]\d+)?\s*$")
 REPO_ROOT = Path(__file__).resolve().parents[2]
 LEADERBOARD_FILE = "index.html"
+PLAYER_DATA_FILE = "players.json"
 
 # =============================
 # WEBSITE - generate static html for displaying ranking on web
@@ -62,12 +65,12 @@ def get_current_git_branch() -> str | None:
 
 
 def upload() -> bool:
-    add_result = run_git_command("add", LEADERBOARD_FILE)
+    add_result = run_git_command("add", LEADERBOARD_FILE, PLAYER_DATA_FILE)
     if add_result.returncode != 0:
         print(f"git add failed: {add_result.stderr.strip()}")
         return False
 
-    diff_result = run_git_command("diff", "--cached", "--quiet", "--", LEADERBOARD_FILE)
+    diff_result = run_git_command("diff", "--cached", "--quiet", "--", LEADERBOARD_FILE, PLAYER_DATA_FILE)
     if diff_result.returncode == 0:
         print("leaderboard unchanged")
         return False
@@ -92,6 +95,103 @@ def upload() -> bool:
     print("update pushed")
     return True
 
+
+def parse_stored_average(value: str | None) -> float | None:
+    if value is None:
+        return None
+
+    try:
+        return float(value.replace(",", "."))
+    except ValueError:
+        return None
+
+
+async def build_player_profiles(
+    bot: commands.Bot,
+    player_data: list[tuple[int, int, int, int]],
+    monthly_data: list[tuple[int, int, int, int]],
+    get_player_display,
+) -> dict[str, dict]:
+    world_ranks = {user_id: rank for rank, (user_id, *_rest) in enumerate(player_data, start=1)}
+    monthly_ranks = {user_id: rank for rank, (user_id, *_rest) in enumerate(monthly_data, start=1)}
+    world_stats = {user_id: (rating, wins, losses) for user_id, rating, wins, losses in player_data}
+    monthly_stats = {user_id: (rating, wins, losses) for user_id, rating, wins, losses in monthly_data}
+    player_ids = sorted(set(world_stats) | set(monthly_stats), key=lambda user_id: world_ranks.get(user_id, 999999))
+
+    profiles: dict[str, dict] = {}
+    db = getattr(bot, "db", None)
+
+    for user_id in player_ids:
+        name, avatar = get_player_display(user_id)
+        world_rating, world_wins, world_losses = world_stats.get(user_id, (1000, 0, 0))
+        monthly_rating, monthly_wins, monthly_losses = monthly_stats.get(user_id, (0, 0, 0))
+        total = world_wins + world_losses
+        averages: list[float] = []
+        matches: list[dict] = []
+
+        if db is not None:
+            async with db._lock:
+                rows = db.connection.execute(
+                    """
+                    SELECT player_one_user_id, player_two_user_id, winner_user_id,
+                           player_one_score, player_two_score,
+                           player_one_average, player_two_average,
+                           world_points_awarded, world_points_deducted,
+                           queue_name, match_id
+                    FROM ranked_match_results
+                    WHERE player_one_user_id = ? OR player_two_user_id = ?
+                    ORDER BY match_id DESC
+                    """,
+                    (user_id, user_id),
+                ).fetchall()
+
+            for row in rows:
+                is_player_one = int(row["player_one_user_id"]) == user_id
+                opponent_id = int(row["player_two_user_id"] if is_player_one else row["player_one_user_id"])
+                opponent_name, _opponent_avatar = get_player_display(opponent_id)
+                won = int(row["winner_user_id"]) == user_id
+                player_average = row["player_one_average"] if is_player_one else row["player_two_average"]
+                parsed_average = parse_stored_average(player_average)
+                if parsed_average is not None:
+                    averages.append(parsed_average)
+
+                if len(matches) < 5:
+                    score = f"{row['player_one_score']}:{row['player_two_score']}"
+                    elo_change = int(row["world_points_awarded"] if won else row["world_points_deducted"])
+                    matches.append(
+                        {
+                            "matchId": int(row["match_id"]),
+                            "result": "Win" if won else "Loss",
+                            "opponentId": opponent_id,
+                            "opponentName": opponent_name,
+                            "score": score,
+                            "average": player_average,
+                            "eloChange": elo_change,
+                            "queue": row["queue_name"],
+                        }
+                    )
+
+        profiles[str(user_id)] = {
+            "userId": user_id,
+            "name": name,
+            "avatar": avatar,
+            "worldRating": world_rating,
+            "worldRank": world_ranks.get(user_id),
+            "worldWins": world_wins,
+            "worldLosses": world_losses,
+            "monthlyRating": monthly_rating,
+            "monthlyRank": monthly_ranks.get(user_id),
+            "monthlyWins": monthly_wins,
+            "monthlyLosses": monthly_losses,
+            "games": total,
+            "winrate": round((world_wins / total) * 100, 1) if total else 0,
+            "overallAverage": round(sum(averages) / len(averages), 2) if averages else 0,
+            "recentMatches": matches,
+        }
+
+    return profiles
+
+
 async def generate_html(bot: commands.Bot):
     guild = bot.guilds[0] if bot.guilds else None
 
@@ -104,18 +204,34 @@ async def generate_html(bot: commands.Bot):
             if member:
                 name = member.display_name
                 avatar = member.display_avatar.url
+        elif db is not None:
+            row = db.connection.execute(
+                "SELECT last_known_name FROM ranked_players WHERE user_id = ?",
+                (user_id,),
+            ).fetchone()
+            if row is not None and row["last_known_name"]:
+                name = str(row["last_known_name"])
 
-        return escape(name), avatar
+        return name, avatar
 
     # =============================
     # DATA
     # =============================
 
-    player_data = await fetch_world_ranking(bot)
-    monthly_data = await fetch_monthly_ranking(bot)
+    db = getattr(bot, "db", None)
+    if db is not None:
+        player_data = await db.fetch_world_ranking(limit=100000)
+        monthly_data = await db.fetch_monthly_ranking(get_current_ranked_month_key(), limit=100000)
+    else:
+        player_data = await fetch_world_ranking(bot)
+        monthly_data = await fetch_monthly_ranking(bot)
+
+    player_profiles = await build_player_profiles(bot, player_data, monthly_data, get_player_display)
 
     top3 = player_data[:3]
-    rest = player_data[3:]
+
+    with open(PLAYER_DATA_FILE, "w", encoding="utf-8") as f:
+        json.dump({"players": player_profiles}, f, ensure_ascii=False, indent=2)
 
     # =============================
     # HTML START
@@ -146,6 +262,20 @@ async def generate_html(bot: commands.Bot):
     tr:hover {background:#161b22;}
 
     a {color:#58a6ff;text-decoration:none;font-weight:bold;}
+    .player-link {color:#58a6ff;background:none;border:0;padding:0;font:inherit;font-weight:bold;cursor:pointer;}
+    .player-link:hover {text-decoration:underline;}
+    .modal-backdrop {align-items:center;background:rgba(0,0,0,.72);display:none;inset:0;justify-content:center;padding:20px;position:fixed;z-index:1000;}
+    .modal-backdrop.open {display:flex;}
+    .player-modal {background:#161b22;border:1px solid #30363d;border-radius:8px;box-shadow:0 20px 60px rgba(0,0,0,.45);max-width:520px;padding:24px;position:relative;text-align:left;width:min(520px, 100%);}
+    .modal-close {background:#21262d;border:1px solid #30363d;border-radius:6px;color:white;cursor:pointer;font-size:22px;height:34px;line-height:28px;position:absolute;right:14px;top:14px;width:34px;}
+    .modal-header {align-items:center;display:flex;gap:16px;margin-bottom:18px;}
+    .modal-avatar {border-radius:50%;height:88px;width:88px;}
+    .modal-header h2 {margin:0;}
+    .stats-grid {display:grid;gap:10px;grid-template-columns:repeat(2,minmax(0,1fr));margin:16px 0;}
+    .stat {background:#0d1117;border:1px solid #30363d;border-radius:6px;padding:10px;}
+    .stat span {color:#8b949e;display:block;font-size:12px;margin-bottom:4px;}
+    .match-list {margin:10px 0 0;padding-left:18px;}
+    .match-list li {margin:8px 0;}
     </style>
     </head>
 
@@ -168,7 +298,7 @@ async def generate_html(bot: commands.Bot):
         <div class='card {classes[i]}'>
         <img src="{avatar}" class="avatar"><br>
         <h2>#{i+1}</h2>
-        <a href='player_{user_id}.html'>{name}</a>
+        <button type="button" class="player-link" data-player-id="{user_id}">{escape(name)}</button>
         <p>{world_rating} ELO</p>
         <p>{wins}W / {losses}L</p>
         </div>
@@ -192,7 +322,7 @@ async def generate_html(bot: commands.Bot):
         <tr>
         <td>{i}</td>
         <td><img src="{avatar}" class="avatar"></td>
-        <td><a href='player_{user_id}.html'>{name}</a></td>
+        <td><button type="button" class="player-link" data-player-id="{user_id}">{escape(name)}</button></td>
         <td>{world_rating}</td>
         <td>{wins}W / {losses}L</td>
         </tr>
@@ -210,7 +340,7 @@ async def generate_html(bot: commands.Bot):
         <tr>
         <td>{i}</td>
         <td><img src="{avatar}" class="avatar"></td>
-        <td><a href='player_{user_id}.html'>{name}</a></td>
+        <td><button type="button" class="player-link" data-player-id="{user_id}">{escape(name)}</button></td>
         <td>{monthly_rating}</td>
         <td>{wins}W / {losses}L</td>
         </tr>
@@ -221,129 +351,112 @@ async def generate_html(bot: commands.Bot):
     html += "</div>"
 
     # =============================
-    # PLAYER PROFILES
-    # =============================
-
-    # for i, (user_id, world_rating) in enumerate(player_data, 1):
-    #
-    #     name = f"User {user_id}"
-    #     avatar = "https://cdn.discordapp.com/embed/avatars/0.png"
-    #
-    #     if guild:
-    #         m = guild.get_member(user_id)
-    #         if m:
-    #             name = m.display_name
-    #             avatar = m.display_avatar.url
-    #
-    #     # Stats
-    #     c.execute("SELECT COUNT(*) FROM matches WHERE winner_id=? AND status='confirmed'", (user_id,))
-    #     wins = c.fetchone()[0]
-    #
-    #     c.execute("SELECT COUNT(*) FROM matches WHERE loser_id=? AND status='confirmed'", (user_id,))
-    #     losses = c.fetchone()[0]
-    #
-    #     total = wins + losses
-    #     winrate = round((wins / total) * 100, 1) if total > 0 else 0
-    #
-    #     # Monthly rank
-    #     c.execute("SELECT user_id FROM monthly_points WHERE month=? ORDER BY monthly_rating DESC", (month,))
-    #     monthly = [r[0] for r in c.fetchall()]
-    #     monthly_rank = monthly.index(user_id) + 1 if user_id in monthly else "N/A"
-    #
-    #     # Average
-    #     c.execute("""
-    #         SELECT winner_id, winner_avg, loser_id, loser_avg
-    #         FROM matches
-    #         WHERE status='confirmed'
-    #         AND (winner_id=? OR loser_id=?)
-    #     """, (user_id, user_id))
-    #
-    #     rows = c.fetchall()
-    #
-    #     avgs = []
-    #
-    #     for winner_id, winner_avg, loser_id, loser_avg in rows:
-    #
-    #         # Spieler ist Gewinner
-    #         if winner_id == user_id and winner_avg is not None:
-    #             avgs.append(float(winner_avg))
-    #
-    #         # Spieler ist Verlierer
-    #         if loser_id == user_id and loser_avg is not None:
-    #             avgs.append(float(loser_avg))
-    #
-    #     # FINALER AVERAGE
-    #     overall_avg = round(sum(avgs) / len(avgs), 2) if avgs else 0
-    #
-    #     history = ""
-    #
-    #     for p1, p2, winner, score, platform, wa, la, elo_gain, mid in c.execute("""
-    #         SELECT player1_id, player2_id, winner_id, score, platform, winner_avg, loser_avg, elo_change, id
-    #         FROM matches
-    #         WHERE status='confirmed'
-    #         AND (player1_id=? OR player2_id=?)
-    #         ORDER BY id DESC
-    #         LIMIT 5
-    #     """, (user_id, user_id)):
-    #
-    #         opponent_id = p2 if user_id == p1 else p1
-    #
-    #         name_opponent = f"User {opponent_id}"
-    #         if guild:
-    #             m2 = guild.get_member(opponent_id)
-    #             if m2:
-    #                 name_opponent = m2.display_name
-    #
-    #         elo_gain = elo_gain if elo_gain else 0
-    #
-    #         if winner == user_id:
-    #             result = "🟢 Win"
-    #             match_avg = wa
-    #             elo_text = f"+{elo_gain}"
-    #         else:
-    #             result = "🔴 Loss"
-    #             match_avg = la
-    #             elo_text = f"-{elo_gain}"
-    #
-    #         history += f"<li>{result} vs {name_opponent} ({score}) → {match_avg} ({elo_text} ELO)</li>"
-    #
-    #     profile_html = f"""
-    #     <html>
-    #     <body style='background:#0b0f14;color:white;font-family:Segoe UI;text-align:center'>
-    #
-    #     <div style="background:#161b22;padding:30px;margin:auto;margin-top:50px;width:400px;border-radius:20px;">
-    #
-    #     <img src="{avatar}" style="width:120px;height:120px;border-radius:50%;">
-    #
-    #     <h1>{name}</h1>
-    #
-    #     <p>🏆 Rating: {world_rating}</p>
-    #     <p>🌍 Rank: {i}</p>
-    #     <p>🗓️ Monatsrang: {monthly_rank}</p>
-    #
-    #     <p>🎯 Spiele: {total}</p>
-    #     <p>📈 Winrate: {winrate}%</p>
-    #
-    #     <p>🎯 Ø Average: {overall_avg}</p>
-    #
-    #     <h3>🔥 Letzte Matches</h3>
-    #     <ul>{history}</ul>
-    #
-    #     <br><a href="index.html">⬅ Zurück</a>
-    #
-    #     </div>
-    #     </body>
-    #     </html>
-    #     """
-    #
-    #     with open(f"player_{user_id}.html", "w", encoding="utf-8") as f:
-    #         f.write(profile_html)
-
-    # =============================
     # SAVE
     # =============================
 
-    html += "</body></html>"
+    html += """
+    <div id="player-modal-backdrop" class="modal-backdrop" aria-hidden="true">
+        <div class="player-modal" role="dialog" aria-modal="true" aria-labelledby="modal-player-name">
+            <button type="button" id="modal-close" class="modal-close" aria-label="Schliessen">&times;</button>
+            <div class="modal-header">
+                <img id="modal-avatar" class="modal-avatar" src="" alt="">
+                <div>
+                    <h2 id="modal-player-name"></h2>
+                    <div id="modal-ranks"></div>
+                </div>
+            </div>
+            <div class="stats-grid">
+                <div class="stat"><span>World Rating</span><strong id="modal-world-rating"></strong></div>
+                <div class="stat"><span>Monthly Rating</span><strong id="modal-monthly-rating"></strong></div>
+                <div class="stat"><span>Spiele</span><strong id="modal-games"></strong></div>
+                <div class="stat"><span>Winrate</span><strong id="modal-winrate"></strong></div>
+                <div class="stat"><span>Average</span><strong id="modal-average"></strong></div>
+                <div class="stat"><span>Bilanz</span><strong id="modal-record"></strong></div>
+            </div>
+            <h3>Letzte Matches</h3>
+            <ul id="modal-matches" class="match-list"></ul>
+        </div>
+    </div>
+    <script>
+    let playerProfiles = {};
+
+    function text(id, value) {
+        document.getElementById(id).textContent = value;
+    }
+
+    function rankText(value) {
+        return value ? "#" + value : "N/A";
+    }
+
+    function openPlayerModal(userId) {
+        const player = playerProfiles[String(userId)];
+        if (!player) {
+            return;
+        }
+
+        document.getElementById("modal-avatar").src = player.avatar;
+        text("modal-player-name", player.name);
+        text("modal-ranks", "World " + rankText(player.worldRank) + " | Monat " + rankText(player.monthlyRank));
+        text("modal-world-rating", player.worldRating + " ELO");
+        text("modal-monthly-rating", player.monthlyRating + " Punkte");
+        text("modal-games", player.games);
+        text("modal-winrate", player.winrate + "%");
+        text("modal-average", player.overallAverage);
+        text("modal-record", player.worldWins + "W / " + player.worldLosses + "L");
+
+        const matches = document.getElementById("modal-matches");
+        matches.replaceChildren();
+        if (!player.recentMatches.length) {
+            const item = document.createElement("li");
+            item.textContent = "Keine Matches vorhanden.";
+            matches.appendChild(item);
+        } else {
+            player.recentMatches.forEach(match => {
+                const item = document.createElement("li");
+                const elo = match.eloChange > 0 ? "+" + match.eloChange : String(match.eloChange);
+                item.textContent = match.result + " vs " + match.opponentName + " (" + match.score + ") | Avg: " + match.average + " | " + elo + " ELO";
+                matches.appendChild(item);
+            });
+        }
+
+        const backdrop = document.getElementById("player-modal-backdrop");
+        backdrop.classList.add("open");
+        backdrop.setAttribute("aria-hidden", "false");
+    }
+
+    function closePlayerModal() {
+        const backdrop = document.getElementById("player-modal-backdrop");
+        backdrop.classList.remove("open");
+        backdrop.setAttribute("aria-hidden", "true");
+    }
+
+    fetch("players.json")
+        .then(response => response.json())
+        .then(data => {
+            playerProfiles = data.players || {};
+        })
+        .catch(error => console.error("players.json konnte nicht geladen werden", error));
+
+    document.addEventListener("click", event => {
+        const playerButton = event.target.closest("[data-player-id]");
+        if (playerButton) {
+            openPlayerModal(playerButton.dataset.playerId);
+            return;
+        }
+
+        if (event.target.id === "player-modal-backdrop" || event.target.id === "modal-close") {
+            closePlayerModal();
+        }
+    });
+
+    document.addEventListener("keydown", event => {
+        if (event.key === "Escape") {
+            closePlayerModal();
+        }
+    });
+    </script>
+    </body></html>
+    """
 
     with open(LEADERBOARD_FILE, "w", encoding="utf-8") as f:
         f.write(html)

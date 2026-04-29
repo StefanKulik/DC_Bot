@@ -23,6 +23,20 @@
     tr:hover {background:#161b22;}
 
     a {color:#58a6ff;text-decoration:none;font-weight:bold;}
+    .player-link {color:#58a6ff;background:none;border:0;padding:0;font:inherit;font-weight:bold;cursor:pointer;}
+    .player-link:hover {text-decoration:underline;}
+    .modal-backdrop {align-items:center;background:rgba(0,0,0,.72);display:none;inset:0;justify-content:center;padding:20px;position:fixed;z-index:1000;}
+    .modal-backdrop.open {display:flex;}
+    .player-modal {background:#161b22;border:1px solid #30363d;border-radius:8px;box-shadow:0 20px 60px rgba(0,0,0,.45);max-width:520px;padding:24px;position:relative;text-align:left;width:min(520px, 100%);}
+    .modal-close {background:#21262d;border:1px solid #30363d;border-radius:6px;color:white;cursor:pointer;font-size:22px;height:34px;line-height:28px;position:absolute;right:14px;top:14px;width:34px;}
+    .modal-header {align-items:center;display:flex;gap:16px;margin-bottom:18px;}
+    .modal-avatar {border-radius:50%;height:88px;width:88px;}
+    .modal-header h2 {margin:0;}
+    .stats-grid {display:grid;gap:10px;grid-template-columns:repeat(2,minmax(0,1fr));margin:16px 0;}
+    .stat {background:#0d1117;border:1px solid #30363d;border-radius:6px;padding:10px;}
+    .stat span {color:#8b949e;display:block;font-size:12px;margin-bottom:4px;}
+    .match-list {margin:10px 0 0;padding-left:18px;}
+    .match-list li {margin:8px 0;}
     </style>
     </head>
 
@@ -31,50 +45,152 @@
     <h1>🏆 RANKED DARTS Dashboard</h1>
     <div class='podium'>
         <div class='card gold'>
-        <img src="https://cdn.discordapp.com/avatars/183185835477172226/a_a7eb60fc18a3a42d57f399df216629b2.gif?size=1024" class="avatar"><br>
+        <img src="https://cdn.discordapp.com/embed/avatars/0.png" class="avatar"><br>
         <h2>#1</h2>
-        <a href='player_183185835477172226.html'>Stefan</a>
+        <button type="button" class="player-link" data-player-id="183185835477172226">Stefan</button>
         <p>1115 ELO</p>
         <p>13W / 2L</p>
         </div>
         
         <div class='card silver'>
-        <img src="https://cdn.discordapp.com/avatars/695183644968615988/b2eafe4deabc453207aae96d9cf6f488.png?size=1024" class="avatar"><br>
+        <img src="https://cdn.discordapp.com/embed/avatars/0.png" class="avatar"><br>
         <h2>#2</h2>
-        <a href='player_695183644968615988.html'>Stefan Kulik</a>
+        <button type="button" class="player-link" data-player-id="695183644968615988">Stefan Kulik</button>
         <p>885 ELO</p>
         <p>2W / 13L</p>
         </div>
         </div><div class='container'><div style='width:40%'><h2>🌍 World Ranking</h2><table>
         <tr>
         <td>1</td>
-        <td><img src="https://cdn.discordapp.com/avatars/183185835477172226/a_a7eb60fc18a3a42d57f399df216629b2.gif?size=1024" class="avatar"></td>
-        <td><a href='player_183185835477172226.html'>Stefan</a></td>
+        <td><img src="https://cdn.discordapp.com/embed/avatars/0.png" class="avatar"></td>
+        <td><button type="button" class="player-link" data-player-id="183185835477172226">Stefan</button></td>
         <td>1115</td>
         <td>13W / 2L</td>
         </tr>
         
         <tr>
         <td>2</td>
-        <td><img src="https://cdn.discordapp.com/avatars/695183644968615988/b2eafe4deabc453207aae96d9cf6f488.png?size=1024" class="avatar"></td>
-        <td><a href='player_695183644968615988.html'>Stefan Kulik</a></td>
+        <td><img src="https://cdn.discordapp.com/embed/avatars/0.png" class="avatar"></td>
+        <td><button type="button" class="player-link" data-player-id="695183644968615988">Stefan Kulik</button></td>
         <td>885</td>
         <td>2W / 13L</td>
         </tr>
         </table></div><div style='width:40%'><h2>🗓️ Monatsranking</h2><table>
         <tr>
         <td>1</td>
-        <td><img src="https://cdn.discordapp.com/avatars/183185835477172226/a_a7eb60fc18a3a42d57f399df216629b2.gif?size=1024" class="avatar"></td>
-        <td><a href='player_183185835477172226.html'>Stefan</a></td>
+        <td><img src="https://cdn.discordapp.com/embed/avatars/0.png" class="avatar"></td>
+        <td><button type="button" class="player-link" data-player-id="183185835477172226">Stefan</button></td>
         <td>152</td>
         <td>13W / 2L</td>
         </tr>
         
         <tr>
         <td>2</td>
-        <td><img src="https://cdn.discordapp.com/avatars/695183644968615988/b2eafe4deabc453207aae96d9cf6f488.png?size=1024" class="avatar"></td>
-        <td><a href='player_695183644968615988.html'>Stefan Kulik</a></td>
+        <td><img src="https://cdn.discordapp.com/embed/avatars/0.png" class="avatar"></td>
+        <td><button type="button" class="player-link" data-player-id="695183644968615988">Stefan Kulik</button></td>
         <td>37</td>
         <td>2W / 13L</td>
         </tr>
-        </table></div></div></body></html>
+        </table></div></div>
+    <div id="player-modal-backdrop" class="modal-backdrop" aria-hidden="true">
+        <div class="player-modal" role="dialog" aria-modal="true" aria-labelledby="modal-player-name">
+            <button type="button" id="modal-close" class="modal-close" aria-label="Schliessen">&times;</button>
+            <div class="modal-header">
+                <img id="modal-avatar" class="modal-avatar" src="" alt="">
+                <div>
+                    <h2 id="modal-player-name"></h2>
+                    <div id="modal-ranks"></div>
+                </div>
+            </div>
+            <div class="stats-grid">
+                <div class="stat"><span>World Rating</span><strong id="modal-world-rating"></strong></div>
+                <div class="stat"><span>Monthly Rating</span><strong id="modal-monthly-rating"></strong></div>
+                <div class="stat"><span>Spiele</span><strong id="modal-games"></strong></div>
+                <div class="stat"><span>Winrate</span><strong id="modal-winrate"></strong></div>
+                <div class="stat"><span>Average</span><strong id="modal-average"></strong></div>
+                <div class="stat"><span>Bilanz</span><strong id="modal-record"></strong></div>
+            </div>
+            <h3>Letzte Matches</h3>
+            <ul id="modal-matches" class="match-list"></ul>
+        </div>
+    </div>
+    <script>
+    let playerProfiles = {};
+
+    function text(id, value) {
+        document.getElementById(id).textContent = value;
+    }
+
+    function rankText(value) {
+        return value ? "#" + value : "N/A";
+    }
+
+    function openPlayerModal(userId) {
+        const player = playerProfiles[String(userId)];
+        if (!player) {
+            return;
+        }
+
+        document.getElementById("modal-avatar").src = player.avatar;
+        text("modal-player-name", player.name);
+        text("modal-ranks", "World " + rankText(player.worldRank) + " | Monat " + rankText(player.monthlyRank));
+        text("modal-world-rating", player.worldRating + " ELO");
+        text("modal-monthly-rating", player.monthlyRating + " Punkte");
+        text("modal-games", player.games);
+        text("modal-winrate", player.winrate + "%");
+        text("modal-average", player.overallAverage);
+        text("modal-record", player.worldWins + "W / " + player.worldLosses + "L");
+
+        const matches = document.getElementById("modal-matches");
+        matches.replaceChildren();
+        if (!player.recentMatches.length) {
+            const item = document.createElement("li");
+            item.textContent = "Keine Matches vorhanden.";
+            matches.appendChild(item);
+        } else {
+            player.recentMatches.forEach(match => {
+                const item = document.createElement("li");
+                const elo = match.eloChange > 0 ? "+" + match.eloChange : String(match.eloChange);
+                item.textContent = match.result + " vs " + match.opponentName + " (" + match.score + ") | Avg: " + match.average + " | " + elo + " ELO";
+                matches.appendChild(item);
+            });
+        }
+
+        const backdrop = document.getElementById("player-modal-backdrop");
+        backdrop.classList.add("open");
+        backdrop.setAttribute("aria-hidden", "false");
+    }
+
+    function closePlayerModal() {
+        const backdrop = document.getElementById("player-modal-backdrop");
+        backdrop.classList.remove("open");
+        backdrop.setAttribute("aria-hidden", "true");
+    }
+
+    fetch("players.json")
+        .then(response => response.json())
+        .then(data => {
+            playerProfiles = data.players || {};
+        })
+        .catch(error => console.error("players.json konnte nicht geladen werden", error));
+
+    document.addEventListener("click", event => {
+        const playerButton = event.target.closest("[data-player-id]");
+        if (playerButton) {
+            openPlayerModal(playerButton.dataset.playerId);
+            return;
+        }
+
+        if (event.target.id === "player-modal-backdrop" || event.target.id === "modal-close") {
+            closePlayerModal();
+        }
+    });
+
+    document.addEventListener("keydown", event => {
+        if (event.key === "Escape") {
+            closePlayerModal();
+        }
+    });
+    </script>
+    </body></html>
+    

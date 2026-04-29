@@ -3,6 +3,7 @@ from __future__ import annotations
 import os
 from dataclasses import dataclass, field
 from datetime import datetime
+from html import escape
 import re
 
 import discord
@@ -39,9 +40,23 @@ def upload():
     os.system("git add .")
     os.system('git commit -m "update leaderboard"')
     os.system("git push")
+    print("update pushed")
 
 async def generate_html(bot: commands.Bot):
     guild = bot.guilds[0] if bot.guilds else None
+    print("1")
+
+    def get_player_display(user_id: int) -> tuple[str, str]:
+        name = f"User {user_id}"
+        avatar = "https://cdn.discordapp.com/embed/avatars/0.png"
+
+        if guild:
+            member = guild.get_member(user_id)
+            if member:
+                name = member.display_name
+                avatar = member.display_avatar.url
+
+        return escape(name), avatar
 
     # =============================
     # DATA
@@ -50,8 +65,12 @@ async def generate_html(bot: commands.Bot):
     player_data = await fetch_world_ranking(bot)
     monthly_data = await fetch_monthly_ranking(bot)
 
+    print("2")
+
     top3 = player_data[:3]
     rest = player_data[3:]
+
+    print("3")
 
     # =============================
     # HTML START
@@ -94,19 +113,13 @@ async def generate_html(bot: commands.Bot):
     # PODIUM
     # =============================
 
+    print("4")
+
     html += "<div class='podium'>"
     classes = ["gold", "silver", "bronze"]
 
-    for i, (user_id, world_rating) in enumerate(top3):
-
-        name = f"User {user_id}"
-        avatar = "https://cdn.discordapp.com/embed/avatars/0.png"
-
-        if guild:
-            m = guild.get_member(user_id)
-            if m:
-                name = m.display_name
-                avatar = m.display_avatar.url
+    for i, (user_id, world_rating, wins, losses) in enumerate(top3):
+        name, avatar = get_player_display(user_id)
 
         html += f"""
         <div class='card {classes[i]}'>
@@ -114,6 +127,7 @@ async def generate_html(bot: commands.Bot):
         <h2>#{i+1}</h2>
         <a href='player_{user_id}.html'>{name}</a>
         <p>{world_rating} ELO</p>
+        <p>{wins}W / {losses}L</p>
         </div>
         """
 
@@ -123,21 +137,15 @@ async def generate_html(bot: commands.Bot):
     # TABLES
     # =============================
 
+    print("5")
+
     html += "<div class='container'>"
 
     # 🌍 WORLD
     html += "<div style='width:40%'><h2>🌍 World Ranking</h2><table>"
 
-    for i, (user_id, world_rating) in enumerate(player_data, 1):
-
-        name = f"User {user_id}"
-        avatar = "https://cdn.discordapp.com/embed/avatars/0.png"
-
-        if guild:
-            m = guild.get_member(user_id)
-            if m:
-                name = m.display_name
-                avatar = m.display_avatar.url
+    for i, (user_id, world_rating, wins, losses) in enumerate(player_data, 1):
+        name, avatar = get_player_display(user_id)
 
         html += f"""
         <tr>
@@ -145,24 +153,19 @@ async def generate_html(bot: commands.Bot):
         <td><img src="{avatar}" class="avatar"></td>
         <td><a href='player_{user_id}.html'>{name}</a></td>
         <td>{world_rating}</td>
+        <td>{wins}W / {losses}L</td>
         </tr>
         """
 
     html += "</table></div>"
 
+    print("6")
+
     # 🗓️ MONTHLY
     html += "<div style='width:40%'><h2>🗓️ Monatsranking</h2><table>"
 
-    for i, (user_id, monthly_rating) in enumerate(monthly_data, 1):
-
-        name = f"User {user_id}"
-        avatar = "https://cdn.discordapp.com/embed/avatars/0.png"
-
-        if guild:
-            m = guild.get_member(user_id)
-            if m:
-                name = m.display_name
-                avatar = m.display_avatar.url
+    for i, (user_id, monthly_rating, wins, losses) in enumerate(monthly_data, 1):
+        name, avatar = get_player_display(user_id)
 
         html += f"""
         <tr>
@@ -170,6 +173,7 @@ async def generate_html(bot: commands.Bot):
         <td><img src="{avatar}" class="avatar"></td>
         <td><a href='player_{user_id}.html'>{name}</a></td>
         <td>{monthly_rating}</td>
+        <td>{wins}W / {losses}L</td>
         </tr>
         """
 
@@ -302,8 +306,12 @@ async def generate_html(bot: commands.Bot):
 
     html += "</body></html>"
 
+    print("7")
+
     with open("leaderboard.html", "w", encoding="utf-8") as f:
         f.write(html)
+        print("html generated")
+    print("8")
 
 
 # =============================
@@ -710,11 +718,12 @@ class ResultConfirmationView(discord.ui.View):
             except (discord.NotFound, discord.Forbidden, discord.HTTPException):
                 pass
 
+        await generate_html(self.cog.bot)
+        upload()
         await self.cog.refresh_panels(refresh_all=True)
         await interaction.followup.send("Ergebnis bestaetigt und gepostet.", ephemeral=True)
 
-        await generate_html(self.cog.bot)
-        upload()
+
 
 
 

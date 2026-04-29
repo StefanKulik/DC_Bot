@@ -31,15 +31,12 @@ MENTION_PATTERN = re.compile(r"<@!?(\d+)>")
 THREAD_SAFE_PATTERN = re.compile(r"[^a-z0-9-]")
 SCORE_PATTERN = re.compile(r"^\s*(\d{1,2})\s*[:\-]\s*(\d{1,2})\s*$")
 AVERAGE_PATTERN = re.compile(r"^\s*\d+(?:[.,]\d+)?\s*$")
-
+REPO_ROOT = Path(__file__).resolve().parents[2]
+LEADERBOARD_FILE = "index.html"
 
 # =============================
 # WEBSITE - generate static html for displaying ranking on web
 # =============================
-
-REPO_ROOT = Path(__file__).resolve().parents[2]
-LEADERBOARD_FILE = "leaderboard.html"
-
 
 def run_git_command(*args: str) -> subprocess.CompletedProcess[str]:
     return subprocess.run(
@@ -48,6 +45,20 @@ def run_git_command(*args: str) -> subprocess.CompletedProcess[str]:
         text=True,
         capture_output=True,
     )
+
+
+def get_current_git_branch() -> str | None:
+    branch_result = run_git_command("branch", "--show-current")
+    if branch_result.returncode != 0:
+        print(f"git branch failed: {branch_result.stderr.strip()}")
+        return None
+
+    branch_name = branch_result.stdout.strip()
+    if not branch_name:
+        print("git branch failed: no current branch")
+        return None
+
+    return branch_name
 
 
 def upload() -> bool:
@@ -69,7 +80,11 @@ def upload() -> bool:
         print(f"git commit failed: {commit_result.stderr.strip()}")
         return False
 
-    push_result = run_git_command("push")
+    branch_name = get_current_git_branch()
+    if branch_name is None:
+        return False
+
+    push_result = run_git_command("push", "--set-upstream", "origin", branch_name)
     if push_result.returncode != 0:
         print(f"git push failed: {push_result.stderr.strip()}")
         return False
@@ -314,7 +329,7 @@ async def generate_html(bot: commands.Bot):
     #     <h3>🔥 Letzte Matches</h3>
     #     <ul>{history}</ul>
     #
-    #     <br><a href="leaderboard.html">⬅ Zurück</a>
+    #     <br><a href="index.html">⬅ Zurück</a>
     #
     #     </div>
     #     </body>
@@ -330,7 +345,7 @@ async def generate_html(bot: commands.Bot):
 
     html += "</body></html>"
 
-    with open("leaderboard.html", "w", encoding="utf-8") as f:
+    with open(LEADERBOARD_FILE, "w", encoding="utf-8") as f:
         f.write(html)
         print("html generated")
 

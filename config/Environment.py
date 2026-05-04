@@ -29,5 +29,3 @@ def load_int_env(key: str, default: int) -> int:
 
 TOKEN = load_env("TOKEN", "unknown")
 VERSION = load_env("VERSION", "unknown")
-BOT = load_int_env("BOT", 0)
-OWNER = load_int_env("OWNER", 0)

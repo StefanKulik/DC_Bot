@@ -247,8 +247,8 @@ async def generate_html(bot: commands.Bot):
 
     db = getattr(bot, "db", None)
     if db is not None:
-        player_data = await db.fetch_world_ranking(limit=100000)
-        monthly_data = await db.fetch_monthly_ranking(get_current_ranked_month_key(), limit=100000)
+        player_data = await db.fetch_world_ranking(limit=None)
+        monthly_data = await db.fetch_monthly_ranking(get_current_ranked_month_key(), limit=None)
     else:
         player_data = await fetch_world_ranking(bot)
         monthly_data = await fetch_monthly_ranking(bot)

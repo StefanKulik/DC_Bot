@@ -58,6 +58,16 @@ async def ensure_ranked_storage(bot: commands.Bot) -> None:
         print(f"Ranked DB persistence unavailable, falling back where possible: {type(exc).__name__}: {exc}")
 
 
+async def rebuild_current_month_rankings(bot: commands.Bot) -> None:
+    db = getattr(bot, "db", None)
+    if db is None:
+        return
+
+    await db.rebuild_current_month_rankings(get_current_ranked_month_key())
+
+
+
+
 async def get_next_ranked_match_id(bot: commands.Bot, fallback_match_id: int) -> tuple[int, int]:
     db = getattr(bot, "db", None)
     if db is None:
@@ -71,13 +81,6 @@ async def get_next_ranked_match_id(bot: commands.Bot, fallback_match_id: int) ->
 
     return int(match_id), fallback_match_id
 
-
-async def rebuild_current_month_rankings(bot: commands.Bot) -> None:
-    db = getattr(bot, "db", None)
-    if db is None:
-        return
-
-    await db.rebuild_current_month_rankings(get_current_ranked_month_key())
 
 
 async def persist_ranked_match_result(
@@ -201,19 +204,19 @@ class SqliteDatabase:
 
     async def get_next_match_id(self) -> int:
         async with self._lock:
-            row = self.connection.execute("SELECT value FROM bot_meta WHERE key = 'next_match_id'").fetchone()
+            row = self.connection.execute("SELECT seq FROM sqlite_sequence WHERE name = 'matches'").fetchone()
             if row is None:
                 max_row = self.connection.execute("SELECT COALESCE(MAX(id), 0) + 1 AS match_id FROM matches").fetchone()
                 match_id = int(max_row["match_id"])
                 self.connection.execute(
-                    "INSERT INTO bot_meta(key, value) VALUES('next_match_id', ?)",
-                    (str(match_id + 1),),
+                    "INSERT INTO sqlite_sequence(name, seq) VALUES('matches', ?)",
+                    (match_id + 1,),
                 )
             else:
-                match_id = int(row["value"])
+                match_id = int(row["seq"])
                 self.connection.execute(
-                    "UPDATE bot_meta SET value = ? WHERE key = 'next_match_id'",
-                    (str(match_id + 1),),
+                    "UPDATE sqlite_sequence SET seq = ? WHERE name = 'matches'",
+                    (match_id + 1,),
                 )
             self.connection.commit()
             return match_id
@@ -389,10 +392,12 @@ class SqliteDatabase:
     async def mark_match_result_published(self, match_id: int, channel_id: int, message_id: int) -> None:
         del match_id, channel_id, message_id
 
-    async def fetch_world_ranking(self, limit: int = 10) -> list[tuple[int, int, int, int]]:
+    async def fetch_world_ranking(self, limit: int | None = 10) -> list[tuple[int, int, int, int]]:
+        limit_sql = "" if limit is None else "LIMIT ?"
+        params = (RANKING_START_RATING,) if limit is None else (RANKING_START_RATING, limit)
         async with self._lock:
             rows = self.connection.execute(
-                """
+                f"""
                 SELECT
                     p.user_id,
                     COALESCE(p.rating, ?) AS rating,
@@ -404,9 +409,9 @@ class SqliteDatabase:
                    AND (m.winner_id = p.user_id OR m.loser_id = p.user_id)
                 GROUP BY p.user_id, p.rating
                 ORDER BY rating DESC, wins DESC, p.user_id ASC
-                LIMIT ?
+                {limit_sql}
                 """,
-                (RANKING_START_RATING, limit),
+                params,
             ).fetchall()
 
         return [
@@ -414,11 +419,13 @@ class SqliteDatabase:
             for row in rows
         ]
 
-    async def fetch_monthly_ranking(self, month_key: date, limit: int = 10) -> list[tuple[int, int, int, int]]:
+    async def fetch_monthly_ranking(self, month_key: date, limit: int | None = 10) -> list[tuple[int, int, int, int]]:
         month_text = month_key_to_text(month_key)
+        limit_sql = "" if limit is None else "LIMIT ?"
+        params = (month_text,) if limit is None else (month_text, limit)
         async with self._lock:
             rows = self.connection.execute(
-                """
+                f"""
                 SELECT
                     p.user_id,
                     COALESCE(mp.points, 0) AS points,
@@ -433,9 +440,9 @@ class SqliteDatabase:
                 WHERE mp.month = ?
                 GROUP BY p.user_id, mp.points
                 ORDER BY points DESC, wins DESC, p.user_id ASC
-                LIMIT ?
+                {limit_sql}
                 """,
-                (month_text, limit),
+                params,
             ).fetchall()
 
         return [

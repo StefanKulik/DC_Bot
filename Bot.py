@@ -2,7 +2,7 @@ import discord
 import asyncio
 from pathlib import Path
 from discord.ext import commands
-from config.Environment import TOKEN, VERSION, OWNER
+from config.Environment import TOKEN, VERSION
 from config.SqliteStore import create_db_pool
 
 
@@ -32,7 +32,6 @@ class Bot(commands.Bot):
     def __init__(self) -> None:
         super().__init__(
             command_prefix="!",
-            owner_id=OWNER,
             intents=discord.Intents.all(),
             help_command=None,
         )

@@ -23,6 +23,16 @@ from config.Util import (
     persist_ranked_match_result,
 )
 
+
+#
+# TODO:
+#   ranked extrahieren für Leon
+#   db struktur anpassen an die von Leon für nahtlosen übergang
+#   zurückziehen Button rausnehmen
+#   Modal auf webseite verschönern
+#
+#
+
 # =============================
 # Konstanten und Parser-Patterns fuer Queue, Threads und Ergebnisse.
 # =============================

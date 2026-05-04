@@ -4,27 +4,157 @@ import asyncio
 import sqlite3
 from datetime import date, datetime, timezone
 from pathlib import Path
+from typing import Any
 
+from discord.ext import commands
 from config.Environment import DEFAULT_PREFIX
 
 
+# =============================
+# utils
+# =============================
 RANKING_START_RATING = 1000
 ELO_K_FACTOR = 32
 
+async def create_db_pool(bot: commands.Bot) -> None:
+    print("Connect to SQLite database...")
+    try:
+        bot.db = SqliteDatabase("datenbank.db")
+        await bot.db.connect()
+    except Exception as exc:
+        bot.db = None
+        print(f"Database unavailable, continuing without DB features: {type(exc).__name__}: {exc}")
+    else:
+        print("SQLite database connected")
 
 def utc_now() -> str:
     return datetime.now(timezone.utc).isoformat()
 
-
 def month_key_to_text(month_key: date) -> str:
     return month_key.isoformat()
-
 
 def calculate_elo_winner_delta(winner_rating: int, loser_rating: int) -> int:
     expected_winner_score = 1 / (1 + 10 ** ((loser_rating - winner_rating) / 400))
     return max(1, int(round(ELO_K_FACTOR * (1 - expected_winner_score))))
 
 
+# =============================
+# ranked-bot-db-zugriff
+# =============================
+def get_current_ranked_month_key() -> date:
+    return datetime.now(timezone.utc).date().replace(day=1)
+
+def to_ranked_database_average(value: str) -> str:
+    return value.replace(",", ".")
+
+async def ensure_ranked_storage(bot: commands.Bot) -> None:
+    db = getattr(bot, "db", None)
+    if db is None:
+        return
+
+    try:
+        await db.ensure_ranked_storage()
+        await rebuild_current_month_rankings(bot)
+    except Exception as exc:
+        print(f"Ranked DB persistence unavailable, falling back where possible: {type(exc).__name__}: {exc}")
+
+async def get_next_ranked_match_id(bot: commands.Bot, fallback_match_id: int) -> tuple[int, int]:
+    db = getattr(bot, "db", None)
+    if db is None:
+        return fallback_match_id, fallback_match_id + 1
+
+    try:
+        match_id = await db.get_next_match_id()
+    except Exception as exc:
+        print(f"Ranked match-id fetch failed, falling back to memory: {type(exc).__name__}: {exc}")
+        return fallback_match_id, fallback_match_id + 1
+
+    return int(match_id), fallback_match_id
+
+async def rebuild_current_month_rankings(bot: commands.Bot) -> None:
+    db = getattr(bot, "db", None)
+    if db is None:
+        return
+
+    month_key = get_current_ranked_month_key()
+    await db.rebuild_current_month_rankings(month_key)
+
+async def persist_ranked_match_result(
+    bot: commands.Bot,
+    match: Any,
+    result: Any,
+    *,
+    guild_id: int,
+    confirmed_by: int,
+) -> tuple[bool, bool]:
+    db = getattr(bot, "db", None)
+    if db is None:
+        return False, False
+
+    month_key = get_current_ranked_month_key()
+    player_one_id, player_two_id = match.player_ids
+    winner_id = result.winner_id
+
+    guild = bot.get_guild(guild_id)
+    player_one = guild.get_member(player_one_id) if guild is not None else None
+    player_two = guild.get_member(player_two_id) if guild is not None else None
+    player_one_name = player_one.display_name if player_one is not None else None
+    player_two_name = player_two.display_name if player_two is not None else None
+
+    return await db.persist_ranked_match_result(
+        match_id=match.match_id,
+        guild_id=guild_id,
+        queue_name=match.queue_name,
+        player_one_id=player_one_id,
+        player_two_id=player_two_id,
+        player_one_name=player_one_name,
+        player_two_name=player_two_name,
+        winner_id=winner_id,
+        score=result.score,
+        player_one_average=to_ranked_database_average(result.averages[player_one_id]),
+        player_two_average=to_ranked_database_average(result.averages[player_two_id]),
+        month_key=month_key,
+        thread_id=match.thread_id,
+        submitted_by=result.submitted_by,
+        confirmed_by=confirmed_by,
+        screenshot_url=result.screenshot.url if result.screenshot is not None else None,
+    )
+
+async def mark_ranked_match_result_published(
+    bot: commands.Bot,
+    match_id: int,
+    channel_id: int,
+    message_id: int,
+) -> None:
+    db = getattr(bot, "db", None)
+    if db is None:
+        return
+
+    try:
+        await db.mark_match_result_published(match_id, channel_id, message_id)
+    except Exception as exc:
+        print(f"Ranked match-result publish tracking failed: {type(exc).__name__}: {exc}")
+
+async def fetch_world_ranking(bot: commands.Bot) -> list[tuple[int, int, int, int]]:
+    db = getattr(bot, "db", None)
+    if db is None:
+        return []
+
+    return await db.fetch_world_ranking()
+
+async def fetch_monthly_ranking(bot: commands.Bot, month_key: int=None) -> list[tuple[int, int, int, int]]:
+    db = getattr(bot, "db", None)
+    if db is None:
+        return []
+
+    if month_key is None:
+        month_key = get_current_ranked_month_key()
+    return await db.fetch_monthly_ranking(month_key)
+
+
+# =============================
+# initialize sqlite database
+# =============================
 class SqliteDatabase:
     def __init__(self, path: Path | str = "datenbank.db") -> None:
         self.path = Path(path)
@@ -128,50 +258,6 @@ class SqliteDatabase:
                 """
             )
             connection.commit()
-
-    async def get_prefix(self, guild_id: int) -> str:
-        async with self._lock:
-            row = self.connection.execute("SELECT prefix FROM guilds WHERE guild_id = ?", (guild_id,)).fetchone()
-            if row is not None:
-                return str(row["prefix"])
-            self.connection.execute(
-                "INSERT INTO guilds(guild_id, prefix) VALUES(?, ?)",
-                (guild_id, DEFAULT_PREFIX),
-            )
-            self.connection.commit()
-            return DEFAULT_PREFIX
-
-    async def set_prefix(self, guild_id: int, prefix: str) -> None:
-        async with self._lock:
-            self.connection.execute(
-                """
-                INSERT INTO guilds(guild_id, prefix) VALUES(?, ?)
-                ON CONFLICT(guild_id) DO UPDATE SET prefix = excluded.prefix
-                """,
-                (guild_id, prefix),
-            )
-            self.connection.commit()
-
-    async def get_autorole(self, guild_id: int, *, is_bot: bool) -> int | None:
-        async with self._lock:
-            column = "botrole_id" if is_bot else "memberrole_id"
-            row = self.connection.execute(f"SELECT {column} FROM autorole WHERE guild_id = ?", (guild_id,)).fetchone()
-            if row is None or row[column] is None:
-                return None
-            return int(row[column])
-
-    async def set_autorole(self, guild_id: int, memberrole_id: int, botrole_id: int) -> None:
-        async with self._lock:
-            self.connection.execute(
-                """
-                INSERT INTO autorole(guild_id, memberrole_id, botrole_id) VALUES(?, ?, ?)
-                ON CONFLICT(guild_id) DO UPDATE
-                SET memberrole_id = excluded.memberrole_id,
-                    botrole_id = excluded.botrole_id
-                """,
-                (guild_id, memberrole_id, botrole_id),
-            )
-            self.connection.commit()
 
     async def ensure_ranked_storage(self) -> None:
         await self.initialize()
@@ -480,3 +566,4 @@ class SqliteDatabase:
             (int(row["user_id"]), int(row["monthly_rating"]), int(row["monthly_wins"]), int(row["monthly_losses"]))
             for row in rows
         ]
+

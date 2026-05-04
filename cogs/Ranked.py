@@ -1059,21 +1059,21 @@ class ResultModal(discord.ui.Modal):
         player_one_id, player_two_id = self.match.player_ids
         left_score, right_score = score
 
-        # if winner_id == player_one_id and left_score != 4:
-        #     await self.restore_result_entry_button()
-        #     await interaction.response.send_message(
-        #         "Der ausgewählte Gewinner passt nicht zum Spielstand.",
-        #         ephemeral=True,
-        #     )
-        #     return
-        #
-        # if winner_id == player_two_id and right_score != 4:
-        #     await self.restore_result_entry_button()
-        #     await interaction.response.send_message(
-        #         "Der ausgewählte Gewinner passt nicht zum Spielstand.",
-        #         ephemeral=True,
-        #     )
-        #     return
+        if winner_id == player_one_id and left_score != 4:
+            await self.restore_result_entry_button()
+            await interaction.response.send_message(
+                "Der ausgewählte Gewinner passt nicht zum Spielstand.",
+                ephemeral=True,
+            )
+            return
+
+        if winner_id == player_two_id and right_score != 4:
+            await self.restore_result_entry_button()
+            await interaction.response.send_message(
+                "Der ausgewählte Gewinner passt nicht zum Spielstand.",
+                ephemeral=True,
+            )
+            return
 
         screenshot = self.screenshot_upload.values[0] if self.screenshot_upload.values else None
         if screenshot is None:

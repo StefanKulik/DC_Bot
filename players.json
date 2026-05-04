@@ -21,7 +21,7 @@
           "result": "Win",
           "opponentId": 695183644968615988,
           "opponentName": "Stefan Kulik",
-          "score": "2:4",
+          "score": "4:0",
           "average": "70.0",
           "eloChange": 16,
           "queue": "DartCounter"
@@ -49,7 +49,7 @@
           "result": "Loss",
           "opponentId": 183185835477172226,
           "opponentName": "Stefan",
-          "score": "2:4",
+          "score": "4:0",
           "average": "69.0",
           "eloChange": -16,
           "queue": "DartCounter"

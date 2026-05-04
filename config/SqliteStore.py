@@ -155,7 +155,7 @@ async def fetch_monthly_ranking(bot: commands.Bot, month_key: int=None) -> list[
 # initialize sqlite database
 # =============================
 class SqliteDatabase:
-    def __init__(self, path: Path | str = "datenbank.db") -> None:
+    def __init__(self, path: Path | str = "dartliga.db") -> None:
         self.path = Path(path)
         self._lock = asyncio.Lock()
         self._connection: sqlite3.Connection | None = None

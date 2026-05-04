@@ -41,7 +41,7 @@ MENTION_PATTERN = re.compile(r"<@!?(\d+)>")
 THREAD_SAFE_PATTERN = re.compile(r"[^a-z0-9-]")
 SCORE_PATTERN = re.compile(r"^\s*(\d{1,2})\s*[:\-]\s*(\d{1,2})\s*$")
 AVERAGE_PATTERN = re.compile(r"^\s*\d+(?:[.,]\d+)?\s*$")
-REPO_ROOT = Path(__file__).resolve().parents[2]
+REPO_ROOT = Path(__file__).resolve().parents[1]
 LEADERBOARD_FILE = "index.html"
 PLAYER_DATA_FILE = "players.json"
 
@@ -125,7 +125,7 @@ async def build_player_profiles(
     world_stats = {user_id: (rating, wins, losses) for user_id, rating, wins, losses in player_data}
     monthly_stats = {user_id: (rating, wins, losses) for user_id, rating, wins, losses in monthly_data}
     player_ids = sorted(set(world_stats) | set(monthly_stats), key=lambda user_id: world_ranks.get(user_id, 999999))
-    current_month = get_current_ranked_month_key().isoformat()
+    current_month = get_current_ranked_month_key().strftime("%Y-%m")
 
     profiles: dict[str, dict] = {}
     db = getattr(bot, "db", None)
@@ -136,7 +136,6 @@ async def build_player_profiles(
         monthly_rating, monthly_wins, monthly_losses = monthly_stats.get(user_id, (0, 0, 0))
         averages: list[float] = []
         matches: list[dict] = []
-        monthly_rating_from_latest_match = False
 
         if db is not None:
             world_wins = 0
@@ -146,25 +145,23 @@ async def build_player_profiles(
             async with db._lock:
                 rows = db.connection.execute(
                     """
-                    SELECT player_one_user_id, player_two_user_id, winner_user_id,
-                           player_one_score, player_two_score,
-                           player_one_average, player_two_average,
-                           world_points_awarded, world_points_deducted,
-                           winner_world_rating_after, loser_world_rating_after,
-                           winner_monthly_rating_after, loser_monthly_rating_after,
-                           queue_name, match_id, month_key
-                    FROM ranked_match_results
-                    WHERE player_one_user_id = ? OR player_two_user_id = ?
-                    ORDER BY match_id DESC
+                    SELECT id, player1_id, player2_id, winner_id, loser_id,
+                           platform, score, winner_avg, loser_avg, elo_change,
+                           strftime('%Y-%m', timestamp) AS month_key
+                    FROM matches
+                    WHERE status = 'completed'
+                      AND (player1_id = ? OR player2_id = ?)
+                    ORDER BY id DESC
                     """,
                     (user_id, user_id),
                 ).fetchall()
 
             for row_index, row in enumerate(rows):
-                is_player_one = int(row["player_one_user_id"]) == user_id
-                opponent_id = int(row["player_two_user_id"] if is_player_one else row["player_one_user_id"])
+                del row_index
+                is_player_one = int(row["player1_id"]) == user_id
+                opponent_id = int(row["player2_id"] if is_player_one else row["player1_id"])
                 opponent_name, _opponent_avatar = await get_player_display(opponent_id)
-                won = int(row["winner_user_id"]) == user_id
+                won = int(row["winner_id"]) == user_id
                 if won:
                     world_wins += 1
                 else:
@@ -177,44 +174,28 @@ async def build_player_profiles(
                     else:
                         monthly_losses += 1
 
-                player_average = row["player_one_average"] if is_player_one else row["player_two_average"]
+                player_average = str(row["winner_avg"] if won else row["loser_avg"])
                 parsed_average = parse_stored_average(player_average)
                 if parsed_average is not None:
                     averages.append(parsed_average)
 
                 if len(matches) < 5:
-                    player_score = row["player_one_score"] if is_player_one else row["player_two_score"]
-                    opponent_score = row["player_two_score"] if is_player_one else row["player_one_score"]
-                    score = f"{player_score}:{opponent_score}"
-                    elo_change = int(row["world_points_awarded"] if won else row["world_points_deducted"])
+                    score = row["score"] or "N/A"
+                    elo_change = int(row["elo_change"] or 0)
+                    if not won:
+                        elo_change = -elo_change
                     matches.append(
                         {
-                            "matchId": int(row["match_id"]),
+                            "matchId": int(row["id"]),
                             "result": "Win" if won else "Loss",
                             "opponentId": opponent_id,
                             "opponentName": opponent_name,
                             "score": score,
                             "average": player_average,
                             "eloChange": elo_change,
-                            "queue": row["queue_name"],
+                            "queue": row["platform"],
                         }
                     )
-
-                if row_index == 0:
-                    if won:
-                        if row["winner_world_rating_after"] is not None:
-                            world_rating = int(row["winner_world_rating_after"])
-                    else:
-                        if row["loser_world_rating_after"] is not None:
-                            world_rating = int(row["loser_world_rating_after"])
-
-                if is_current_month and not monthly_rating_from_latest_match:
-                    if won and row["winner_monthly_rating_after"] is not None:
-                        monthly_rating = int(row["winner_monthly_rating_after"])
-                        monthly_rating_from_latest_match = True
-                    elif not won and row["loser_monthly_rating_after"] is not None:
-                        monthly_rating = int(row["loser_monthly_rating_after"])
-                        monthly_rating_from_latest_match = True
 
         total = world_wins + world_losses
 
@@ -246,13 +227,6 @@ async def generate_html(bot: commands.Bot):
         name = f"User {user_id}"
         avatar = "https://cdn.discordapp.com/embed/avatars/0.png"
 
-        row = None
-        if db is not None:
-            row = db.connection.execute(
-                "SELECT last_known_name FROM ranked_players WHERE user_id = ?",
-                (user_id,),
-            ).fetchone()
-
         if guild:
             member = guild.get_member(user_id)
             if member is None:
@@ -264,10 +238,6 @@ async def generate_html(bot: commands.Bot):
             if member is not None:
                 name = member.display_name
                 avatar = member.display_avatar.url
-            elif row is not None and row["last_known_name"]:
-                name = str(row["last_known_name"])
-        elif row is not None and row["last_known_name"]:
-            name = str(row["last_known_name"])
 
         return name, avatar
 

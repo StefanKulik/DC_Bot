@@ -289,16 +289,16 @@ async def generate_html(bot: commands.Bot):
     .player-link:hover {text-decoration:underline;}
     .modal-backdrop {align-items:center;background:rgba(0,0,0,.72);display:none;inset:0;justify-content:center;padding:20px;position:fixed;z-index:1000;}
     .modal-backdrop.open {display:flex;}
-    .player-modal {background:#161b22;border:1px solid #30363d;border-radius:8px;box-shadow:0 20px 60px rgba(0,0,0,.45);max-width:520px;padding:24px;position:relative;text-align:left;width:min(520px, 100%);}
-    .modal-close {background:#21262d;border:1px solid #30363d;border-radius:6px;color:white;cursor:pointer;font-size:22px;height:34px;line-height:28px;position:absolute;right:14px;top:14px;width:34px;}
-    .modal-header {align-items:center;display:flex;gap:16px;margin-bottom:18px;}
-    .modal-avatar {border-radius:50%;height:88px;width:88px;}
-    .modal-header h2 {margin:0;}
-    .stats-grid {display:grid;gap:10px;grid-template-columns:repeat(2,minmax(0,1fr));margin:16px 0;}
-    .stat {background:#0d1117;border:1px solid #30363d;border-radius:6px;padding:10px;}
-    .stat span {color:#8b949e;display:block;font-size:12px;margin-bottom:4px;}
-    .match-list {margin:10px 0 0;padding-left:18px;}
+    .player-modal {background:#161b22;border:1px solid #30363d;border-radius:20px;box-shadow:0 20px 60px rgba(0,0,0,.45);max-width:400px;padding:30px;position:relative;text-align:center;width:min(400px, 100%);}
+    .modal-close {background:#21262d;border:1px solid #30363d;border-radius:50%;color:white;cursor:pointer;font-size:22px;height:34px;line-height:28px;position:absolute;right:14px;top:14px;width:34px;}
+    .modal-avatar {border-radius:50%;height:120px;width:120px;}
+    .player-modal h1 {font-size:32px;margin:18px 0;}
+    .player-modal p {font-size:16px;margin:10px 0;}
+    .player-modal h3 {margin:22px 0 10px;}
+    .match-list {display:inline-block;list-style:none;margin:0;padding-left:0;text-align:left;}
     .match-list li {margin:8px 0;}
+    .modal-back-link {background:none;border:0;color:#58a6ff;cursor:pointer;font:inherit;font-weight:bold;margin-top:18px;padding:0;text-decoration:none;}
+    .modal-back-link:hover {text-decoration:underline;}
     </style>
     </head>
 
@@ -389,22 +389,15 @@ async def generate_html(bot: commands.Bot):
     <div id="player-modal-backdrop" class="modal-backdrop" aria-hidden="true">
         <div class="player-modal" role="dialog" aria-modal="true" aria-labelledby="modal-player-name">
             <button type="button" id="modal-close" class="modal-close" aria-label="Schliessen">&times;</button>
-            <div class="modal-header">
-                <img id="modal-avatar" class="modal-avatar" src="" alt="">
-                <div>
-                    <h2 id="modal-player-name"></h2>
-                    <div id="modal-ranks"></div>
-                </div>
-            </div>
-            <div class="stats-grid">
-                <div class="stat"><span>World Rating</span><strong id="modal-world-rating"></strong></div>
-                <div class="stat"><span>Monthly Rating</span><strong id="modal-monthly-rating"></strong></div>
-                <div class="stat"><span>Spiele</span><strong id="modal-games"></strong></div>
-                <div class="stat"><span>Winrate</span><strong id="modal-winrate"></strong></div>
-                <div class="stat"><span>Average</span><strong id="modal-average"></strong></div>
-                <div class="stat"><span>Bilanz</span><strong id="modal-record"></strong></div>
-            </div>
-            <h3>Letzte Matches</h3>
+            <img id="modal-avatar" class="modal-avatar" src="" alt="">
+            <h1 id="modal-player-name"></h1>
+            <p id="modal-rating"></p>
+            <p id="modal-world-rank"></p>
+            <p id="modal-monthly-rank"></p>
+            <p id="modal-games"></p>
+            <p id="modal-winrate"></p>
+            <p id="modal-average"></p>
+            <h3>🔥 Letzte Matches</h3>
             <ul id="modal-matches" class="match-list"></ul>
         </div>
     </div>
@@ -428,13 +421,12 @@ async def generate_html(bot: commands.Bot):
         const jsonAvatarIsDefault = player.avatar && player.avatar.includes("/embed/avatars/0.png");
         document.getElementById("modal-avatar").src = jsonAvatarIsDefault && fallbackAvatar ? fallbackAvatar : player.avatar;
         text("modal-player-name", player.name);
-        text("modal-ranks", "World " + rankText(player.worldRank) + " | Monat " + rankText(player.monthlyRank));
-        text("modal-world-rating", player.worldRating + " ELO");
-        text("modal-monthly-rating", player.monthlyRating + " Punkte");
-        text("modal-games", player.games);
-        text("modal-winrate", player.winrate + "%");
-        text("modal-average", player.overallAverage);
-        text("modal-record", player.worldWins + "W / " + player.worldLosses + "L");
+        text("modal-rating", "🏆 Rating: " + player.worldRating);
+        text("modal-world-rank", "🌍 Worldrank: " + rankText(player.worldRank));
+        text("modal-monthly-rank", "🗓️ Monatsrang: " + rankText(player.monthlyRank));
+        text("modal-games", "🎯 Spiele: " + player.games);
+        text("modal-winrate", "📈 Winrate: " + player.winrate + "%");
+        text("modal-average", "🎯 Ø Average: " + player.overallAverage);
 
         const matches = document.getElementById("modal-matches");
         matches.replaceChildren();
@@ -445,8 +437,9 @@ async def generate_html(bot: commands.Bot):
         } else {
             player.recentMatches.forEach(match => {
                 const item = document.createElement("li");
+                const resultIcon = match.result === "Win" ? "🟢" : "🔴";
                 const elo = match.eloChange > 0 ? "+" + match.eloChange : String(match.eloChange);
-                item.textContent = match.result + " vs " + match.opponentName + " (" + match.score + ") | Avg: " + match.average + " | " + elo + " ELO";
+                item.textContent = resultIcon + " vs " + match.opponentName + " (" + match.score + ") | Avg: " + match.average + " | " + elo + " ELO";
                 matches.appendChild(item);
             });
         }
@@ -480,7 +473,11 @@ async def generate_html(bot: commands.Bot):
             return;
         }
 
-        if (event.target.id === "player-modal-backdrop" || event.target.id === "modal-close") {
+        if (
+            event.target.id === "player-modal-backdrop" ||
+            event.target.id === "modal-close" ||
+            event.target.id === "modal-back-link"
+        ) {
             closePlayerModal();
         }
     });

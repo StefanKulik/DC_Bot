@@ -24,15 +24,15 @@ from config.SqliteStore import (
 
 #
 # TODO:
-#   ranked extrahieren für Leon
-#   db struktur anpassen an die von Leon für nahtlosen übergang
-#   zurückziehen Button rausnehmen
+#   X - ranked extrahieren für Leon
+#   X - db struktur anpassen an die von Leon für nahtlosen übergang
+#   X - zurückziehen Button rausnehmen
 #   Modal auf webseite verschönern
-#   screenshot pflicht
+#   X - screenshot pflicht
 #   ergebnis eintragen, score ist irrelevant wie rum geschrieben
 
 # =============================
-# Konstanten und Parser-Patterns fuer Queue, Threads und Ergebnisse.
+# Konstanten und Parser-Patterns für Queue, Threads und Ergebnisse.
 # =============================
 QUEUE_EMPTY_TEXT = "kein spieler"
 MATCHES_FIELD_NAME = ":fire: Aktuelle Matches"
@@ -591,21 +591,21 @@ def build_pending_match_embed(match: PendingMatchState) -> discord.Embed:
     )
 
     embed = discord.Embed(
-        title=f"Match #{match.match_id:03d} bestaetigen",
+        title=f"Match #{match.match_id:03d} bestätigen",
         description=(
             f"{match.queue_name} Match zwischen <@{match.player_ids[0]}> und <@{match.player_ids[1]}>.\n"
-            "Beide Spieler muessen bestaetigen, bevor das Match aktiv wird."
+            "Beide Spieler müssen bestätigen, bevor das Match aktiv wird."
         ),
         colour=discord.Color.gold(),
     )
-    embed.add_field(name="Bestaetigt", value=confirmed_mentions, inline=True)
+    embed.add_field(name="Bestätigt", value=confirmed_mentions, inline=True)
     embed.add_field(name="Wartet auf", value=waiting_mentions, inline=True)
     return embed
 
 
 def build_confirmed_match_embed(match: MatchState) -> discord.Embed:
     return discord.Embed(
-        title=f"Match #{match.match_id:03d} bestaetigt",
+        title=f"Match #{match.match_id:03d} bestätigt",
         description=(
             f"{match.queue_name} <@{match.player_ids[0]}> vs <@{match.player_ids[1]}>\n"
             "Das Match ist jetzt aktiv."
@@ -628,7 +628,7 @@ def build_result_embed(match: MatchState, result: PendingResultState) -> discord
 def build_withdrawn_match_embed(match_id: int) -> discord.Embed:
     return discord.Embed(
         title=f"Match Ergebnis #{match_id:03d}",
-        description="Das Match wurde zurueckgezogen.",
+        description="Das Match wurde zurückgezogen.",
         colour=discord.Color.red(),
     )
 
@@ -653,7 +653,7 @@ def build_ranking_embed(
 
 
 # =============================
-# Parser und Normalisierung fuer Queue-Embeds, Thread-Namen und Formularwerte.
+# Parser und Normalisierung für Queue-Embeds, Thread-Namen und Formularwerte.
 # =============================
 
 def parse_queue(value: str) -> list[int]:
@@ -718,7 +718,7 @@ def shorten_label(value: str, limit: int = 28) -> str:
 
 
 # =============================
-# Match-Bestaetigung: Buttons fuer Annahme oder Rueckzug eines neuen Matches.
+# Match-Bestätigung: Buttons für Annahme oder Rückzug eines neuen Matches.
 # =============================
 
 class PendingMatchView(discord.ui.View):
@@ -736,10 +736,10 @@ class PendingMatchView(discord.ui.View):
         if interaction.user.id in match.player_ids:
             return True
 
-        await interaction.response.send_message("Nur die beiden Spieler koennen hier reagieren.", ephemeral=True)
+        await interaction.response.send_message("Nur die beiden Spieler können hier reagieren.", ephemeral=True)
         return False
 
-    @discord.ui.button(label="Bestaetigen", style=discord.ButtonStyle.success)
+    @discord.ui.button(label="Bestätigen", style=discord.ButtonStyle.success)
     async def confirm_callback(self, interaction: discord.Interaction, button: discord.ui.Button) -> None:
         del button
         pending_match = self.cog.pending_matches.get(self.match_id)
@@ -748,7 +748,7 @@ class PendingMatchView(discord.ui.View):
             return
 
         if interaction.user.id in pending_match.confirmed_user_ids:
-            await interaction.response.send_message("Du hast dieses Match bereits bestaetigt.", ephemeral=True)
+            await interaction.response.send_message("Du hast dieses Match bereits bestätigt.", ephemeral=True)
             return
 
         pending_match.confirmed_user_ids.add(interaction.user.id)
@@ -759,7 +759,7 @@ class PendingMatchView(discord.ui.View):
 
         active_match = self.cog.confirm_pending_match(self.match_id)
         if active_match is None:
-            await interaction.response.send_message("Das Match konnte nicht bestaetigt werden.", ephemeral=True)
+            await interaction.response.send_message("Das Match konnte nicht bestätigt werden.", ephemeral=True)
             return
 
         self.stop()
@@ -767,7 +767,7 @@ class PendingMatchView(discord.ui.View):
         thread = await self.cog.fetch_thread(active_match.thread_id)
         if thread is not None:
             await thread.send(
-                "Wenn euer Match beendet ist, koennt ihr hier das Ergebnis eintragen:",
+                "Wenn euer Match beendet ist, könnt ihr hier das Ergebnis eintragen:",
                 view=ResultEntryView(self.cog, active_match.match_id),
             )
         await self.cog.refresh_panels(refresh_all=True)
@@ -800,7 +800,7 @@ class PendingMatchView(discord.ui.View):
 
 
 # =============================
-# Ergebnis-Bestaetigung: Gegenspieler prueft und bestaetigt den Vorschlag.
+# Ergebnis-Bestätigung: Gegenspieler prueft und bestätigt den Vorschlag.
 # =============================
 
 class ResultConfirmationView(discord.ui.View):
@@ -824,19 +824,19 @@ class ResultConfirmationView(discord.ui.View):
             return False
 
         if interaction.user.id not in match.player_ids:
-            await interaction.response.send_message("Nur die beiden Spieler koennen das Ergebnis bestaetigen.", ephemeral=True)
+            await interaction.response.send_message("Nur die beiden Spieler können das Ergebnis bestätigen.", ephemeral=True)
             return False
 
         if interaction.user.id != self.confirmer_id:
             await interaction.response.send_message(
-                f"Nur <@{self.confirmer_id}> kann dieses Ergebnis bestaetigen.",
+                f"Nur <@{self.confirmer_id}> kann dieses Ergebnis bestätigen.",
                 ephemeral=True,
             )
             return False
 
         return True
 
-    @discord.ui.button(label="Ergebnis bestaetigen", style=discord.ButtonStyle.success)
+    @discord.ui.button(label="Ergebnis bestätigen", style=discord.ButtonStyle.success)
     async def confirm_callback(self, interaction: discord.Interaction, button: discord.ui.Button) -> None:
         del button
         result = self.cog.pending_results.get(self.match_id)
@@ -851,7 +851,7 @@ class ResultConfirmationView(discord.ui.View):
             return
 
         if interaction.guild_id is None:
-            await interaction.response.send_message("Guild-ID konnte nicht aufgeloest werden.", ephemeral=True)
+            await interaction.response.send_message("Guild-ID konnte nicht aufgelöst werden.", ephemeral=True)
             return
 
         await interaction.response.defer(ephemeral=True, thinking=True)
@@ -888,7 +888,7 @@ class ResultConfirmationView(discord.ui.View):
             results_message = await self.cog.send_result_message(results_channel, match, result)
         except discord.HTTPException:
             await interaction.followup.send(
-                "Das Ergebnis wurde gespeichert, aber nicht in den Ergebnis-Channel gesendet. Bitte erneut bestaetigen.",
+                "Das Ergebnis wurde gespeichert, aber nicht in den Ergebnis-Channel gesendet. Bitte erneut bestätigen.",
                 ephemeral=True,
             )
             return
@@ -909,7 +909,7 @@ class ResultConfirmationView(discord.ui.View):
         await generate_html(self.cog.bot)
         upload()
         await self.cog.refresh_panels(refresh_all=True)
-        await interaction.followup.send("Ergebnis bestaetigt und gepostet.", ephemeral=True)
+        await interaction.followup.send("Ergebnis bestätigt und gepostet.", ephemeral=True)
 
 
 # =============================
@@ -931,14 +931,14 @@ class ResultEntryView(discord.ui.View):
 
         if interaction.user.id not in match.player_ids:
             await interaction.response.send_message(
-                "Nur die beiden Match-Spieler duerfen das Ergebnis eintragen.",
+                "Nur die beiden Match-Spieler dürfen das Ergebnis eintragen.",
                 ephemeral=True,
             )
             return
 
         if self.cog.pending_results.get(self.match_id) is not None:
             await interaction.response.send_message(
-                "Fuer dieses Match wurde bereits ein Ergebnis eingetragen und wartet auf Bestaetigung.",
+                "Für dieses Match wurde bereits ein Ergebnis eingetragen und wartet auf Bestätigung.",
                 ephemeral=True,
             )
             return
@@ -979,7 +979,7 @@ class ResultModal(discord.ui.Modal):
         score_player_two_name = shorten_label(player_two_name, 14)
 
         self.winner_select = discord.ui.Select(
-            placeholder="Gewinner auswaehlen",
+            placeholder="Gewinner auswählen",
             required=True,
             options=[
                 discord.SelectOption(label=player_one_name, value=str(match.player_ids[0])),
@@ -1033,14 +1033,14 @@ class ResultModal(discord.ui.Modal):
     async def on_submit(self, interaction: discord.Interaction) -> None:
         if not self.winner_select.values:
             await self.restore_result_entry_button()
-            await interaction.response.send_message("Bitte waehle einen Gewinner aus.", ephemeral=True)
+            await interaction.response.send_message("Bitte wähle einen Gewinner aus.", ephemeral=True)
             return
 
         score = parse_best_of_seven_score(self.score_input.value)
         if score is None:
             await self.restore_result_entry_button()
             await interaction.response.send_message(
-                "Bitte gib einen gueltigen Best-of-7-Spielstand ein, z. B. 4:0 bis 4:3.",
+                "Bitte gib einen gültigen Best-of-7-Spielstand ein, z. B. 4:0 bis 4:3.",
                 ephemeral=True,
             )
             return
@@ -1050,7 +1050,7 @@ class ResultModal(discord.ui.Modal):
         if average_one is None or average_two is None:
             await self.restore_result_entry_button()
             await interaction.response.send_message(
-                "Die Averages muessen numerisch sein. Punkt und Komma sind erlaubt.",
+                "Die Averages müssen numerisch sein. Punkt und Komma sind erlaubt.",
                 ephemeral=True,
             )
             return
@@ -1059,23 +1059,31 @@ class ResultModal(discord.ui.Modal):
         player_one_id, player_two_id = self.match.player_ids
         left_score, right_score = score
 
-        if winner_id == player_one_id and left_score != 4:
-            await self.restore_result_entry_button()
-            await interaction.response.send_message(
-                "Der ausgewaehlte Gewinner passt nicht zum Spielstand.",
-                ephemeral=True,
-            )
-            return
-
-        if winner_id == player_two_id and right_score != 4:
-            await self.restore_result_entry_button()
-            await interaction.response.send_message(
-                "Der ausgewaehlte Gewinner passt nicht zum Spielstand.",
-                ephemeral=True,
-            )
-            return
+        # if winner_id == player_one_id and left_score != 4:
+        #     await self.restore_result_entry_button()
+        #     await interaction.response.send_message(
+        #         "Der ausgewählte Gewinner passt nicht zum Spielstand.",
+        #         ephemeral=True,
+        #     )
+        #     return
+        #
+        # if winner_id == player_two_id and right_score != 4:
+        #     await self.restore_result_entry_button()
+        #     await interaction.response.send_message(
+        #         "Der ausgewählte Gewinner passt nicht zum Spielstand.",
+        #         ephemeral=True,
+        #     )
+        #     return
 
         screenshot = self.screenshot_upload.values[0] if self.screenshot_upload.values else None
+        if screenshot is None:
+            await self.restore_result_entry_button()
+            await interaction.response.send_message(
+                "Bitte hänge einen Screenshot an.",
+                ephemeral=True,
+            )
+            return
+
         submission_id = self.cog.next_result_submission_id
         self.cog.next_result_submission_id += 1
 
@@ -1115,7 +1123,7 @@ class ResultModal(discord.ui.Modal):
                 thread,
                 self.match,
                 pending_result,
-                content=f"<@{confirmer_id}>, bitte bestaetige dieses Ergebnis.",
+                content=f"<@{confirmer_id}>, bitte bestätige dieses Ergebnis.",
                 view=confirmation_view,
             )
         except discord.HTTPException:
@@ -1125,7 +1133,7 @@ class ResultModal(discord.ui.Modal):
             return
 
         pending_result.confirmation_message_id = message.id
-        await interaction.followup.send("Ergebnis zur Bestaetigung in den Match-Thread gesendet.", ephemeral=True)
+        await interaction.followup.send("Ergebnis zur Bestätigung in den Match-Thread gesendet.", ephemeral=True)
 
 
 # =============================
@@ -1173,7 +1181,7 @@ class QueuePanel(discord.ui.View):
 
         if join:
             if queue_name is None:
-                await interaction.response.send_message("Keine Queue ausgewaehlt.", ephemeral=True)
+                await interaction.response.send_message("Keine Queue ausgewählt.", ephemeral=True)
                 return
 
             queue = panel_state.get_queue(queue_name)
@@ -1248,7 +1256,7 @@ class QueuePanel(discord.ui.View):
         scolia_has_opponent = self.has_waiting_opponent(panel_state.scolia_queue, user_id)
         if dartcounter_has_opponent and scolia_has_opponent:
             await interaction.response.send_message(
-                "Beides ist gerade nicht moeglich, weil in beiden Queues schon jemand wartet.",
+                "Beides ist gerade nicht möglich, weil in beiden Queues schon jemand wartet.",
                 ephemeral=True,
                 delete_after=10,
             )
@@ -1418,13 +1426,17 @@ class Ranked(commands.Cog):
 
         view = PendingMatchView(self, match_id)
         await thread.send(
-            content=(
-                f"{player_one.mention} {player_two.mention}\n"
-                "Bestaetigt dieses Match oder zieht es zurueck."
-            ),
             embed=build_pending_match_embed(pending_match),
             view=view,
         )
+        # await thread.send(
+        #     content=(
+        #         f"{player_one.mention} {player_two.mention}\n"
+        #         "Bestätigt dieses Match oder zieht es zurueck."
+        #     ),
+        #     embed=build_pending_match_embed(pending_match),
+        #     view=view,
+        # )
         return True
 
     async def try_start_matches(
@@ -1537,7 +1549,7 @@ class Ranked(commands.Cog):
         embed.set_image(url=f"attachment://{file.filename}")
         return await channel.send(content=content, embed=embed, file=file, view=view)
 
-    # Ergebnisvorschlaege und Panel-Aktualisierung nach Interaktionen.
+    # Ergebnisvorschläge und Panel-Aktualisierung nach Interaktionen.
     async def mark_result_submission_obsolete(self, result: PendingResultState) -> None:
         if result.confirmation_message_id is None:
             return
@@ -1613,7 +1625,7 @@ class Ranked(commands.Cog):
 
         if interaction.user.id not in match.player_ids:
             await interaction.response.send_message(
-                "Nur die beiden Match-Spieler duerfen das Ergebnis eintragen.",
+                "Nur die beiden Match-Spieler dürfen das Ergebnis eintragen.",
                 ephemeral=True,
             )
             return
@@ -1633,7 +1645,7 @@ class Ranked(commands.Cog):
         message = await interaction.original_response()
         self.panel_states[message.id] = panel_state
 
-    @app_commands.command(name="result", description="Oeffnet im Match-Thread das Ergebnisformular")
+    @app_commands.command(name="result", description="Öffnet im Match-Thread das Ergebnisformular")
     @app_commands.checks.has_permissions(administrator=True)
     @app_commands.guild_only()
     async def result(self, interaction: discord.Interaction) -> None:
@@ -1644,7 +1656,7 @@ class Ranked(commands.Cog):
     @app_commands.guild_only()
     async def world_ranking(self, interaction: discord.Interaction) -> None:
         if getattr(self.bot, "db", None) is None:
-            await interaction.response.send_message("Die Datenbank ist aktuell nicht verfuegbar.", ephemeral=True)
+            await interaction.response.send_message("Die Datenbank ist aktuell nicht verfügbar.", ephemeral=True)
             return
 
         rows = await fetch_world_ranking(self.bot)
@@ -1660,22 +1672,24 @@ class Ranked(commands.Cog):
     @app_commands.guild_only()
     async def monthly_ranking(self, interaction: discord.Interaction) -> None:
         if getattr(self.bot, "db", None) is None:
-            await interaction.response.send_message("Die Datenbank ist aktuell nicht verfuegbar.", ephemeral=True)
+            await interaction.response.send_message("Die Datenbank ist aktuell nicht verfügbar.", ephemeral=True)
             return
 
         rows = await fetch_monthly_ranking(self.bot)
         embed = build_ranking_embed(
             title="Monatsranking",
             rows=rows,
-            empty_text="Fuer diesen Monat gibt es noch keine Ranked-Ergebnisse.",
+            empty_text="Für diesen Monat gibt es noch keine Ranked-Ergebnisse.",
         )
         await interaction.response.send_message(embed=embed)
 
-    ## command
-    # - stats
-    # - match verlauf (letzten 10)
-    # - top10 ranking
+    ## commands
+    # - stats / spieler
+    # - match verlauf (letzten 10) / spieler
+    #
+    # admin commands
     # - export matches
+    # - edit_match
 
 async def setup(bot: commands.Bot) -> None:
     await bot.add_cog(Ranked(bot))

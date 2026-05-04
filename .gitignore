@@ -1,3 +1,4 @@
 config/.env
 .idea/
 /datenbank.db
+/dartliga.db

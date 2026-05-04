@@ -6,16 +6,67 @@
       "avatar": "https://cdn.discordapp.com/embed/avatars/0.png",
       "worldRating": 1348,
       "worldRank": 1,
-      "worldWins": 0,
-      "worldLosses": 0,
-      "monthlyRating": 0,
-      "monthlyRank": null,
-      "monthlyWins": 0,
+      "worldWins": 95,
+      "worldLosses": 19,
+      "monthlyRating": 69,
+      "monthlyRank": 2,
+      "monthlyWins": 10,
       "monthlyLosses": 0,
-      "games": 0,
-      "winrate": 0,
-      "overallAverage": 0,
-      "recentMatches": []
+      "games": 114,
+      "winrate": 83.3,
+      "overallAverage": 69.3,
+      "recentMatches": [
+        {
+          "matchId": 1076,
+          "result": "Win",
+          "opponentId": 1142038943961985105,
+          "opponentName": "User 1142038943961985105",
+          "score": "4:2",
+          "average": "79.58",
+          "eloChange": 14,
+          "queue": "scolia"
+        },
+        {
+          "matchId": 1074,
+          "result": "Win",
+          "opponentId": 906968918327967764,
+          "opponentName": "User 906968918327967764",
+          "score": "4:2",
+          "average": "61.38",
+          "eloChange": 3,
+          "queue": "dart"
+        },
+        {
+          "matchId": 1072,
+          "result": "Win",
+          "opponentId": 1468019197656174774,
+          "opponentName": "User 1468019197656174774",
+          "score": "4:1",
+          "average": "67.59",
+          "eloChange": 2,
+          "queue": "scolia"
+        },
+        {
+          "matchId": 1069,
+          "result": "Win",
+          "opponentId": 1092072918915219537,
+          "opponentName": "User 1092072918915219537",
+          "score": "4:0",
+          "average": "81.24",
+          "eloChange": 10,
+          "queue": "scolia"
+        },
+        {
+          "matchId": 1064,
+          "result": "Win",
+          "opponentId": 1474322752432377886,
+          "opponentName": "User 1474322752432377886",
+          "score": "4:0",
+          "average": "82.36",
+          "eloChange": 5,
+          "queue": "dart"
+        }
+      ]
     },
     "1142038943961985105": {
       "userId": 1142038943961985105,
@@ -23,16 +74,67 @@
       "avatar": "https://cdn.discordapp.com/embed/avatars/0.png",
       "worldRating": 1279,
       "worldRank": 2,
-      "worldWins": 0,
-      "worldLosses": 0,
-      "monthlyRating": 0,
-      "monthlyRank": null,
-      "monthlyWins": 0,
-      "monthlyLosses": 0,
-      "games": 0,
-      "winrate": 0,
-      "overallAverage": 0,
-      "recentMatches": []
+      "worldWins": 59,
+      "worldLosses": 23,
+      "monthlyRating": 31,
+      "monthlyRank": 9,
+      "monthlyWins": 4,
+      "monthlyLosses": 3,
+      "games": 82,
+      "winrate": 72.0,
+      "overallAverage": 67.96,
+      "recentMatches": [
+        {
+          "matchId": 1078,
+          "result": "Win",
+          "opponentId": 1468019197656174774,
+          "opponentName": "User 1468019197656174774",
+          "score": "4:2",
+          "average": "60.15",
+          "eloChange": 3,
+          "queue": "scolia"
+        },
+        {
+          "matchId": 1076,
+          "result": "Loss",
+          "opponentId": 707989067777835248,
+          "opponentName": "User 707989067777835248",
+          "score": "4:2",
+          "average": "74.1",
+          "eloChange": -14,
+          "queue": "scolia"
+        },
+        {
+          "matchId": 1075,
+          "result": "Loss",
+          "opponentId": 1468019197656174774,
+          "opponentName": "User 1468019197656174774",
+          "score": "4:2",
+          "average": "61.67",
+          "eloChange": -30,
+          "queue": "scolia"
+        },
+        {
+          "matchId": 1073,
+          "result": "Win",
+          "opponentId": 1309548661117554720,
+          "opponentName": "User 1309548661117554720",
+          "score": "4:0",
+          "average": "67.55",
+          "eloChange": 12,
+          "queue": "scolia"
+        },
+        {
+          "matchId": 1071,
+          "result": "Win",
+          "opponentId": 1309548661117554720,
+          "opponentName": "User 1309548661117554720",
+          "score": "4:1",
+          "average": "74.55",
+          "eloChange": 13,
+          "queue": "scolia"
+        }
+      ]
     },
     "806146120929640498": {
       "userId": 806146120929640498,
@@ -40,16 +142,67 @@
       "avatar": "https://cdn.discordapp.com/embed/avatars/0.png",
       "worldRating": 1260,
       "worldRank": 3,
-      "worldWins": 0,
-      "worldLosses": 0,
+      "worldWins": 50,
+      "worldLosses": 9,
       "monthlyRating": 0,
       "monthlyRank": null,
       "monthlyWins": 0,
       "monthlyLosses": 0,
-      "games": 0,
-      "winrate": 0,
-      "overallAverage": 0,
-      "recentMatches": []
+      "games": 59,
+      "winrate": 84.7,
+      "overallAverage": 66.85,
+      "recentMatches": [
+        {
+          "matchId": 995,
+          "result": "Win",
+          "opponentId": 272860472141676546,
+          "opponentName": "User 272860472141676546",
+          "score": "4:0",
+          "average": "72.43",
+          "eloChange": 8,
+          "queue": "dart"
+        },
+        {
+          "matchId": 976,
+          "result": "Win",
+          "opponentId": 906968918327967764,
+          "opponentName": "User 906968918327967764",
+          "score": "4:0",
+          "average": "75.15",
+          "eloChange": 5,
+          "queue": "dart"
+        },
+        {
+          "matchId": 972,
+          "result": "Win",
+          "opponentId": 906968918327967764,
+          "opponentName": "User 906968918327967764",
+          "score": "4:2",
+          "average": "70.77",
+          "eloChange": 5,
+          "queue": "dart"
+        },
+        {
+          "matchId": 847,
+          "result": "Win",
+          "opponentId": 1309548661117554720,
+          "opponentName": "User 1309548661117554720",
+          "score": "4:1",
+          "average": "71.68",
+          "eloChange": 12,
+          "queue": "dart"
+        },
+        {
+          "matchId": 812,
+          "result": "Win",
+          "opponentId": 134975678327160832,
+          "opponentName": "User 134975678327160832",
+          "score": "4:1",
+          "average": "64.66",
+          "eloChange": 10,
+          "queue": "dart"
+        }
+      ]
     },
     "1309548661117554720": {
       "userId": 1309548661117554720,
@@ -57,16 +210,67 @@
       "avatar": "https://cdn.discordapp.com/embed/avatars/0.png",
       "worldRating": 1196,
       "worldRank": 4,
-      "worldWins": 0,
-      "worldLosses": 0,
+      "worldWins": 56,
+      "worldLosses": 27,
       "monthlyRating": 0,
-      "monthlyRank": null,
+      "monthlyRank": 28,
       "monthlyWins": 0,
-      "monthlyLosses": 0,
-      "games": 0,
-      "winrate": 0,
-      "overallAverage": 0,
-      "recentMatches": []
+      "monthlyLosses": 2,
+      "games": 83,
+      "winrate": 67.5,
+      "overallAverage": 64.23,
+      "recentMatches": [
+        {
+          "matchId": 1073,
+          "result": "Loss",
+          "opponentId": 1142038943961985105,
+          "opponentName": "User 1142038943961985105",
+          "score": "4:0",
+          "average": "61.79",
+          "eloChange": -12,
+          "queue": "scolia"
+        },
+        {
+          "matchId": 1071,
+          "result": "Loss",
+          "opponentId": 1142038943961985105,
+          "opponentName": "User 1142038943961985105",
+          "score": "4:1",
+          "average": "71.2",
+          "eloChange": -13,
+          "queue": "scolia"
+        },
+        {
+          "matchId": 1029,
+          "result": "Loss",
+          "opponentId": 1142038943961985105,
+          "opponentName": "User 1142038943961985105",
+          "score": "4:2",
+          "average": "63.24",
+          "eloChange": -13,
+          "queue": "scolia"
+        },
+        {
+          "matchId": 1028,
+          "result": "Win",
+          "opponentId": 773315089595891732,
+          "opponentName": "User 773315089595891732",
+          "score": "4:3",
+          "average": "68.58",
+          "eloChange": 4,
+          "queue": "scolia"
+        },
+        {
+          "matchId": 934,
+          "result": "Loss",
+          "opponentId": 788855711601655819,
+          "opponentName": "User 788855711601655819",
+          "score": "4:3",
+          "average": "65.83",
+          "eloChange": -22,
+          "queue": "scolia"
+        }
+      ]
     },
     "1330499669490667653": {
       "userId": 1330499669490667653,
@@ -74,16 +278,67 @@
       "avatar": "https://cdn.discordapp.com/embed/avatars/0.png",
       "worldRating": 1195,
       "worldRank": 5,
-      "worldWins": 0,
-      "worldLosses": 0,
-      "monthlyRating": 0,
-      "monthlyRank": null,
-      "monthlyWins": 0,
+      "worldWins": 19,
+      "worldLosses": 3,
+      "monthlyRating": 18,
+      "monthlyRank": 14,
+      "monthlyWins": 2,
       "monthlyLosses": 0,
-      "games": 0,
-      "winrate": 0,
-      "overallAverage": 0,
-      "recentMatches": []
+      "games": 22,
+      "winrate": 86.4,
+      "overallAverage": 69.18,
+      "recentMatches": [
+        {
+          "matchId": 1101,
+          "result": "Win",
+          "opponentId": 1245485490421891165,
+          "opponentName": "User 1245485490421891165",
+          "score": "4:2",
+          "average": "68.06",
+          "eloChange": 2,
+          "queue": "dart"
+        },
+        {
+          "matchId": 1099,
+          "result": "Win",
+          "opponentId": 1007351887114285087,
+          "opponentName": "User 1007351887114285087",
+          "score": "4:1",
+          "average": "68.15",
+          "eloChange": 16,
+          "queue": "dart"
+        },
+        {
+          "matchId": 969,
+          "result": "Win",
+          "opponentId": 1458906019118841960,
+          "opponentName": "User 1458906019118841960",
+          "score": "4:1",
+          "average": "58.52",
+          "eloChange": 5,
+          "queue": "dart"
+        },
+        {
+          "matchId": 894,
+          "result": "Loss",
+          "opponentId": 707989067777835248,
+          "opponentName": "User 707989067777835248",
+          "score": "4:3",
+          "average": "74.23",
+          "eloChange": -15,
+          "queue": "dart"
+        },
+        {
+          "matchId": 890,
+          "result": "Loss",
+          "opponentId": 1309548661117554720,
+          "opponentName": "User 1309548661117554720",
+          "score": "4:3",
+          "average": "71.83",
+          "eloChange": -17,
+          "queue": "dart"
+        }
+      ]
     },
     "1007351887114285087": {
       "userId": 1007351887114285087,
@@ -91,16 +346,67 @@
       "avatar": "https://cdn.discordapp.com/embed/avatars/0.png",
       "worldRating": 1167,
       "worldRank": 6,
-      "worldWins": 0,
-      "worldLosses": 0,
-      "monthlyRating": 0,
-      "monthlyRank": null,
-      "monthlyWins": 0,
-      "monthlyLosses": 0,
-      "games": 0,
-      "winrate": 0,
-      "overallAverage": 0,
-      "recentMatches": []
+      "worldWins": 32,
+      "worldLosses": 9,
+      "monthlyRating": 34,
+      "monthlyRank": 6,
+      "monthlyWins": 6,
+      "monthlyLosses": 1,
+      "games": 41,
+      "winrate": 78.0,
+      "overallAverage": 59.45,
+      "recentMatches": [
+        {
+          "matchId": 1106,
+          "result": "Win",
+          "opponentId": 1245485490421891165,
+          "opponentName": "User 1245485490421891165",
+          "score": "4:0",
+          "average": "67.55",
+          "eloChange": 2,
+          "queue": "dart"
+        },
+        {
+          "matchId": 1099,
+          "result": "Loss",
+          "opponentId": 1330499669490667653,
+          "opponentName": "User 1330499669490667653",
+          "score": "4:1",
+          "average": "64.64",
+          "eloChange": -16,
+          "queue": "dart"
+        },
+        {
+          "matchId": 1097,
+          "result": "Win",
+          "opponentId": 1488997913408438503,
+          "opponentName": "User 1488997913408438503",
+          "score": "2:4",
+          "average": "64.55",
+          "eloChange": 10,
+          "queue": "dart"
+        },
+        {
+          "matchId": 1094,
+          "result": "Win",
+          "opponentId": 906968918327967764,
+          "opponentName": "User 906968918327967764",
+          "score": "2:4",
+          "average": "54.89",
+          "eloChange": 6,
+          "queue": "dart"
+        },
+        {
+          "matchId": 1093,
+          "result": "Win",
+          "opponentId": 906968918327967764,
+          "opponentName": "User 906968918327967764",
+          "score": "4:0",
+          "average": "50.52",
+          "eloChange": 7,
+          "queue": "dart"
+        }
+      ]
     },
     "1092072918915219537": {
       "userId": 1092072918915219537,
@@ -108,33 +414,104 @@
       "avatar": "https://cdn.discordapp.com/embed/avatars/0.png",
       "worldRating": 1166,
       "worldRank": 7,
-      "worldWins": 0,
-      "worldLosses": 0,
-      "monthlyRating": 0,
-      "monthlyRank": null,
-      "monthlyWins": 0,
-      "monthlyLosses": 0,
-      "games": 0,
-      "winrate": 0,
-      "overallAverage": 0,
-      "recentMatches": []
+      "worldWins": 25,
+      "worldLosses": 9,
+      "monthlyRating": 30,
+      "monthlyRank": 10,
+      "monthlyWins": 4,
+      "monthlyLosses": 1,
+      "games": 34,
+      "winrate": 73.5,
+      "overallAverage": 64.21,
+      "recentMatches": [
+        {
+          "matchId": 1069,
+          "result": "Loss",
+          "opponentId": 707989067777835248,
+          "opponentName": "User 707989067777835248",
+          "score": "4:0",
+          "average": "65.29",
+          "eloChange": -10,
+          "queue": "scolia"
+        },
+        {
+          "matchId": 1068,
+          "result": "Win",
+          "opponentId": 1327898199058284545,
+          "opponentName": "User 1327898199058284545",
+          "score": "4:3",
+          "average": "63.9",
+          "eloChange": 5,
+          "queue": "scolia"
+        },
+        {
+          "matchId": 1067,
+          "result": "Win",
+          "opponentId": 265971229582688257,
+          "opponentName": "User 265971229582688257",
+          "score": "4:3",
+          "average": "68.98",
+          "eloChange": 9,
+          "queue": "scolia"
+        },
+        {
+          "matchId": 1066,
+          "result": "Win",
+          "opponentId": 1467938366183178457,
+          "opponentName": "User 1467938366183178457",
+          "score": "4:0",
+          "average": "77.08",
+          "eloChange": 8,
+          "queue": "scolia"
+        },
+        {
+          "matchId": 1065,
+          "result": "Win",
+          "opponentId": 512983240148123648,
+          "opponentName": "User 512983240148123648",
+          "score": "4:2",
+          "average": "57.02",
+          "eloChange": 8,
+          "queue": "scolia"
+        }
+      ]
     },
     "183185835477172226": {
       "userId": 183185835477172226,
       "name": "Stefan",
       "avatar": "https://cdn.discordapp.com/avatars/183185835477172226/a_a7eb60fc18a3a42d57f399df216629b2.gif?size=1024",
-      "worldRating": 1163,
+      "worldRating": 1150,
       "worldRank": 8,
-      "worldWins": 1,
-      "worldLosses": 0,
-      "monthlyRating": 9,
-      "monthlyRank": 1,
-      "monthlyWins": 1,
-      "monthlyLosses": 0,
-      "games": 1,
-      "winrate": 100.0,
-      "overallAverage": 64.0,
+      "worldWins": 35,
+      "worldLosses": 16,
+      "monthlyRating": 19,
+      "monthlyRank": 13,
+      "monthlyWins": 2,
+      "monthlyLosses": 1,
+      "games": 51,
+      "winrate": 68.6,
+      "overallAverage": 60.12,
       "recentMatches": [
+        {
+          "matchId": 1111,
+          "result": "Win",
+          "opponentId": 695183644968615988,
+          "opponentName": "Stefan Kulik",
+          "score": "4:0",
+          "average": "69.0",
+          "eloChange": 10,
+          "queue": "DartCounter"
+        },
+        {
+          "matchId": 1110,
+          "result": "Loss",
+          "opponentId": 695183644968615988,
+          "opponentName": "Stefan Kulik",
+          "score": "4:2",
+          "average": "60.0",
+          "eloChange": -23,
+          "queue": "DartCounter"
+        },
         {
           "matchId": 1109,
           "result": "Win",
@@ -144,6 +521,26 @@
           "average": "64.0",
           "eloChange": 9,
           "queue": "DartCounter"
+        },
+        {
+          "matchId": 1048,
+          "result": "Loss",
+          "opponentId": 707989067777835248,
+          "opponentName": "User 707989067777835248",
+          "score": "4:2",
+          "average": "64.13",
+          "eloChange": -11,
+          "queue": "scolia"
+        },
+        {
+          "matchId": 1005,
+          "result": "Win",
+          "opponentId": 275040337507123200,
+          "opponentName": "User 275040337507123200",
+          "score": "42",
+          "average": "67.15",
+          "eloChange": 9,
+          "queue": "scolia"
         }
       ]
     },
@@ -153,50 +550,203 @@
       "avatar": "https://cdn.discordapp.com/embed/avatars/0.png",
       "worldRating": 1148,
       "worldRank": 9,
-      "worldWins": 0,
-      "worldLosses": 0,
+      "worldWins": 25,
+      "worldLosses": 13,
       "monthlyRating": 0,
       "monthlyRank": null,
       "monthlyWins": 0,
       "monthlyLosses": 0,
-      "games": 0,
-      "winrate": 0,
-      "overallAverage": 0,
-      "recentMatches": []
-    },
-    "890838749280346132": {
-      "userId": 890838749280346132,
-      "name": "User 890838749280346132",
-      "avatar": "https://cdn.discordapp.com/embed/avatars/0.png",
-      "worldRating": 1138,
-      "worldRank": 10,
-      "worldWins": 0,
-      "worldLosses": 0,
-      "monthlyRating": 0,
-      "monthlyRank": null,
-      "monthlyWins": 0,
-      "monthlyLosses": 0,
-      "games": 0,
-      "winrate": 0,
-      "overallAverage": 0,
-      "recentMatches": []
+      "games": 38,
+      "winrate": 65.8,
+      "overallAverage": 57.48,
+      "recentMatches": [
+        {
+          "matchId": 759,
+          "result": "Win",
+          "opponentId": 1309548661117554720,
+          "opponentName": "User 1309548661117554720",
+          "score": "4:1",
+          "average": "48.54",
+          "eloChange": 18,
+          "queue": "scolia"
+        },
+        {
+          "matchId": 676,
+          "result": "Win",
+          "opponentId": 183185835477172226,
+          "opponentName": "Stefan",
+          "score": "4:1",
+          "average": "57.57",
+          "eloChange": 15,
+          "queue": "dart"
+        },
+        {
+          "matchId": 659,
+          "result": "Win",
+          "opponentId": 1408769906664538122,
+          "opponentName": "User 1408769906664538122",
+          "score": "4:0",
+          "average": "51.83",
+          "eloChange": 11,
+          "queue": "scolia"
+        },
+        {
+          "matchId": 656,
+          "result": "Win",
+          "opponentId": 825420293039194123,
+          "opponentName": "User 825420293039194123",
+          "score": "4:0",
+          "average": "63.28",
+          "eloChange": 9,
+          "queue": "scolia"
+        },
+        {
+          "matchId": 621,
+          "result": "Loss",
+          "opponentId": 828645958883475459,
+          "opponentName": "User 828645958883475459",
+          "score": "4:3",
+          "average": "53.49",
+          "eloChange": -15,
+          "queue": "scolia"
+        }
+      ]
     },
     "1213219884440489984": {
       "userId": 1213219884440489984,
       "name": "User 1213219884440489984",
       "avatar": "https://cdn.discordapp.com/embed/avatars/0.png",
       "worldRating": 1138,
-      "worldRank": 11,
-      "worldWins": 0,
-      "worldLosses": 0,
+      "worldRank": 10,
+      "worldWins": 32,
+      "worldLosses": 17,
       "monthlyRating": 0,
       "monthlyRank": null,
       "monthlyWins": 0,
       "monthlyLosses": 0,
-      "games": 0,
-      "winrate": 0,
-      "overallAverage": 0,
-      "recentMatches": []
+      "games": 49,
+      "winrate": 65.3,
+      "overallAverage": 64.14,
+      "recentMatches": [
+        {
+          "matchId": 991,
+          "result": "Win",
+          "opponentId": 825420293039194123,
+          "opponentName": "User 825420293039194123",
+          "score": "4:2",
+          "average": "59.5",
+          "eloChange": 5,
+          "queue": "scolia"
+        },
+        {
+          "matchId": 960,
+          "result": "Loss",
+          "opponentId": 977270139932258375,
+          "opponentName": "User 977270139932258375",
+          "score": "4:3",
+          "average": "63.15",
+          "eloChange": -20,
+          "queue": "scolia"
+        },
+        {
+          "matchId": 959,
+          "result": "Win",
+          "opponentId": 977270139932258375,
+          "opponentName": "User 977270139932258375",
+          "score": "4:2",
+          "average": "61.61",
+          "eloChange": 14,
+          "queue": "scolia"
+        },
+        {
+          "matchId": 908,
+          "result": "Win",
+          "opponentId": 1468019197656174774,
+          "opponentName": "User 1468019197656174774",
+          "score": "4:3",
+          "average": "57.95",
+          "eloChange": 6,
+          "queue": "scolia"
+        },
+        {
+          "matchId": 907,
+          "result": "Win",
+          "opponentId": 1089304921439998003,
+          "opponentName": "User 1089304921439998003",
+          "score": "4:1",
+          "average": "74.43",
+          "eloChange": 13,
+          "queue": "scolia"
+        }
+      ]
+    },
+    "890838749280346132": {
+      "userId": 890838749280346132,
+      "name": "User 890838749280346132",
+      "avatar": "https://cdn.discordapp.com/embed/avatars/0.png",
+      "worldRating": 1138,
+      "worldRank": 11,
+      "worldWins": 11,
+      "worldLosses": 3,
+      "monthlyRating": 6,
+      "monthlyRank": 22,
+      "monthlyWins": 1,
+      "monthlyLosses": 0,
+      "games": 14,
+      "winrate": 78.6,
+      "overallAverage": 65.99,
+      "recentMatches": [
+        {
+          "matchId": 1104,
+          "result": "Win",
+          "opponentId": 1468019197656174774,
+          "opponentName": "User 1468019197656174774",
+          "score": "4:1",
+          "average": "63.0",
+          "eloChange": 6,
+          "queue": "scolia"
+        },
+        {
+          "matchId": 1021,
+          "result": "Win",
+          "opponentId": 707989067777835248,
+          "opponentName": "User 707989067777835248",
+          "score": "4:2",
+          "average": "80.69",
+          "eloChange": 23,
+          "queue": "scolia"
+        },
+        {
+          "matchId": 944,
+          "result": "Win",
+          "opponentId": 505446955242094596,
+          "opponentName": "User 505446955242094596",
+          "score": "4:1",
+          "average": "69.39",
+          "eloChange": 11,
+          "queue": "scolia"
+        },
+        {
+          "matchId": 719,
+          "result": "Win",
+          "opponentId": 828645958883475459,
+          "opponentName": "User 828645958883475459",
+          "score": "4:3",
+          "average": "65.14",
+          "eloChange": 18,
+          "queue": "scolia"
+        },
+        {
+          "matchId": 717,
+          "result": "Win",
+          "opponentId": 1142038943961985105,
+          "opponentName": "User 1142038943961985105",
+          "score": "4:2",
+          "average": "61.84",
+          "eloChange": 21,
+          "queue": "scolia"
+        }
+      ]
     },
     "788855711601655819": {
       "userId": 788855711601655819,
@@ -204,16 +754,67 @@
       "avatar": "https://cdn.discordapp.com/embed/avatars/0.png",
       "worldRating": 1135,
       "worldRank": 12,
-      "worldWins": 0,
-      "worldLosses": 0,
+      "worldWins": 16,
+      "worldLosses": 7,
       "monthlyRating": 0,
       "monthlyRank": null,
       "monthlyWins": 0,
       "monthlyLosses": 0,
-      "games": 0,
-      "winrate": 0,
-      "overallAverage": 0,
-      "recentMatches": []
+      "games": 23,
+      "winrate": 69.6,
+      "overallAverage": 330.28,
+      "recentMatches": [
+        {
+          "matchId": 934,
+          "result": "Win",
+          "opponentId": 1309548661117554720,
+          "opponentName": "User 1309548661117554720",
+          "score": "4:3",
+          "average": "60.38",
+          "eloChange": 22,
+          "queue": "scolia"
+        },
+        {
+          "matchId": 814,
+          "result": "Win",
+          "opponentId": 1327898199058284545,
+          "opponentName": "User 1327898199058284545",
+          "score": "4:0",
+          "average": "57.26",
+          "eloChange": 9,
+          "queue": "scolia"
+        },
+        {
+          "matchId": 813,
+          "result": "Win",
+          "opponentId": 1327898199058284545,
+          "opponentName": "User 1327898199058284545",
+          "score": "4:2",
+          "average": "64.13",
+          "eloChange": 9,
+          "queue": "scolia"
+        },
+        {
+          "matchId": 811,
+          "result": "Loss",
+          "opponentId": 1091029019388039290,
+          "opponentName": "User 1091029019388039290",
+          "score": "4:3",
+          "average": "6233.0",
+          "eloChange": -23,
+          "queue": "scolia"
+        },
+        {
+          "matchId": 788,
+          "result": "Win",
+          "opponentId": 1309548661117554720,
+          "opponentName": "User 1309548661117554720",
+          "score": "4:3",
+          "average": "73.72",
+          "eloChange": 18,
+          "queue": "scolia"
+        }
+      ]
     },
     "1302224986051838068": {
       "userId": 1302224986051838068,
@@ -221,16 +822,67 @@
       "avatar": "https://cdn.discordapp.com/embed/avatars/0.png",
       "worldRating": 1119,
       "worldRank": 13,
-      "worldWins": 0,
-      "worldLosses": 0,
-      "monthlyRating": 0,
-      "monthlyRank": null,
-      "monthlyWins": 0,
+      "worldWins": 42,
+      "worldLosses": 19,
+      "monthlyRating": 12,
+      "monthlyRank": 19,
+      "monthlyWins": 2,
       "monthlyLosses": 0,
-      "games": 0,
-      "winrate": 0,
-      "overallAverage": 0,
-      "recentMatches": []
+      "games": 61,
+      "winrate": 68.9,
+      "overallAverage": 61.7,
+      "recentMatches": [
+        {
+          "matchId": 1085,
+          "result": "Win",
+          "opponentId": 825420293039194123,
+          "opponentName": "User 825420293039194123",
+          "score": "4:0",
+          "average": "52.74",
+          "eloChange": 5,
+          "queue": "scolia"
+        },
+        {
+          "matchId": 1084,
+          "result": "Win",
+          "opponentId": 1327898199058284545,
+          "opponentName": "User 1327898199058284545",
+          "score": "4:0",
+          "average": "69.1",
+          "eloChange": 7,
+          "queue": "scolia"
+        },
+        {
+          "matchId": 1019,
+          "result": "Loss",
+          "opponentId": 707989067777835248,
+          "opponentName": "User 707989067777835248",
+          "score": "4:2",
+          "average": "65.26",
+          "eloChange": -10,
+          "queue": "scolia"
+        },
+        {
+          "matchId": 1017,
+          "result": "Win",
+          "opponentId": 825420293039194123,
+          "opponentName": "User 825420293039194123",
+          "score": "4:2",
+          "average": "60.04",
+          "eloChange": 5,
+          "queue": "scolia"
+        },
+        {
+          "matchId": 1015,
+          "result": "Win",
+          "opponentId": 773315089595891732,
+          "opponentName": "User 773315089595891732",
+          "score": "4:3",
+          "average": "59.44",
+          "eloChange": 8,
+          "queue": "scolia"
+        }
+      ]
     },
     "1089304921439998003": {
       "userId": 1089304921439998003,
@@ -238,16 +890,67 @@
       "avatar": "https://cdn.discordapp.com/embed/avatars/0.png",
       "worldRating": 1100,
       "worldRank": 14,
-      "worldWins": 0,
-      "worldLosses": 0,
+      "worldWins": 28,
+      "worldLosses": 19,
       "monthlyRating": 0,
       "monthlyRank": null,
       "monthlyWins": 0,
       "monthlyLosses": 0,
-      "games": 0,
-      "winrate": 0,
-      "overallAverage": 0,
-      "recentMatches": []
+      "games": 47,
+      "winrate": 59.6,
+      "overallAverage": 62.17,
+      "recentMatches": [
+        {
+          "matchId": 1044,
+          "result": "Loss",
+          "opponentId": 707989067777835248,
+          "opponentName": "User 707989067777835248",
+          "score": "4:0",
+          "average": "52.67",
+          "eloChange": -8,
+          "queue": "scolia"
+        },
+        {
+          "matchId": 1042,
+          "result": "Win",
+          "opponentId": 977270139932258375,
+          "opponentName": "User 977270139932258375",
+          "score": "4:0",
+          "average": "66.07",
+          "eloChange": 15,
+          "queue": "scolia"
+        },
+        {
+          "matchId": 1039,
+          "result": "Win",
+          "opponentId": 530021085522165770,
+          "opponentName": "User 530021085522165770",
+          "score": "4:2",
+          "average": "64.88",
+          "eloChange": 12,
+          "queue": "scolia"
+        },
+        {
+          "matchId": 1033,
+          "result": "Win",
+          "opponentId": 1024998339189690448,
+          "opponentName": "User 1024998339189690448",
+          "score": "4:2",
+          "average": "63.85",
+          "eloChange": 12,
+          "queue": "scolia"
+        },
+        {
+          "matchId": 1032,
+          "result": "Win",
+          "opponentId": 1327898199058284545,
+          "opponentName": "User 1327898199058284545",
+          "score": "4:0",
+          "average": "58.37",
+          "eloChange": 9,
+          "queue": "scolia"
+        }
+      ]
     },
     "1310195023370911807": {
       "userId": 1310195023370911807,
@@ -255,16 +958,67 @@
       "avatar": "https://cdn.discordapp.com/embed/avatars/0.png",
       "worldRating": 1099,
       "worldRank": 15,
-      "worldWins": 0,
-      "worldLosses": 0,
+      "worldWins": 9,
+      "worldLosses": 3,
       "monthlyRating": 0,
       "monthlyRank": null,
       "monthlyWins": 0,
       "monthlyLosses": 0,
-      "games": 0,
-      "winrate": 0,
-      "overallAverage": 0,
-      "recentMatches": []
+      "games": 12,
+      "winrate": 75.0,
+      "overallAverage": 67.85,
+      "recentMatches": [
+        {
+          "matchId": 1026,
+          "result": "Loss",
+          "opponentId": 707989067777835248,
+          "opponentName": "User 707989067777835248",
+          "score": "4:2",
+          "average": "68.38",
+          "eloChange": -10,
+          "queue": "scolia"
+        },
+        {
+          "matchId": 823,
+          "result": "Loss",
+          "opponentId": 1330499669490667653,
+          "opponentName": "User 1330499669490667653",
+          "score": "4:1",
+          "average": "64.21",
+          "eloChange": -16,
+          "queue": "dart"
+        },
+        {
+          "matchId": 665,
+          "result": "Win",
+          "opponentId": 707989067777835248,
+          "opponentName": "User 707989067777835248",
+          "score": "4:2",
+          "average": "73.09",
+          "eloChange": 23,
+          "queue": "dart"
+        },
+        {
+          "matchId": 658,
+          "result": "Win",
+          "opponentId": 253860770788540416,
+          "opponentName": "User 253860770788540416",
+          "score": "4:0",
+          "average": "64.65",
+          "eloChange": 12,
+          "queue": "dart"
+        },
+        {
+          "matchId": 532,
+          "result": "Win",
+          "opponentId": 890838749280346132,
+          "opponentName": "User 890838749280346132",
+          "score": "4:3",
+          "average": "64.17",
+          "eloChange": 13,
+          "queue": "scolia"
+        }
+      ]
     },
     "828645958883475459": {
       "userId": 828645958883475459,
@@ -272,16 +1026,67 @@
       "avatar": "https://cdn.discordapp.com/embed/avatars/0.png",
       "worldRating": 1095,
       "worldRank": 16,
-      "worldWins": 0,
-      "worldLosses": 0,
+      "worldWins": 15,
+      "worldLosses": 7,
       "monthlyRating": 0,
       "monthlyRank": null,
       "monthlyWins": 0,
       "monthlyLosses": 0,
-      "games": 0,
-      "winrate": 0,
-      "overallAverage": 0,
-      "recentMatches": []
+      "games": 22,
+      "winrate": 68.2,
+      "overallAverage": 65.23,
+      "recentMatches": [
+        {
+          "matchId": 874,
+          "result": "Win",
+          "opponentId": 1468019197656174774,
+          "opponentName": "User 1468019197656174774",
+          "score": "4:2",
+          "average": "67.56",
+          "eloChange": 7,
+          "queue": "scolia"
+        },
+        {
+          "matchId": 822,
+          "result": "Loss",
+          "opponentId": 707989067777835248,
+          "opponentName": "User 707989067777835248",
+          "score": "4:3",
+          "average": "68.89",
+          "eloChange": -10,
+          "queue": "scolia"
+        },
+        {
+          "matchId": 740,
+          "result": "Win",
+          "opponentId": 1213219884440489984,
+          "opponentName": "User 1213219884440489984",
+          "score": "4:3",
+          "average": "68.32",
+          "eloChange": 17,
+          "queue": "scolia"
+        },
+        {
+          "matchId": 721,
+          "result": "Loss",
+          "opponentId": 1213219884440489984,
+          "opponentName": "User 1213219884440489984",
+          "score": "4:2",
+          "average": "62.08",
+          "eloChange": -16,
+          "queue": "scolia"
+        },
+        {
+          "matchId": 719,
+          "result": "Loss",
+          "opponentId": 890838749280346132,
+          "opponentName": "User 890838749280346132",
+          "score": "4:3",
+          "average": "68.01",
+          "eloChange": -18,
+          "queue": "scolia"
+        }
+      ]
     },
     "1432632159432216765": {
       "userId": 1432632159432216765,
@@ -289,16 +1094,67 @@
       "avatar": "https://cdn.discordapp.com/embed/avatars/0.png",
       "worldRating": 1091,
       "worldRank": 17,
-      "worldWins": 0,
-      "worldLosses": 0,
-      "monthlyRating": 0,
-      "monthlyRank": null,
-      "monthlyWins": 0,
-      "monthlyLosses": 0,
-      "games": 0,
-      "winrate": 0,
-      "overallAverage": 0,
-      "recentMatches": []
+      "worldWins": 11,
+      "worldLosses": 2,
+      "monthlyRating": 38,
+      "monthlyRank": 5,
+      "monthlyWins": 5,
+      "monthlyLosses": 1,
+      "games": 13,
+      "winrate": 84.6,
+      "overallAverage": 422.97,
+      "recentMatches": [
+        {
+          "matchId": 1108,
+          "result": "Loss",
+          "opponentId": 1468019197656174774,
+          "opponentName": "User 1468019197656174774",
+          "score": "4:2",
+          "average": "51.79",
+          "eloChange": -26,
+          "queue": "scolia"
+        },
+        {
+          "matchId": 1105,
+          "result": "Win",
+          "opponentId": 1468019197656174774,
+          "opponentName": "User 1468019197656174774",
+          "score": "4-1",
+          "average": "59.2",
+          "eloChange": 7,
+          "queue": "scolia"
+        },
+        {
+          "matchId": 1083,
+          "result": "Win",
+          "opponentId": 1326545695506698375,
+          "opponentName": "User 1326545695506698375",
+          "score": "4-0",
+          "average": "4774.0",
+          "eloChange": 7,
+          "queue": "scolia"
+        },
+        {
+          "matchId": 1082,
+          "result": "Win",
+          "opponentId": 1468019197656174774,
+          "opponentName": "User 1468019197656174774",
+          "score": "4-0",
+          "average": "52.74",
+          "eloChange": 8,
+          "queue": "scolia"
+        },
+        {
+          "matchId": 1081,
+          "result": "Win",
+          "opponentId": 1468019197656174774,
+          "opponentName": "User 1468019197656174774",
+          "score": "4-3",
+          "average": "60.81",
+          "eloChange": 8,
+          "queue": "scolia"
+        }
+      ]
     },
     "458662173091299360": {
       "userId": 458662173091299360,
@@ -306,16 +1162,67 @@
       "avatar": "https://cdn.discordapp.com/embed/avatars/0.png",
       "worldRating": 1085,
       "worldRank": 18,
-      "worldWins": 0,
-      "worldLosses": 0,
+      "worldWins": 21,
+      "worldLosses": 11,
       "monthlyRating": 0,
       "monthlyRank": null,
       "monthlyWins": 0,
       "monthlyLosses": 0,
-      "games": 0,
-      "winrate": 0,
-      "overallAverage": 0,
-      "recentMatches": []
+      "games": 32,
+      "winrate": 65.6,
+      "overallAverage": 63.19,
+      "recentMatches": [
+        {
+          "matchId": 921,
+          "result": "Win",
+          "opponentId": 825420293039194123,
+          "opponentName": "User 825420293039194123",
+          "score": "4:3",
+          "average": "63.85",
+          "eloChange": 7,
+          "queue": "scolia"
+        },
+        {
+          "matchId": 689,
+          "result": "Win",
+          "opponentId": 1359231571487494265,
+          "opponentName": "User 1359231571487494265",
+          "score": "4:0",
+          "average": "69.1",
+          "eloChange": 8,
+          "queue": "scolia"
+        },
+        {
+          "matchId": 655,
+          "result": "Win",
+          "opponentId": 1418551508223397889,
+          "opponentName": "User 1418551508223397889",
+          "score": "4:3",
+          "average": "64.26",
+          "eloChange": 13,
+          "queue": "scolia"
+        },
+        {
+          "matchId": 654,
+          "result": "Win",
+          "opponentId": 1024998339189690448,
+          "opponentName": "User 1024998339189690448",
+          "score": "0:4",
+          "average": "59.52",
+          "eloChange": 13,
+          "queue": "scolia"
+        },
+        {
+          "matchId": 649,
+          "result": "Loss",
+          "opponentId": 1142038943961985105,
+          "opponentName": "User 1142038943961985105",
+          "score": "4:0",
+          "average": "61.07",
+          "eloChange": -14,
+          "queue": "scolia"
+        }
+      ]
     },
     "134975678327160832": {
       "userId": 134975678327160832,
@@ -323,16 +1230,67 @@
       "avatar": "https://cdn.discordapp.com/embed/avatars/0.png",
       "worldRating": 1084,
       "worldRank": 19,
-      "worldWins": 0,
-      "worldLosses": 0,
+      "worldWins": 10,
+      "worldLosses": 4,
       "monthlyRating": 0,
       "monthlyRank": null,
       "monthlyWins": 0,
       "monthlyLosses": 0,
-      "games": 0,
-      "winrate": 0,
-      "overallAverage": 0,
-      "recentMatches": []
+      "games": 14,
+      "winrate": 71.4,
+      "overallAverage": 57.35,
+      "recentMatches": [
+        {
+          "matchId": 937,
+          "result": "Win",
+          "opponentId": 1245485490421891165,
+          "opponentName": "User 1245485490421891165",
+          "score": "4:0",
+          "average": "65.35",
+          "eloChange": 4,
+          "queue": "dart"
+        },
+        {
+          "matchId": 821,
+          "result": "Win",
+          "opponentId": 1418545035577917542,
+          "opponentName": "User 1418545035577917542",
+          "score": "4:1",
+          "average": "57.79",
+          "eloChange": 14,
+          "queue": "dart"
+        },
+        {
+          "matchId": 812,
+          "result": "Loss",
+          "opponentId": 806146120929640498,
+          "opponentName": "User 806146120929640498",
+          "score": "4:1",
+          "average": "58.16",
+          "eloChange": -10,
+          "queue": "dart"
+        },
+        {
+          "matchId": 809,
+          "result": "Win",
+          "opponentId": 806146120929640498,
+          "opponentName": "User 806146120929640498",
+          "score": "4:1",
+          "average": "73.46",
+          "eloChange": 24,
+          "queue": "dart"
+        },
+        {
+          "matchId": 782,
+          "result": "Loss",
+          "opponentId": 806146120929640498,
+          "opponentName": "User 806146120929640498",
+          "score": "4:0",
+          "average": "45.75",
+          "eloChange": -9,
+          "queue": "dart"
+        }
+      ]
     },
     "977270139932258375": {
       "userId": 977270139932258375,
@@ -340,16 +1298,67 @@
       "avatar": "https://cdn.discordapp.com/embed/avatars/0.png",
       "worldRating": 1073,
       "worldRank": 20,
-      "worldWins": 0,
-      "worldLosses": 0,
-      "monthlyRating": 0,
-      "monthlyRank": null,
-      "monthlyWins": 0,
-      "monthlyLosses": 0,
-      "games": 0,
-      "winrate": 0,
-      "overallAverage": 0,
-      "recentMatches": []
+      "worldWins": 54,
+      "worldLosses": 45,
+      "monthlyRating": 8,
+      "monthlyRank": 21,
+      "monthlyWins": 1,
+      "monthlyLosses": 1,
+      "games": 99,
+      "winrate": 54.5,
+      "overallAverage": 62.95,
+      "recentMatches": [
+        {
+          "matchId": 1103,
+          "result": "Win",
+          "opponentId": 1327898199058284545,
+          "opponentName": "User 1327898199058284545",
+          "score": "4:2",
+          "average": "57.75",
+          "eloChange": 8,
+          "queue": "scolia"
+        },
+        {
+          "matchId": 1102,
+          "result": "Loss",
+          "opponentId": 1391715482624593932,
+          "opponentName": "User 1391715482624593932",
+          "score": "4-2",
+          "average": "54.32",
+          "eloChange": -17,
+          "queue": "scolia"
+        },
+        {
+          "matchId": 1049,
+          "result": "Win",
+          "opponentId": 707989067777835248,
+          "opponentName": "User 707989067777835248",
+          "score": "4:2",
+          "average": "73.26",
+          "eloChange": 26,
+          "queue": "scolia"
+        },
+        {
+          "matchId": 1042,
+          "result": "Loss",
+          "opponentId": 1089304921439998003,
+          "opponentName": "User 1089304921439998003",
+          "score": "4:0",
+          "average": "65.0",
+          "eloChange": -15,
+          "queue": "scolia"
+        },
+        {
+          "matchId": 1016,
+          "result": "Win",
+          "opponentId": 1327898199058284545,
+          "opponentName": "User 1327898199058284545",
+          "score": "4:0",
+          "average": "60.73",
+          "eloChange": 10,
+          "queue": "scolia"
+        }
+      ]
     },
     "1391715482624593932": {
       "userId": 1391715482624593932,
@@ -357,16 +1366,67 @@
       "avatar": "https://cdn.discordapp.com/embed/avatars/0.png",
       "worldRating": 1071,
       "worldRank": 21,
-      "worldWins": 0,
-      "worldLosses": 0,
-      "monthlyRating": 0,
-      "monthlyRank": null,
-      "monthlyWins": 0,
+      "worldWins": 6,
+      "worldLosses": 2,
+      "monthlyRating": 17,
+      "monthlyRank": 16,
+      "monthlyWins": 1,
       "monthlyLosses": 0,
-      "games": 0,
-      "winrate": 0,
-      "overallAverage": 0,
-      "recentMatches": []
+      "games": 8,
+      "winrate": 75.0,
+      "overallAverage": 795.36,
+      "recentMatches": [
+        {
+          "matchId": 1102,
+          "result": "Win",
+          "opponentId": 977270139932258375,
+          "opponentName": "User 977270139932258375",
+          "score": "4-2",
+          "average": "5957.0",
+          "eloChange": 17,
+          "queue": "scolia"
+        },
+        {
+          "matchId": 420,
+          "result": "Win",
+          "opponentId": 1302224986051838068,
+          "opponentName": "User 1302224986051838068",
+          "score": "4-2",
+          "average": "64.56",
+          "eloChange": 22,
+          "queue": "scolia"
+        },
+        {
+          "matchId": 334,
+          "result": "Loss",
+          "opponentId": 1213219884440489984,
+          "opponentName": "User 1213219884440489984",
+          "score": "4:1",
+          "average": "63.78",
+          "eloChange": -14,
+          "queue": "scolia"
+        },
+        {
+          "matchId": 258,
+          "result": "Win",
+          "opponentId": 1326545695506698375,
+          "opponentName": "User 1326545695506698375",
+          "score": "4:0",
+          "average": "59.52",
+          "eloChange": 15,
+          "queue": "scolia"
+        },
+        {
+          "matchId": 257,
+          "result": "Win",
+          "opponentId": 1309548661117554720,
+          "opponentName": "User 1309548661117554720",
+          "score": "4:3",
+          "average": "61.87",
+          "eloChange": 23,
+          "queue": "scolia"
+        }
+      ]
     },
     "418513121167147008": {
       "userId": 418513121167147008,
@@ -374,16 +1434,67 @@
       "avatar": "https://cdn.discordapp.com/embed/avatars/0.png",
       "worldRating": 1065,
       "worldRank": 22,
-      "worldWins": 0,
-      "worldLosses": 0,
+      "worldWins": 7,
+      "worldLosses": 2,
       "monthlyRating": 0,
       "monthlyRank": null,
       "monthlyWins": 0,
       "monthlyLosses": 0,
-      "games": 0,
-      "winrate": 0,
-      "overallAverage": 0,
-      "recentMatches": []
+      "games": 9,
+      "winrate": 77.8,
+      "overallAverage": 66.55,
+      "recentMatches": [
+        {
+          "matchId": 529,
+          "result": "Win",
+          "opponentId": 1142038943961985105,
+          "opponentName": "User 1142038943961985105",
+          "score": "4:2",
+          "average": "71.92",
+          "eloChange": 17,
+          "queue": "scolia"
+        },
+        {
+          "matchId": 346,
+          "result": "Win",
+          "opponentId": 773315089595891732,
+          "opponentName": "User 773315089595891732",
+          "score": "4:0",
+          "average": "59.52",
+          "eloChange": 13,
+          "queue": "scolia"
+        },
+        {
+          "matchId": 343,
+          "result": "Loss",
+          "opponentId": 1330499669490667653,
+          "opponentName": "User 1330499669490667653",
+          "score": "4:0",
+          "average": "69.48",
+          "eloChange": -18,
+          "queue": "dart"
+        },
+        {
+          "matchId": 339,
+          "result": "Win",
+          "opponentId": 1468019197656174774,
+          "opponentName": "User 1468019197656174774",
+          "score": "4:0",
+          "average": "72.43",
+          "eloChange": 14,
+          "queue": "scolia"
+        },
+        {
+          "matchId": 336,
+          "result": "Win",
+          "opponentId": 458662173091299360,
+          "opponentName": "User 458662173091299360",
+          "score": "4:1",
+          "average": "72.33",
+          "eloChange": 20,
+          "queue": "scolia"
+        }
+      ]
     },
     "1358893570869821534": {
       "userId": 1358893570869821534,
@@ -391,16 +1502,67 @@
       "avatar": "https://cdn.discordapp.com/embed/avatars/0.png",
       "worldRating": 1044,
       "worldRank": 23,
-      "worldWins": 0,
-      "worldLosses": 0,
+      "worldWins": 4,
+      "worldLosses": 1,
       "monthlyRating": 0,
       "monthlyRank": null,
       "monthlyWins": 0,
       "monthlyLosses": 0,
-      "games": 0,
-      "winrate": 0,
-      "overallAverage": 0,
-      "recentMatches": []
+      "games": 5,
+      "winrate": 80.0,
+      "overallAverage": 66.01,
+      "recentMatches": [
+        {
+          "matchId": 996,
+          "result": "Win",
+          "opponentId": 1302224986051838068,
+          "opponentName": "User 1302224986051838068",
+          "score": "4:2",
+          "average": "71.83",
+          "eloChange": 20,
+          "queue": "scolia"
+        },
+        {
+          "matchId": 445,
+          "result": "Win",
+          "opponentId": 825420293039194123,
+          "opponentName": "User 825420293039194123",
+          "score": "0:4",
+          "average": "69.1",
+          "eloChange": 9,
+          "queue": "scolia"
+        },
+        {
+          "matchId": 443,
+          "result": "Win",
+          "opponentId": 1359231571487494265,
+          "opponentName": "User 1359231571487494265",
+          "score": "1:4",
+          "average": "57.38",
+          "eloChange": 13,
+          "queue": "scolia"
+        },
+        {
+          "matchId": 442,
+          "result": "Loss",
+          "opponentId": 1432632159432216765,
+          "opponentName": "User 1432632159432216765",
+          "score": "4:1",
+          "average": "74.1",
+          "eloChange": -15,
+          "queue": "scolia"
+        },
+        {
+          "matchId": 77,
+          "result": "Win",
+          "opponentId": 530021085522165770,
+          "opponentName": "User 530021085522165770",
+          "score": "4:2",
+          "average": "57.63",
+          "eloChange": 17,
+          "queue": "scolia"
+        }
+      ]
     },
     "272860472141676546": {
       "userId": 272860472141676546,
@@ -408,16 +1570,67 @@
       "avatar": "https://cdn.discordapp.com/embed/avatars/0.png",
       "worldRating": 1040,
       "worldRank": 24,
-      "worldWins": 0,
-      "worldLosses": 0,
+      "worldWins": 5,
+      "worldLosses": 2,
       "monthlyRating": 0,
       "monthlyRank": null,
       "monthlyWins": 0,
       "monthlyLosses": 0,
-      "games": 0,
-      "winrate": 0,
-      "overallAverage": 0,
-      "recentMatches": []
+      "games": 7,
+      "winrate": 71.4,
+      "overallAverage": 55.22,
+      "recentMatches": [
+        {
+          "matchId": 995,
+          "result": "Loss",
+          "opponentId": 806146120929640498,
+          "opponentName": "User 806146120929640498",
+          "score": "4:0",
+          "average": "66.29",
+          "eloChange": -8,
+          "queue": "dart"
+        },
+        {
+          "matchId": 468,
+          "result": "Loss",
+          "opponentId": 183185835477172226,
+          "opponentName": "Stefan",
+          "score": "4:1",
+          "average": "53.55",
+          "eloChange": -15,
+          "queue": "dart"
+        },
+        {
+          "matchId": 287,
+          "result": "Win",
+          "opponentId": 1364666221114556537,
+          "opponentName": "User 1364666221114556537",
+          "score": "4:2",
+          "average": "46.97",
+          "eloChange": 14,
+          "queue": "dart"
+        },
+        {
+          "matchId": 263,
+          "result": "Win",
+          "opponentId": 721521931953635349,
+          "opponentName": "User 721521931953635349",
+          "score": "1:4",
+          "average": "48.49",
+          "eloChange": 10,
+          "queue": "dart"
+        },
+        {
+          "matchId": 261,
+          "result": "Win",
+          "opponentId": 1245485490421891165,
+          "opponentName": "User 1245485490421891165",
+          "score": "4:0",
+          "average": "47.34",
+          "eloChange": 13,
+          "queue": "dart"
+        }
+      ]
     },
     "920777207834619915": {
       "userId": 920777207834619915,
@@ -425,16 +1638,67 @@
       "avatar": "https://cdn.discordapp.com/embed/avatars/0.png",
       "worldRating": 1037,
       "worldRank": 25,
-      "worldWins": 0,
-      "worldLosses": 0,
+      "worldWins": 5,
+      "worldLosses": 4,
       "monthlyRating": 0,
       "monthlyRank": null,
       "monthlyWins": 0,
       "monthlyLosses": 0,
-      "games": 0,
-      "winrate": 0,
-      "overallAverage": 0,
-      "recentMatches": []
+      "games": 9,
+      "winrate": 55.6,
+      "overallAverage": 66.55,
+      "recentMatches": [
+        {
+          "matchId": 629,
+          "result": "Loss",
+          "opponentId": 707989067777835248,
+          "opponentName": "User 707989067777835248",
+          "score": "4:3",
+          "average": "72.55",
+          "eloChange": -9,
+          "queue": "scolia"
+        },
+        {
+          "matchId": 625,
+          "result": "Loss",
+          "opponentId": 1302224986051838068,
+          "opponentName": "User 1302224986051838068",
+          "score": "4:2",
+          "average": "64.25",
+          "eloChange": -13,
+          "queue": "scolia"
+        },
+        {
+          "matchId": 619,
+          "result": "Win",
+          "opponentId": 530021085522165770,
+          "opponentName": "User 530021085522165770",
+          "score": "4:2",
+          "average": "66.31",
+          "eloChange": 20,
+          "queue": "scolia"
+        },
+        {
+          "matchId": 562,
+          "result": "Loss",
+          "opponentId": 530021085522165770,
+          "opponentName": "User 530021085522165770",
+          "score": "4:1",
+          "average": "66.15",
+          "eloChange": -13,
+          "queue": "scolia"
+        },
+        {
+          "matchId": 227,
+          "result": "Win",
+          "opponentId": 828645958883475459,
+          "opponentName": "User 828645958883475459",
+          "score": "4:3",
+          "average": "67.54",
+          "eloChange": 14,
+          "queue": "scolia"
+        }
+      ]
     },
     "695585081397346385": {
       "userId": 695585081397346385,
@@ -442,16 +1706,37 @@
       "avatar": "https://cdn.discordapp.com/embed/avatars/0.png",
       "worldRating": 1036,
       "worldRank": 26,
-      "worldWins": 0,
+      "worldWins": 2,
       "worldLosses": 0,
       "monthlyRating": 0,
       "monthlyRank": null,
       "monthlyWins": 0,
       "monthlyLosses": 0,
-      "games": 0,
-      "winrate": 0,
-      "overallAverage": 0,
-      "recentMatches": []
+      "games": 2,
+      "winrate": 100.0,
+      "overallAverage": 72.08,
+      "recentMatches": [
+        {
+          "matchId": 163,
+          "result": "Win",
+          "opponentId": 1418545035577917542,
+          "opponentName": "User 1418545035577917542",
+          "score": "4:0",
+          "average": "71.57",
+          "eloChange": 15,
+          "queue": "dart"
+        },
+        {
+          "matchId": 142,
+          "result": "Win",
+          "opponentId": 707989067777835248,
+          "opponentName": "User 707989067777835248",
+          "score": "4:2",
+          "average": "72.6",
+          "eloChange": 20,
+          "queue": "dart"
+        }
+      ]
     },
     "1418545035577917542": {
       "userId": 1418545035577917542,
@@ -459,16 +1744,67 @@
       "avatar": "https://cdn.discordapp.com/embed/avatars/0.png",
       "worldRating": 1034,
       "worldRank": 27,
-      "worldWins": 0,
-      "worldLosses": 0,
+      "worldWins": 11,
+      "worldLosses": 10,
       "monthlyRating": 0,
       "monthlyRank": null,
       "monthlyWins": 0,
       "monthlyLosses": 0,
-      "games": 0,
-      "winrate": 0,
-      "overallAverage": 0,
-      "recentMatches": []
+      "games": 21,
+      "winrate": 52.4,
+      "overallAverage": 55.18,
+      "recentMatches": [
+        {
+          "matchId": 1014,
+          "result": "Loss",
+          "opponentId": 707989067777835248,
+          "opponentName": "User 707989067777835248",
+          "score": "4:0",
+          "average": "65.19",
+          "eloChange": -7,
+          "queue": "dart"
+        },
+        {
+          "matchId": 914,
+          "result": "Win",
+          "opponentId": 283650357262024704,
+          "opponentName": "User 283650357262024704",
+          "score": "4:3",
+          "average": "52.74",
+          "eloChange": 14,
+          "queue": "dart"
+        },
+        {
+          "matchId": 910,
+          "result": "Win",
+          "opponentId": 1474322752432377886,
+          "opponentName": "User 1474322752432377886",
+          "score": "4:0",
+          "average": "56.19",
+          "eloChange": 15,
+          "queue": "dart"
+        },
+        {
+          "matchId": 873,
+          "result": "Win",
+          "opponentId": 1361248234583883817,
+          "opponentName": "User 1361248234583883817",
+          "score": "4:0",
+          "average": "58.94",
+          "eloChange": 15,
+          "queue": "dart"
+        },
+        {
+          "matchId": 868,
+          "result": "Win",
+          "opponentId": 1245485490421891165,
+          "opponentName": "User 1245485490421891165",
+          "score": "4:0",
+          "average": "55.67",
+          "eloChange": 7,
+          "queue": "dart"
+        }
+      ]
     },
     "1392447258217283666": {
       "userId": 1392447258217283666,
@@ -476,16 +1812,57 @@
       "avatar": "https://cdn.discordapp.com/embed/avatars/0.png",
       "worldRating": 1031,
       "worldRank": 28,
-      "worldWins": 0,
-      "worldLosses": 0,
+      "worldWins": 3,
+      "worldLosses": 1,
       "monthlyRating": 0,
       "monthlyRank": null,
       "monthlyWins": 0,
       "monthlyLosses": 0,
-      "games": 0,
-      "winrate": 0,
-      "overallAverage": 0,
-      "recentMatches": []
+      "games": 4,
+      "winrate": 75.0,
+      "overallAverage": 62.38,
+      "recentMatches": [
+        {
+          "matchId": 90,
+          "result": "Loss",
+          "opponentId": 530021085522165770,
+          "opponentName": "User 530021085522165770",
+          "score": "4:3",
+          "average": "60.49",
+          "eloChange": -17,
+          "queue": "dart"
+        },
+        {
+          "matchId": 82,
+          "result": "Win",
+          "opponentId": 806146120929640498,
+          "opponentName": "User 806146120929640498",
+          "score": "4:3",
+          "average": "66.57",
+          "eloChange": 17,
+          "queue": "dart"
+        },
+        {
+          "matchId": 79,
+          "result": "Win",
+          "opponentId": 1245485490421891165,
+          "opponentName": "User 1245485490421891165",
+          "score": "4:0",
+          "average": "55.67",
+          "eloChange": 15,
+          "queue": "dart"
+        },
+        {
+          "matchId": 76,
+          "result": "Win",
+          "opponentId": 1458906019118841960,
+          "opponentName": "User 1458906019118841960",
+          "score": "4:3",
+          "average": "66.81",
+          "eloChange": 15,
+          "queue": "dart"
+        }
+      ]
     },
     "801011337274589234": {
       "userId": 801011337274589234,
@@ -493,16 +1870,37 @@
       "avatar": "https://cdn.discordapp.com/embed/avatars/0.png",
       "worldRating": 1026,
       "worldRank": 29,
-      "worldWins": 0,
+      "worldWins": 2,
       "worldLosses": 0,
       "monthlyRating": 0,
       "monthlyRank": null,
       "monthlyWins": 0,
       "monthlyLosses": 0,
-      "games": 0,
-      "winrate": 0,
-      "overallAverage": 0,
-      "recentMatches": []
+      "games": 2,
+      "winrate": 100.0,
+      "overallAverage": 46.2,
+      "recentMatches": [
+        {
+          "matchId": 456,
+          "result": "Win",
+          "opponentId": 811720921782026251,
+          "opponentName": "User 811720921782026251",
+          "score": "4:0",
+          "average": "43.88",
+          "eloChange": 10,
+          "queue": "dart"
+        },
+        {
+          "matchId": 455,
+          "result": "Win",
+          "opponentId": 1361248234583883817,
+          "opponentName": "User 1361248234583883817",
+          "score": "4:2",
+          "average": "48.51",
+          "eloChange": 16,
+          "queue": "dart"
+        }
+      ]
     },
     "1338229961848389662": {
       "userId": 1338229961848389662,
@@ -510,16 +1908,37 @@
       "avatar": "https://cdn.discordapp.com/embed/avatars/0.png",
       "worldRating": 1021,
       "worldRank": 30,
-      "worldWins": 0,
+      "worldWins": 2,
       "worldLosses": 0,
       "monthlyRating": 0,
       "monthlyRank": null,
       "monthlyWins": 0,
       "monthlyLosses": 0,
-      "games": 0,
-      "winrate": 0,
-      "overallAverage": 0,
-      "recentMatches": []
+      "games": 2,
+      "winrate": 100.0,
+      "overallAverage": 52.18,
+      "recentMatches": [
+        {
+          "matchId": 521,
+          "result": "Win",
+          "opponentId": 1359231571487494265,
+          "opponentName": "User 1359231571487494265",
+          "score": "4:1",
+          "average": "51.23",
+          "eloChange": 10,
+          "queue": "scolia"
+        },
+        {
+          "matchId": 494,
+          "result": "Win",
+          "opponentId": 627469840457662464,
+          "opponentName": "User 627469840457662464",
+          "score": "4:1",
+          "average": "53.13",
+          "eloChange": 11,
+          "queue": "scolia"
+        }
+      ]
     },
     "1488997913408438503": {
       "userId": 1488997913408438503,
@@ -527,16 +1946,67 @@
       "avatar": "https://cdn.discordapp.com/embed/avatars/0.png",
       "worldRating": 1019,
       "worldRank": 31,
-      "worldWins": 0,
-      "worldLosses": 0,
-      "monthlyRating": 0,
-      "monthlyRank": null,
-      "monthlyWins": 0,
-      "monthlyLosses": 0,
-      "games": 0,
-      "winrate": 0,
-      "overallAverage": 0,
-      "recentMatches": []
+      "worldWins": 5,
+      "worldLosses": 4,
+      "monthlyRating": 40,
+      "monthlyRank": 4,
+      "monthlyWins": 3,
+      "monthlyLosses": 2,
+      "games": 9,
+      "winrate": 55.6,
+      "overallAverage": 54.14,
+      "recentMatches": [
+        {
+          "matchId": 1097,
+          "result": "Loss",
+          "opponentId": 1007351887114285087,
+          "opponentName": "User 1007351887114285087",
+          "score": "2:4",
+          "average": "58.91",
+          "eloChange": -10,
+          "queue": "dart"
+        },
+        {
+          "matchId": 1096,
+          "result": "Win",
+          "opponentId": 906968918327967764,
+          "opponentName": "User 906968918327967764",
+          "score": "4:1",
+          "average": "59.7",
+          "eloChange": 12,
+          "queue": "dart"
+        },
+        {
+          "matchId": 1062,
+          "result": "Win",
+          "opponentId": 283650357262024704,
+          "opponentName": "User 283650357262024704",
+          "score": "4:0",
+          "average": "57.3",
+          "eloChange": 13,
+          "queue": "dart"
+        },
+        {
+          "matchId": 1060,
+          "result": "Loss",
+          "opponentId": 707989067777835248,
+          "opponentName": "User 707989067777835248",
+          "score": "4:2",
+          "average": "74.03",
+          "eloChange": -5,
+          "queue": "dart"
+        },
+        {
+          "matchId": 1051,
+          "result": "Win",
+          "opponentId": 283650357262024704,
+          "opponentName": "User 283650357262024704",
+          "score": "4:2",
+          "average": "49.8",
+          "eloChange": 15,
+          "queue": "dart"
+        }
+      ]
     },
     "492994027331780609": {
       "userId": 492994027331780609,
@@ -544,84 +2014,259 @@
       "avatar": "https://cdn.discordapp.com/embed/avatars/0.png",
       "worldRating": 1017,
       "worldRank": 32,
-      "worldWins": 0,
-      "worldLosses": 0,
+      "worldWins": 9,
+      "worldLosses": 10,
       "monthlyRating": 0,
       "monthlyRank": null,
       "monthlyWins": 0,
       "monthlyLosses": 0,
-      "games": 0,
-      "winrate": 0,
-      "overallAverage": 0,
-      "recentMatches": []
-    },
-    "964021055171727370": {
-      "userId": 964021055171727370,
-      "name": "User 964021055171727370",
-      "avatar": "https://cdn.discordapp.com/embed/avatars/0.png",
-      "worldRating": 1016,
-      "worldRank": 33,
-      "worldWins": 0,
-      "worldLosses": 0,
-      "monthlyRating": 0,
-      "monthlyRank": null,
-      "monthlyWins": 0,
-      "monthlyLosses": 0,
-      "games": 0,
-      "winrate": 0,
-      "overallAverage": 0,
-      "recentMatches": []
+      "games": 19,
+      "winrate": 47.4,
+      "overallAverage": 59.86,
+      "recentMatches": [
+        {
+          "matchId": 943,
+          "result": "Win",
+          "opponentId": 1468019197656174774,
+          "opponentName": "User 1468019197656174774",
+          "score": "4:1",
+          "average": "50.71",
+          "eloChange": 10,
+          "queue": "scolia"
+        },
+        {
+          "matchId": 756,
+          "result": "Win",
+          "opponentId": 1468019197656174774,
+          "opponentName": "User 1468019197656174774",
+          "score": "4:3",
+          "average": "60.09",
+          "eloChange": 11,
+          "queue": "scolia"
+        },
+        {
+          "matchId": 755,
+          "result": "Win",
+          "opponentId": 1468019197656174774,
+          "opponentName": "User 1468019197656174774",
+          "score": "4:1",
+          "average": "58.23",
+          "eloChange": 12,
+          "queue": "scolia"
+        },
+        {
+          "matchId": 754,
+          "result": "Win",
+          "opponentId": 1468019197656174774,
+          "opponentName": "User 1468019197656174774",
+          "score": "4:2",
+          "average": "57.18",
+          "eloChange": 13,
+          "queue": "scolia"
+        },
+        {
+          "matchId": 748,
+          "result": "Win",
+          "opponentId": 1468019197656174774,
+          "opponentName": "User 1468019197656174774",
+          "score": "4:2",
+          "average": "57.18",
+          "eloChange": 14,
+          "queue": "scolia"
+        }
+      ]
     },
     "1067374071421095936": {
       "userId": 1067374071421095936,
       "name": "User 1067374071421095936",
       "avatar": "https://cdn.discordapp.com/embed/avatars/0.png",
       "worldRating": 1016,
-      "worldRank": 34,
-      "worldWins": 0,
-      "worldLosses": 0,
+      "worldRank": 33,
+      "worldWins": 4,
+      "worldLosses": 2,
       "monthlyRating": 0,
       "monthlyRank": null,
       "monthlyWins": 0,
       "monthlyLosses": 0,
-      "games": 0,
-      "winrate": 0,
-      "overallAverage": 0,
-      "recentMatches": []
-    },
-    "1320524093094887438": {
-      "userId": 1320524093094887438,
-      "name": "User 1320524093094887438",
-      "avatar": "https://cdn.discordapp.com/embed/avatars/0.png",
-      "worldRating": 1016,
-      "worldRank": 35,
-      "worldWins": 0,
-      "worldLosses": 0,
-      "monthlyRating": 0,
-      "monthlyRank": null,
-      "monthlyWins": 0,
-      "monthlyLosses": 0,
-      "games": 0,
-      "winrate": 0,
-      "overallAverage": 0,
-      "recentMatches": []
+      "games": 6,
+      "winrate": 66.7,
+      "overallAverage": 2858.86,
+      "recentMatches": [
+        {
+          "matchId": 909,
+          "result": "Loss",
+          "opponentId": 505446955242094596,
+          "opponentName": "User 505446955242094596",
+          "score": "4:3",
+          "average": "44.86",
+          "eloChange": -19,
+          "queue": "dart"
+        },
+        {
+          "matchId": 869,
+          "result": "Win",
+          "opponentId": 530021085522165770,
+          "opponentName": "User 530021085522165770",
+          "score": "4:2",
+          "average": "5629.0",
+          "eloChange": 15,
+          "queue": "dart"
+        },
+        {
+          "matchId": 865,
+          "result": "Win",
+          "opponentId": 811720921782026251,
+          "opponentName": "User 811720921782026251",
+          "score": "4:2",
+          "average": "5585.0",
+          "eloChange": 6,
+          "queue": "dart"
+        },
+        {
+          "matchId": 857,
+          "result": "Win",
+          "opponentId": 1473034865355001856,
+          "opponentName": "User 1473034865355001856",
+          "score": "2:4",
+          "average": "5788.0",
+          "eloChange": 15,
+          "queue": "dart"
+        },
+        {
+          "matchId": 186,
+          "result": "Win",
+          "opponentId": 770346293846343690,
+          "opponentName": "User 770346293846343690",
+          "score": "4:1",
+          "average": "52.23",
+          "eloChange": 17,
+          "queue": "dart"
+        }
+      ]
     },
     "1331913233518432278": {
       "userId": 1331913233518432278,
       "name": "User 1331913233518432278",
       "avatar": "https://cdn.discordapp.com/embed/avatars/0.png",
       "worldRating": 1016,
-      "worldRank": 36,
-      "worldWins": 0,
+      "worldRank": 34,
+      "worldWins": 4,
+      "worldLosses": 3,
+      "monthlyRating": 0,
+      "monthlyRank": null,
+      "monthlyWins": 0,
+      "monthlyLosses": 0,
+      "games": 7,
+      "winrate": 57.1,
+      "overallAverage": 56.54,
+      "recentMatches": [
+        {
+          "matchId": 743,
+          "result": "Win",
+          "opponentId": 977270139932258375,
+          "opponentName": "User 977270139932258375",
+          "score": "4:3",
+          "average": "59.42",
+          "eloChange": 19,
+          "queue": "scolia"
+        },
+        {
+          "matchId": 741,
+          "result": "Loss",
+          "opponentId": 530021085522165770,
+          "opponentName": "User 530021085522165770",
+          "score": "4:1",
+          "average": "61.78",
+          "eloChange": -13,
+          "queue": "scolia"
+        },
+        {
+          "matchId": 713,
+          "result": "Loss",
+          "opponentId": 1302224986051838068,
+          "opponentName": "User 1302224986051838068",
+          "score": "4:2",
+          "average": "58.53",
+          "eloChange": -11,
+          "queue": "scolia"
+        },
+        {
+          "matchId": 662,
+          "result": "Loss",
+          "opponentId": 1468019197656174774,
+          "opponentName": "User 1468019197656174774",
+          "score": "4:2",
+          "average": "50.29",
+          "eloChange": -21,
+          "queue": "scolia"
+        },
+        {
+          "matchId": 585,
+          "result": "Win",
+          "opponentId": 1468019197656174774,
+          "opponentName": "User 1468019197656174774",
+          "score": "4:0",
+          "average": "61.35",
+          "eloChange": 13,
+          "queue": "scolia"
+        }
+      ]
+    },
+    "964021055171727370": {
+      "userId": 964021055171727370,
+      "name": "User 964021055171727370",
+      "avatar": "https://cdn.discordapp.com/embed/avatars/0.png",
+      "worldRating": 1016,
+      "worldRank": 35,
+      "worldWins": 1,
       "worldLosses": 0,
       "monthlyRating": 0,
       "monthlyRank": null,
       "monthlyWins": 0,
       "monthlyLosses": 0,
-      "games": 0,
-      "winrate": 0,
-      "overallAverage": 0,
-      "recentMatches": []
+      "games": 1,
+      "winrate": 100.0,
+      "overallAverage": 59.01,
+      "recentMatches": [
+        {
+          "matchId": 200,
+          "result": "Win",
+          "opponentId": 911368314855514163,
+          "opponentName": "User 911368314855514163",
+          "score": "4:2",
+          "average": "59.01",
+          "eloChange": 16,
+          "queue": "scolia"
+        }
+      ]
+    },
+    "1320524093094887438": {
+      "userId": 1320524093094887438,
+      "name": "User 1320524093094887438",
+      "avatar": "https://cdn.discordapp.com/embed/avatars/0.png",
+      "worldRating": 1016,
+      "worldRank": 36,
+      "worldWins": 1,
+      "worldLosses": 0,
+      "monthlyRating": 0,
+      "monthlyRank": null,
+      "monthlyWins": 0,
+      "monthlyLosses": 0,
+      "games": 1,
+      "winrate": 100.0,
+      "overallAverage": 67.49,
+      "recentMatches": [
+        {
+          "matchId": 80,
+          "result": "Win",
+          "opponentId": 777632441359400970,
+          "opponentName": "User 777632441359400970",
+          "score": "4:1",
+          "average": "67.49",
+          "eloChange": 16,
+          "queue": "dart"
+        }
+      ]
     },
     "1476579894434595010": {
       "userId": 1476579894434595010,
@@ -646,16 +2291,27 @@
       "avatar": "https://cdn.discordapp.com/embed/avatars/0.png",
       "worldRating": 1013,
       "worldRank": 38,
-      "worldWins": 0,
+      "worldWins": 1,
       "worldLosses": 0,
       "monthlyRating": 0,
       "monthlyRank": null,
       "monthlyWins": 0,
       "monthlyLosses": 0,
-      "games": 0,
-      "winrate": 0,
-      "overallAverage": 0,
-      "recentMatches": []
+      "games": 1,
+      "winrate": 100.0,
+      "overallAverage": 58.18,
+      "recentMatches": [
+        {
+          "matchId": 574,
+          "result": "Win",
+          "opponentId": 825420293039194123,
+          "opponentName": "User 825420293039194123",
+          "score": "4:2",
+          "average": "58.18",
+          "eloChange": 12,
+          "queue": "scolia"
+        }
+      ]
     },
     "1233056433344348211": {
       "userId": 1233056433344348211,
@@ -663,16 +2319,67 @@
       "avatar": "https://cdn.discordapp.com/embed/avatars/0.png",
       "worldRating": 1006,
       "worldRank": 39,
-      "worldWins": 0,
-      "worldLosses": 0,
+      "worldWins": 9,
+      "worldLosses": 8,
       "monthlyRating": 0,
       "monthlyRank": null,
       "monthlyWins": 0,
       "monthlyLosses": 0,
-      "games": 0,
-      "winrate": 0,
-      "overallAverage": 0,
-      "recentMatches": []
+      "games": 17,
+      "winrate": 52.9,
+      "overallAverage": 59.21,
+      "recentMatches": [
+        {
+          "matchId": 940,
+          "result": "Win",
+          "opponentId": 1468019197656174774,
+          "opponentName": "User 1468019197656174774",
+          "score": "4:1",
+          "average": "56.84",
+          "eloChange": 9,
+          "queue": "scolia"
+        },
+        {
+          "matchId": 837,
+          "result": "Loss",
+          "opponentId": 1309548661117554720,
+          "opponentName": "User 1309548661117554720",
+          "score": "4:3",
+          "average": "58.3",
+          "eloChange": -12,
+          "queue": "scolia"
+        },
+        {
+          "matchId": 836,
+          "result": "Win",
+          "opponentId": 1330887794515644456,
+          "opponentName": "User 1330887794515644456",
+          "score": "0:4",
+          "average": "61.35",
+          "eloChange": 15,
+          "queue": "scolia"
+        },
+        {
+          "matchId": 573,
+          "result": "Loss",
+          "opponentId": 773315089595891732,
+          "opponentName": "User 773315089595891732",
+          "score": "4:1",
+          "average": "47.63",
+          "eloChange": -20,
+          "queue": "scolia"
+        },
+        {
+          "matchId": 391,
+          "result": "Loss",
+          "opponentId": 707989067777835248,
+          "opponentName": "User 707989067777835248",
+          "score": "4:1",
+          "average": "59.19",
+          "eloChange": -9,
+          "queue": "scolia"
+        }
+      ]
     },
     "287768867969957889": {
       "userId": 287768867969957889,
@@ -680,108 +2387,362 @@
       "avatar": "https://cdn.discordapp.com/embed/avatars/0.png",
       "worldRating": 1005,
       "worldRank": 40,
-      "worldWins": 0,
+      "worldWins": 1,
       "worldLosses": 0,
       "monthlyRating": 0,
       "monthlyRank": null,
       "monthlyWins": 0,
       "monthlyLosses": 0,
-      "games": 0,
-      "winrate": 0,
-      "overallAverage": 0,
-      "recentMatches": []
+      "games": 1,
+      "winrate": 100.0,
+      "overallAverage": 48.96,
+      "recentMatches": [
+        {
+          "matchId": 952,
+          "result": "Win",
+          "opponentId": 1245485490421891165,
+          "opponentName": "User 1245485490421891165",
+          "score": "4:1",
+          "average": "48.96",
+          "eloChange": 5,
+          "queue": "dart"
+        }
+      ]
+    },
+    "695183644968615988": {
+      "userId": 695183644968615988,
+      "name": "Stefan Kulik",
+      "avatar": "https://cdn.discordapp.com/avatars/695183644968615988/b2eafe4deabc453207aae96d9cf6f488.png?size=1024",
+      "worldRating": 1004,
+      "worldRank": 41,
+      "worldWins": 1,
+      "worldLosses": 2,
+      "monthlyRating": 23,
+      "monthlyRank": 12,
+      "monthlyWins": 1,
+      "monthlyLosses": 2,
+      "games": 3,
+      "winrate": 33.3,
+      "overallAverage": 55.0,
+      "recentMatches": [
+        {
+          "matchId": 1111,
+          "result": "Loss",
+          "opponentId": 183185835477172226,
+          "opponentName": "Stefan",
+          "score": "4:0",
+          "average": "70.0",
+          "eloChange": -10,
+          "queue": "DartCounter"
+        },
+        {
+          "matchId": 1110,
+          "result": "Win",
+          "opponentId": 183185835477172226,
+          "opponentName": "Stefan",
+          "score": "4:2",
+          "average": "60.0",
+          "eloChange": 23,
+          "queue": "DartCounter"
+        },
+        {
+          "matchId": 1109,
+          "result": "Loss",
+          "opponentId": 183185835477172226,
+          "opponentName": "Stefan",
+          "score": "4:2",
+          "average": "35.0",
+          "eloChange": -9,
+          "queue": "DartCounter"
+        }
+      ]
     },
     "1024998339189690448": {
       "userId": 1024998339189690448,
       "name": "User 1024998339189690448",
       "avatar": "https://cdn.discordapp.com/embed/avatars/0.png",
       "worldRating": 1003,
-      "worldRank": 41,
-      "worldWins": 0,
-      "worldLosses": 0,
-      "monthlyRating": 0,
-      "monthlyRank": null,
-      "monthlyWins": 0,
+      "worldRank": 42,
+      "worldWins": 6,
+      "worldLosses": 6,
+      "monthlyRating": 47,
+      "monthlyRank": 3,
+      "monthlyWins": 4,
       "monthlyLosses": 0,
-      "games": 0,
-      "winrate": 0,
-      "overallAverage": 0,
-      "recentMatches": []
+      "games": 12,
+      "winrate": 50.0,
+      "overallAverage": 57.98,
+      "recentMatches": [
+        {
+          "matchId": 1089,
+          "result": "Win",
+          "opponentId": 1170865043227824178,
+          "opponentName": "User 1170865043227824178",
+          "score": "4:0",
+          "average": "54.65",
+          "eloChange": 13,
+          "queue": "scolia"
+        },
+        {
+          "matchId": 1088,
+          "result": "Win",
+          "opponentId": 825420293039194123,
+          "opponentName": "User 825420293039194123",
+          "score": "4:2",
+          "average": "61.37",
+          "eloChange": 9,
+          "queue": "scolia"
+        },
+        {
+          "matchId": 1086,
+          "result": "Win",
+          "opponentId": 1327898199058284545,
+          "opponentName": "User 1327898199058284545",
+          "score": "4:0",
+          "average": "58.94",
+          "eloChange": 12,
+          "queue": "scolia"
+        },
+        {
+          "matchId": 1054,
+          "result": "Win",
+          "opponentId": 1327898199058284545,
+          "opponentName": "User 1327898199058284545",
+          "score": "4:2",
+          "average": "61.13",
+          "eloChange": 13,
+          "queue": "scolia"
+        },
+        {
+          "matchId": 1034,
+          "result": "Loss",
+          "opponentId": 761737659579105301,
+          "opponentName": "User 761737659579105301",
+          "score": "4:1",
+          "average": "57.49",
+          "eloChange": -20,
+          "queue": "scolia"
+        }
+      ]
     },
     "530021085522165770": {
       "userId": 530021085522165770,
       "name": "User 530021085522165770",
       "avatar": "https://cdn.discordapp.com/embed/avatars/0.png",
       "worldRating": 1002,
-      "worldRank": 42,
-      "worldWins": 0,
-      "worldLosses": 0,
-      "monthlyRating": 0,
-      "monthlyRank": null,
-      "monthlyWins": 0,
+      "worldRank": 43,
+      "worldWins": 51,
+      "worldLosses": 39,
+      "monthlyRating": 12,
+      "monthlyRank": 20,
+      "monthlyWins": 1,
       "monthlyLosses": 0,
-      "games": 0,
-      "winrate": 0,
-      "overallAverage": 0,
-      "recentMatches": []
+      "games": 90,
+      "winrate": 56.7,
+      "overallAverage": 117.52,
+      "recentMatches": [
+        {
+          "matchId": 1055,
+          "result": "Win",
+          "opponentId": 761737659579105301,
+          "opponentName": "User 761737659579105301",
+          "score": "4:2",
+          "average": "53.89",
+          "eloChange": 12,
+          "queue": "scolia"
+        },
+        {
+          "matchId": 1039,
+          "result": "Loss",
+          "opponentId": 1089304921439998003,
+          "opponentName": "User 1089304921439998003",
+          "score": "4:2",
+          "average": "65.7",
+          "eloChange": -12,
+          "queue": "scolia"
+        },
+        {
+          "matchId": 1038,
+          "result": "Loss",
+          "opponentId": 707989067777835248,
+          "opponentName": "User 707989067777835248",
+          "score": "4:1",
+          "average": "60.56",
+          "eloChange": -6,
+          "queue": "dart"
+        },
+        {
+          "matchId": 1037,
+          "result": "Win",
+          "opponentId": 1245485490421891165,
+          "opponentName": "User 1245485490421891165",
+          "score": "4:0",
+          "average": "58.37",
+          "eloChange": 5,
+          "queue": "dart"
+        },
+        {
+          "matchId": 1036,
+          "result": "Win",
+          "opponentId": 761737659579105301,
+          "opponentName": "User 761737659579105301",
+          "score": "4:2",
+          "average": "60.12",
+          "eloChange": 12,
+          "queue": "scolia"
+        }
+      ]
     },
     "1091029019388039290": {
       "userId": 1091029019388039290,
       "name": "User 1091029019388039290",
       "avatar": "https://cdn.discordapp.com/embed/avatars/0.png",
       "worldRating": 1002,
-      "worldRank": 43,
-      "worldWins": 0,
-      "worldLosses": 0,
+      "worldRank": 44,
+      "worldWins": 1,
+      "worldLosses": 2,
       "monthlyRating": 0,
       "monthlyRank": null,
       "monthlyWins": 0,
       "monthlyLosses": 0,
-      "games": 0,
-      "winrate": 0,
-      "overallAverage": 0,
-      "recentMatches": []
+      "games": 3,
+      "winrate": 33.3,
+      "overallAverage": 1874.23,
+      "recentMatches": [
+        {
+          "matchId": 811,
+          "result": "Win",
+          "opponentId": 788855711601655819,
+          "opponentName": "User 788855711601655819",
+          "score": "4:3",
+          "average": "5518.0",
+          "eloChange": 23,
+          "queue": "scolia"
+        },
+        {
+          "matchId": 579,
+          "result": "Loss",
+          "opponentId": 1213219884440489984,
+          "opponentName": "User 1213219884440489984",
+          "score": "4:1",
+          "average": "55.15",
+          "eloChange": -11,
+          "queue": "scolia"
+        },
+        {
+          "matchId": 577,
+          "result": "Loss",
+          "opponentId": 1213219884440489984,
+          "opponentName": "User 1213219884440489984",
+          "score": "4:1",
+          "average": "49.54",
+          "eloChange": -11,
+          "queue": "scolia"
+        }
+      ]
     },
     "1299471744414908459": {
       "userId": 1299471744414908459,
       "name": "User 1299471744414908459",
       "avatar": "https://cdn.discordapp.com/embed/avatars/0.png",
       "worldRating": 1001,
-      "worldRank": 44,
-      "worldWins": 0,
-      "worldLosses": 0,
+      "worldRank": 45,
+      "worldWins": 1,
+      "worldLosses": 1,
       "monthlyRating": 0,
       "monthlyRank": null,
       "monthlyWins": 0,
       "monthlyLosses": 0,
-      "games": 0,
-      "winrate": 0,
-      "overallAverage": 0,
-      "recentMatches": []
+      "games": 2,
+      "winrate": 50.0,
+      "overallAverage": 54.81,
+      "recentMatches": [
+        {
+          "matchId": 48,
+          "result": "Win",
+          "opponentId": 202833515757174784,
+          "opponentName": "User 202833515757174784",
+          "score": "4:1",
+          "average": "52.51",
+          "eloChange": 15,
+          "queue": "scolia"
+        },
+        {
+          "matchId": 46,
+          "result": "Loss",
+          "opponentId": 707989067777835248,
+          "opponentName": "User 707989067777835248",
+          "score": "4:0",
+          "average": "57.11",
+          "eloChange": 0,
+          "queue": "scolia"
+        }
+      ]
     },
     "265971229582688257": {
       "userId": 265971229582688257,
       "name": "User 265971229582688257",
       "avatar": "https://cdn.discordapp.com/embed/avatars/0.png",
       "worldRating": 1000,
-      "worldRank": 45,
-      "worldWins": 0,
-      "worldLosses": 0,
+      "worldRank": 46,
+      "worldWins": 2,
+      "worldLosses": 2,
       "monthlyRating": 0,
-      "monthlyRank": null,
+      "monthlyRank": 23,
       "monthlyWins": 0,
-      "monthlyLosses": 0,
-      "games": 0,
-      "winrate": 0,
-      "overallAverage": 0,
-      "recentMatches": []
+      "monthlyLosses": 1,
+      "games": 4,
+      "winrate": 50.0,
+      "overallAverage": 62.87,
+      "recentMatches": [
+        {
+          "matchId": 1067,
+          "result": "Loss",
+          "opponentId": 1092072918915219537,
+          "opponentName": "User 1092072918915219537",
+          "score": "4:3",
+          "average": "68.47",
+          "eloChange": -9,
+          "queue": "scolia"
+        },
+        {
+          "matchId": 867,
+          "result": "Win",
+          "opponentId": 1468019197656174774,
+          "opponentName": "User 1468019197656174774",
+          "score": "4:3",
+          "average": "57.54",
+          "eloChange": 11,
+          "queue": "scolia"
+        },
+        {
+          "matchId": 863,
+          "result": "Loss",
+          "opponentId": 530021085522165770,
+          "opponentName": "User 530021085522165770",
+          "score": "4:0",
+          "average": "60.8",
+          "eloChange": -18,
+          "queue": "scolia"
+        },
+        {
+          "matchId": 858,
+          "result": "Win",
+          "opponentId": 530021085522165770,
+          "opponentName": "User 530021085522165770",
+          "score": "4:0",
+          "average": "64.65",
+          "eloChange": 16,
+          "queue": "scolia"
+        }
+      ]
     },
     "409665277379477505": {
       "userId": 409665277379477505,
       "name": "User 409665277379477505",
       "avatar": "https://cdn.discordapp.com/embed/avatars/0.png",
       "worldRating": 1000,
-      "worldRank": 46,
+      "worldRank": 47,
       "worldWins": 0,
       "worldLosses": 0,
       "monthlyRating": 0,
@@ -798,7 +2759,7 @@
       "name": "User 590985289720397836",
       "avatar": "https://cdn.discordapp.com/embed/avatars/0.png",
       "worldRating": 1000,
-      "worldRank": 47,
+      "worldRank": 48,
       "worldWins": 0,
       "worldLosses": 0,
       "monthlyRating": 0,
@@ -815,7 +2776,7 @@
       "name": "User 692457322038952006",
       "avatar": "https://cdn.discordapp.com/embed/avatars/0.png",
       "worldRating": 1000,
-      "worldRank": 48,
+      "worldRank": 49,
       "worldWins": 0,
       "worldLosses": 0,
       "monthlyRating": 0,
@@ -832,7 +2793,7 @@
       "name": "User 938493516395450408",
       "avatar": "https://cdn.discordapp.com/embed/avatars/0.png",
       "worldRating": 1000,
-      "worldRank": 49,
+      "worldRank": 50,
       "worldWins": 0,
       "worldLosses": 0,
       "monthlyRating": 0,
@@ -849,7 +2810,7 @@
       "name": "User 1153038341634273415",
       "avatar": "https://cdn.discordapp.com/embed/avatars/0.png",
       "worldRating": 1000,
-      "worldRank": 50,
+      "worldRank": 51,
       "worldWins": 0,
       "worldLosses": 0,
       "monthlyRating": 0,
@@ -866,7 +2827,7 @@
       "name": "User 1174670082429947944",
       "avatar": "https://cdn.discordapp.com/embed/avatars/0.png",
       "worldRating": 1000,
-      "worldRank": 51,
+      "worldRank": 52,
       "worldWins": 0,
       "worldLosses": 0,
       "monthlyRating": 0,
@@ -883,7 +2844,7 @@
       "name": "User 1248383424293769259",
       "avatar": "https://cdn.discordapp.com/embed/avatars/0.png",
       "worldRating": 1000,
-      "worldRank": 52,
+      "worldRank": 53,
       "worldWins": 0,
       "worldLosses": 0,
       "monthlyRating": 0,
@@ -900,7 +2861,7 @@
       "name": "User 1319435562662498357",
       "avatar": "https://cdn.discordapp.com/embed/avatars/0.png",
       "worldRating": 1000,
-      "worldRank": 53,
+      "worldRank": 54,
       "worldWins": 0,
       "worldLosses": 0,
       "monthlyRating": 0,
@@ -917,7 +2878,7 @@
       "name": "User 1359230405365993492",
       "avatar": "https://cdn.discordapp.com/embed/avatars/0.png",
       "worldRating": 1000,
-      "worldRank": 54,
+      "worldRank": 55,
       "worldWins": 0,
       "worldLosses": 0,
       "monthlyRating": 0,
@@ -934,7 +2895,7 @@
       "name": "User 1485654307469791343",
       "avatar": "https://cdn.discordapp.com/embed/avatars/0.png",
       "worldRating": 1000,
-      "worldRank": 55,
+      "worldRank": 56,
       "worldWins": 0,
       "worldLosses": 0,
       "monthlyRating": 0,
@@ -951,7 +2912,7 @@
       "name": "User 1489022984734773331",
       "avatar": "https://cdn.discordapp.com/embed/avatars/0.png",
       "worldRating": 1000,
-      "worldRank": 56,
+      "worldRank": 57,
       "worldWins": 0,
       "worldLosses": 0,
       "monthlyRating": 0,
@@ -962,34 +2923,6 @@
       "winrate": 0,
       "overallAverage": 0,
       "recentMatches": []
-    },
-    "695183644968615988": {
-      "userId": 695183644968615988,
-      "name": "Stefan Kulik",
-      "avatar": "https://cdn.discordapp.com/avatars/695183644968615988/b2eafe4deabc453207aae96d9cf6f488.png?size=1024",
-      "worldRating": 991,
-      "worldRank": 57,
-      "worldWins": 0,
-      "worldLosses": 1,
-      "monthlyRating": 0,
-      "monthlyRank": 2,
-      "monthlyWins": 0,
-      "monthlyLosses": 1,
-      "games": 1,
-      "winrate": 0.0,
-      "overallAverage": 35.0,
-      "recentMatches": [
-        {
-          "matchId": 1109,
-          "result": "Loss",
-          "opponentId": 183185835477172226,
-          "opponentName": "Stefan",
-          "score": "4:2",
-          "average": "35.0",
-          "eloChange": -9,
-          "queue": "DartCounter"
-        }
-      ]
     },
     "1418878810006360084": {
       "userId": 1418878810006360084,
@@ -997,50 +2930,143 @@
       "avatar": "https://cdn.discordapp.com/embed/avatars/0.png",
       "worldRating": 991,
       "worldRank": 58,
-      "worldWins": 0,
-      "worldLosses": 0,
+      "worldWins": 1,
+      "worldLosses": 2,
       "monthlyRating": 0,
       "monthlyRank": null,
       "monthlyWins": 0,
       "monthlyLosses": 0,
-      "games": 0,
-      "winrate": 0,
-      "overallAverage": 0,
-      "recentMatches": []
-    },
-    "912032996331241472": {
-      "userId": 912032996331241472,
-      "name": "User 912032996331241472",
-      "avatar": "https://cdn.discordapp.com/embed/avatars/0.png",
-      "worldRating": 988,
-      "worldRank": 59,
-      "worldWins": 0,
-      "worldLosses": 0,
-      "monthlyRating": 0,
-      "monthlyRank": null,
-      "monthlyWins": 0,
-      "monthlyLosses": 0,
-      "games": 0,
-      "winrate": 0,
-      "overallAverage": 0,
-      "recentMatches": []
+      "games": 3,
+      "winrate": 33.3,
+      "overallAverage": 58.97,
+      "recentMatches": [
+        {
+          "matchId": 680,
+          "result": "Loss",
+          "opponentId": 183185835477172226,
+          "opponentName": "Stefan",
+          "score": "4:1",
+          "average": "54.0",
+          "eloChange": -12,
+          "queue": "scolia"
+        },
+        {
+          "matchId": 300,
+          "result": "Win",
+          "opponentId": 321563218226970626,
+          "opponentName": "User 321563218226970626",
+          "score": "4:0",
+          "average": "68.3",
+          "eloChange": 14,
+          "queue": "scolia"
+        },
+        {
+          "matchId": 295,
+          "result": "Loss",
+          "opponentId": 707989067777835248,
+          "opponentName": "User 707989067777835248",
+          "score": "4:1",
+          "average": "54.61",
+          "eloChange": -12,
+          "queue": "scolia"
+        }
+      ]
     },
     "1474322752432377886": {
       "userId": 1474322752432377886,
       "name": "User 1474322752432377886",
       "avatar": "https://cdn.discordapp.com/embed/avatars/0.png",
       "worldRating": 988,
+      "worldRank": 59,
+      "worldWins": 15,
+      "worldLosses": 15,
+      "monthlyRating": 0,
+      "monthlyRank": 31,
+      "monthlyWins": 0,
+      "monthlyLosses": 2,
+      "games": 30,
+      "winrate": 50.0,
+      "overallAverage": 52.89,
+      "recentMatches": [
+        {
+          "matchId": 1064,
+          "result": "Loss",
+          "opponentId": 707989067777835248,
+          "opponentName": "User 707989067777835248",
+          "score": "4:0",
+          "average": "58.26",
+          "eloChange": -5,
+          "queue": "dart"
+        },
+        {
+          "matchId": 1063,
+          "result": "Loss",
+          "opponentId": 707989067777835248,
+          "opponentName": "User 707989067777835248",
+          "score": "4:0",
+          "average": "59.97",
+          "eloChange": -5,
+          "queue": "dart"
+        },
+        {
+          "matchId": 1035,
+          "result": "Win",
+          "opponentId": 1245485490421891165,
+          "opponentName": "User 1245485490421891165",
+          "score": "4:0",
+          "average": "45.2",
+          "eloChange": 5,
+          "queue": "dart"
+        },
+        {
+          "matchId": 951,
+          "result": "Win",
+          "opponentId": 1245485490421891165,
+          "opponentName": "User 1245485490421891165",
+          "score": "4:0",
+          "average": "54.16",
+          "eloChange": 6,
+          "queue": "dart"
+        },
+        {
+          "matchId": 912,
+          "result": "Win",
+          "opponentId": 1458906019118841960,
+          "opponentName": "User 1458906019118841960",
+          "score": "4:2",
+          "average": "53.39",
+          "eloChange": 12,
+          "queue": "dart"
+        }
+      ]
+    },
+    "912032996331241472": {
+      "userId": 912032996331241472,
+      "name": "User 912032996331241472",
+      "avatar": "https://cdn.discordapp.com/embed/avatars/0.png",
+      "worldRating": 988,
       "worldRank": 60,
       "worldWins": 0,
-      "worldLosses": 0,
+      "worldLosses": 1,
       "monthlyRating": 0,
       "monthlyRank": null,
       "monthlyWins": 0,
       "monthlyLosses": 0,
-      "games": 0,
-      "winrate": 0,
-      "overallAverage": 0,
-      "recentMatches": []
+      "games": 1,
+      "winrate": 0.0,
+      "overallAverage": 37.09,
+      "recentMatches": [
+        {
+          "matchId": 72,
+          "result": "Loss",
+          "opponentId": 458662173091299360,
+          "opponentName": "User 458662173091299360",
+          "score": "4:1",
+          "average": "37.09",
+          "eloChange": -12,
+          "queue": "scolia"
+        }
+      ]
     },
     "505446955242094596": {
       "userId": 505446955242094596,
@@ -1048,16 +3074,67 @@
       "avatar": "https://cdn.discordapp.com/embed/avatars/0.png",
       "worldRating": 987,
       "worldRank": 61,
-      "worldWins": 0,
-      "worldLosses": 0,
+      "worldWins": 5,
+      "worldLosses": 7,
       "monthlyRating": 0,
       "monthlyRank": null,
       "monthlyWins": 0,
       "monthlyLosses": 0,
-      "games": 0,
-      "winrate": 0,
-      "overallAverage": 0,
-      "recentMatches": []
+      "games": 12,
+      "winrate": 41.7,
+      "overallAverage": 51.79,
+      "recentMatches": [
+        {
+          "matchId": 990,
+          "result": "Loss",
+          "opponentId": 1007351887114285087,
+          "opponentName": "User 1007351887114285087",
+          "score": "0:4",
+          "average": "44.38",
+          "eloChange": -9,
+          "queue": "dart"
+        },
+        {
+          "matchId": 947,
+          "result": "Win",
+          "opponentId": 825420293039194123,
+          "opponentName": "User 825420293039194123",
+          "score": "4:3",
+          "average": "55.07",
+          "eloChange": 10,
+          "queue": "scolia"
+        },
+        {
+          "matchId": 944,
+          "result": "Loss",
+          "opponentId": 890838749280346132,
+          "opponentName": "User 890838749280346132",
+          "score": "4:1",
+          "average": "58.41",
+          "eloChange": -11,
+          "queue": "scolia"
+        },
+        {
+          "matchId": 909,
+          "result": "Win",
+          "opponentId": 1067374071421095936,
+          "opponentName": "User 1067374071421095936",
+          "score": "4:3",
+          "average": "53.91",
+          "eloChange": 19,
+          "queue": "dart"
+        },
+        {
+          "matchId": 903,
+          "result": "Win",
+          "opponentId": 1474322752432377886,
+          "opponentName": "User 1474322752432377886",
+          "score": "4:0",
+          "average": "57.81",
+          "eloChange": 18,
+          "queue": "dart"
+        }
+      ]
     },
     "756119769555664908": {
       "userId": 756119769555664908,
@@ -1065,16 +3142,57 @@
       "avatar": "https://cdn.discordapp.com/embed/avatars/0.png",
       "worldRating": 987,
       "worldRank": 62,
-      "worldWins": 0,
-      "worldLosses": 0,
+      "worldWins": 1,
+      "worldLosses": 3,
       "monthlyRating": 0,
       "monthlyRank": null,
       "monthlyWins": 0,
       "monthlyLosses": 0,
-      "games": 0,
-      "winrate": 0,
-      "overallAverage": 0,
-      "recentMatches": []
+      "games": 4,
+      "winrate": 25.0,
+      "overallAverage": 64.76,
+      "recentMatches": [
+        {
+          "matchId": 844,
+          "result": "Win",
+          "opponentId": 707989067777835248,
+          "opponentName": "User 707989067777835248",
+          "score": "2:4",
+          "average": "67.45",
+          "eloChange": 26,
+          "queue": "scolia"
+        },
+        {
+          "matchId": 767,
+          "result": "Loss",
+          "opponentId": 530021085522165770,
+          "opponentName": "User 530021085522165770",
+          "score": "4:3",
+          "average": "58.99",
+          "eloChange": -11,
+          "queue": "scolia"
+        },
+        {
+          "matchId": 750,
+          "result": "Loss",
+          "opponentId": 1302224986051838068,
+          "opponentName": "User 1302224986051838068",
+          "score": "4:2",
+          "average": "63.55",
+          "eloChange": -12,
+          "queue": "scolia"
+        },
+        {
+          "matchId": 320,
+          "result": "Loss",
+          "opponentId": 977270139932258375,
+          "opponentName": "User 977270139932258375",
+          "score": "4:3",
+          "average": "69.06",
+          "eloChange": -16,
+          "queue": "scolia"
+        }
+      ]
     },
     "534811376917413942": {
       "userId": 534811376917413942,
@@ -1083,49 +3201,102 @@
       "worldRating": 986,
       "worldRank": 63,
       "worldWins": 0,
-      "worldLosses": 0,
+      "worldLosses": 1,
       "monthlyRating": 0,
       "monthlyRank": null,
       "monthlyWins": 0,
       "monthlyLosses": 0,
-      "games": 0,
-      "winrate": 0,
-      "overallAverage": 0,
-      "recentMatches": []
-    },
-    "174223543259758594": {
-      "userId": 174223543259758594,
-      "name": "User 174223543259758594",
-      "avatar": "https://cdn.discordapp.com/embed/avatars/0.png",
-      "worldRating": 985,
-      "worldRank": 64,
-      "worldWins": 0,
-      "worldLosses": 0,
-      "monthlyRating": 0,
-      "monthlyRank": null,
-      "monthlyWins": 0,
-      "monthlyLosses": 0,
-      "games": 0,
-      "winrate": 0,
-      "overallAverage": 0,
-      "recentMatches": []
+      "games": 1,
+      "winrate": 0.0,
+      "overallAverage": 48.16,
+      "recentMatches": [
+        {
+          "matchId": 466,
+          "result": "Loss",
+          "opponentId": 1330499669490667653,
+          "opponentName": "User 1330499669490667653",
+          "score": "4:0",
+          "average": "48.16",
+          "eloChange": -14,
+          "queue": "dart"
+        }
+      ]
     },
     "962240013767155753": {
       "userId": 962240013767155753,
       "name": "User 962240013767155753",
       "avatar": "https://cdn.discordapp.com/embed/avatars/0.png",
       "worldRating": 985,
-      "worldRank": 65,
-      "worldWins": 0,
-      "worldLosses": 0,
+      "worldRank": 64,
+      "worldWins": 1,
+      "worldLosses": 2,
       "monthlyRating": 0,
       "monthlyRank": null,
       "monthlyWins": 0,
       "monthlyLosses": 0,
-      "games": 0,
-      "winrate": 0,
-      "overallAverage": 0,
-      "recentMatches": []
+      "games": 3,
+      "winrate": 33.3,
+      "overallAverage": 55.32,
+      "recentMatches": [
+        {
+          "matchId": 279,
+          "result": "Loss",
+          "opponentId": 1458502282219098457,
+          "opponentName": "User 1458502282219098457",
+          "score": "4:2",
+          "average": "58.53",
+          "eloChange": -15,
+          "queue": "scolia"
+        },
+        {
+          "matchId": 276,
+          "result": "Loss",
+          "opponentId": 1233056433344348211,
+          "opponentName": "User 1233056433344348211",
+          "score": "4:1",
+          "average": "51.42",
+          "eloChange": -15,
+          "queue": "scolia"
+        },
+        {
+          "matchId": 274,
+          "result": "Win",
+          "opponentId": 1170865043227824178,
+          "opponentName": "User 1170865043227824178",
+          "score": "4:0",
+          "average": "56.0",
+          "eloChange": 15,
+          "queue": "scolia"
+        }
+      ]
+    },
+    "174223543259758594": {
+      "userId": 174223543259758594,
+      "name": "User 174223543259758594",
+      "avatar": "https://cdn.discordapp.com/embed/avatars/0.png",
+      "worldRating": 985,
+      "worldRank": 65,
+      "worldWins": 0,
+      "worldLosses": 1,
+      "monthlyRating": 0,
+      "monthlyRank": null,
+      "monthlyWins": 0,
+      "monthlyLosses": 0,
+      "games": 1,
+      "winrate": 0.0,
+      "overallAverage": 42.1,
+      "recentMatches": [
+        {
+          "matchId": 322,
+          "result": "Loss",
+          "opponentId": 977270139932258375,
+          "opponentName": "User 977270139932258375",
+          "score": "4:0",
+          "average": "42.1",
+          "eloChange": -15,
+          "queue": "scolia"
+        }
+      ]
     },
     "525348947812810778": {
       "userId": 525348947812810778,
@@ -1133,16 +3304,47 @@
       "avatar": "https://cdn.discordapp.com/embed/avatars/0.png",
       "worldRating": 983,
       "worldRank": 66,
-      "worldWins": 0,
-      "worldLosses": 0,
+      "worldWins": 1,
+      "worldLosses": 2,
       "monthlyRating": 0,
       "monthlyRank": null,
       "monthlyWins": 0,
       "monthlyLosses": 0,
-      "games": 0,
-      "winrate": 0,
-      "overallAverage": 0,
-      "recentMatches": []
+      "games": 3,
+      "winrate": 33.3,
+      "overallAverage": 54.42,
+      "recentMatches": [
+        {
+          "matchId": 992,
+          "result": "Win",
+          "opponentId": 825420293039194123,
+          "opponentName": "User 825420293039194123",
+          "score": "4:3",
+          "average": "56.98",
+          "eloChange": 10,
+          "queue": "scolia"
+        },
+        {
+          "matchId": 365,
+          "result": "Loss",
+          "opponentId": 788855711601655819,
+          "opponentName": "User 788855711601655819",
+          "score": "4:1",
+          "average": "54.07",
+          "eloChange": -14,
+          "queue": "scolia"
+        },
+        {
+          "matchId": 364,
+          "result": "Loss",
+          "opponentId": 530021085522165770,
+          "opponentName": "User 530021085522165770",
+          "score": "4:1",
+          "average": "52.2",
+          "eloChange": -14,
+          "queue": "scolia"
+        }
+      ]
     },
     "698255408090841198": {
       "userId": 698255408090841198,
@@ -1151,15 +3353,26 @@
       "worldRating": 983,
       "worldRank": 67,
       "worldWins": 0,
-      "worldLosses": 0,
+      "worldLosses": 1,
       "monthlyRating": 0,
       "monthlyRank": null,
       "monthlyWins": 0,
       "monthlyLosses": 0,
-      "games": 0,
-      "winrate": 0,
-      "overallAverage": 0,
-      "recentMatches": []
+      "games": 1,
+      "winrate": 0.0,
+      "overallAverage": 59.23,
+      "recentMatches": [
+        {
+          "matchId": 25,
+          "result": "Loss",
+          "opponentId": 1007351887114285087,
+          "opponentName": "User 1007351887114285087",
+          "score": "2:4",
+          "average": "59.23",
+          "eloChange": 0,
+          "queue": "dart"
+        }
+      ]
     },
     "988424399596167239": {
       "userId": 988424399596167239,
@@ -1168,15 +3381,26 @@
       "worldRating": 982,
       "worldRank": 68,
       "worldWins": 0,
-      "worldLosses": 0,
+      "worldLosses": 1,
       "monthlyRating": 0,
       "monthlyRank": null,
       "monthlyWins": 0,
       "monthlyLosses": 0,
-      "games": 0,
-      "winrate": 0,
-      "overallAverage": 0,
-      "recentMatches": []
+      "games": 1,
+      "winrate": 0.0,
+      "overallAverage": 34.14,
+      "recentMatches": [
+        {
+          "matchId": 348,
+          "result": "Loss",
+          "opponentId": 1468019197656174774,
+          "opponentName": "User 1468019197656174774",
+          "score": "4:0",
+          "average": "34.14",
+          "eloChange": -18,
+          "queue": "scolia"
+        }
+      ]
     },
     "372454885691490315": {
       "userId": 372454885691490315,
@@ -1185,15 +3409,36 @@
       "worldRating": 981,
       "worldRank": 69,
       "worldWins": 0,
-      "worldLosses": 0,
+      "worldLosses": 2,
       "monthlyRating": 0,
       "monthlyRank": null,
       "monthlyWins": 0,
       "monthlyLosses": 0,
-      "games": 0,
-      "winrate": 0,
-      "overallAverage": 0,
-      "recentMatches": []
+      "games": 2,
+      "winrate": 0.0,
+      "overallAverage": 47.31,
+      "recentMatches": [
+        {
+          "matchId": 480,
+          "result": "Loss",
+          "opponentId": 1309548661117554720,
+          "opponentName": "User 1309548661117554720",
+          "score": "4:0",
+          "average": "45.53",
+          "eloChange": -9,
+          "queue": "scolia"
+        },
+        {
+          "matchId": 477,
+          "result": "Loss",
+          "opponentId": 1309548661117554720,
+          "opponentName": "User 1309548661117554720",
+          "score": "4:0",
+          "average": "49.09",
+          "eloChange": -10,
+          "queue": "scolia"
+        }
+      ]
     },
     "1361248234583883817": {
       "userId": 1361248234583883817,
@@ -1201,16 +3446,67 @@
       "avatar": "https://cdn.discordapp.com/embed/avatars/0.png",
       "worldRating": 980,
       "worldRank": 70,
-      "worldWins": 0,
-      "worldLosses": 0,
+      "worldWins": 2,
+      "worldLosses": 3,
       "monthlyRating": 0,
       "monthlyRank": null,
       "monthlyWins": 0,
       "monthlyLosses": 0,
-      "games": 0,
-      "winrate": 0,
-      "overallAverage": 0,
-      "recentMatches": []
+      "games": 5,
+      "winrate": 40.0,
+      "overallAverage": 51.29,
+      "recentMatches": [
+        {
+          "matchId": 877,
+          "result": "Win",
+          "opponentId": 1458906019118841960,
+          "opponentName": "User 1458906019118841960",
+          "score": "4:1",
+          "average": "57.44",
+          "eloChange": 12,
+          "queue": "dart"
+        },
+        {
+          "matchId": 873,
+          "result": "Loss",
+          "opponentId": 1418545035577917542,
+          "opponentName": "User 1418545035577917542",
+          "score": "4:0",
+          "average": "45.82",
+          "eloChange": -15,
+          "queue": "dart"
+        },
+        {
+          "matchId": 455,
+          "result": "Loss",
+          "opponentId": 801011337274589234,
+          "opponentName": "User 801011337274589234",
+          "score": "4:2",
+          "average": "50.96",
+          "eloChange": -16,
+          "queue": "dart"
+        },
+        {
+          "matchId": 27,
+          "result": "Loss",
+          "opponentId": 1007351887114285087,
+          "opponentName": "User 1007351887114285087",
+          "score": "4:1",
+          "average": "47.33",
+          "eloChange": 0,
+          "queue": "dart"
+        },
+        {
+          "matchId": 18,
+          "result": "Win",
+          "opponentId": 825420293039194123,
+          "opponentName": "User 825420293039194123",
+          "score": "4:2",
+          "average": "54.92",
+          "eloChange": 0,
+          "queue": "dart"
+        }
+      ]
     },
     "1419670705838096444": {
       "userId": 1419670705838096444,
@@ -1219,32 +3515,94 @@
       "worldRating": 980,
       "worldRank": 71,
       "worldWins": 0,
-      "worldLosses": 0,
+      "worldLosses": 1,
       "monthlyRating": 0,
       "monthlyRank": null,
       "monthlyWins": 0,
       "monthlyLosses": 0,
-      "games": 0,
-      "winrate": 0,
-      "overallAverage": 0,
-      "recentMatches": []
+      "games": 1,
+      "winrate": 0.0,
+      "overallAverage": 39.25,
+      "recentMatches": [
+        {
+          "matchId": 202,
+          "result": "Loss",
+          "opponentId": 627469840457662464,
+          "opponentName": "User 627469840457662464",
+          "score": "4:3",
+          "average": "39.25",
+          "eloChange": -20,
+          "queue": "scolia"
+        }
+      ]
     },
-    "253860770788540416": {
-      "userId": 253860770788540416,
-      "name": "User 253860770788540416",
+    "1418551508223397889": {
+      "userId": 1418551508223397889,
+      "name": "User 1418551508223397889",
       "avatar": "https://cdn.discordapp.com/embed/avatars/0.png",
       "worldRating": 978,
       "worldRank": 72,
-      "worldWins": 0,
-      "worldLosses": 0,
+      "worldWins": 3,
+      "worldLosses": 5,
       "monthlyRating": 0,
       "monthlyRank": null,
       "monthlyWins": 0,
       "monthlyLosses": 0,
-      "games": 0,
-      "winrate": 0,
-      "overallAverage": 0,
-      "recentMatches": []
+      "games": 8,
+      "winrate": 37.5,
+      "overallAverage": 59.92,
+      "recentMatches": [
+        {
+          "matchId": 993,
+          "result": "Win",
+          "opponentId": 825420293039194123,
+          "opponentName": "User 825420293039194123",
+          "score": "4-3",
+          "average": "59.74",
+          "eloChange": 10,
+          "queue": "scolia"
+        },
+        {
+          "matchId": 655,
+          "result": "Loss",
+          "opponentId": 458662173091299360,
+          "opponentName": "User 458662173091299360",
+          "score": "4:3",
+          "average": "59.89",
+          "eloChange": -13,
+          "queue": "scolia"
+        },
+        {
+          "matchId": 615,
+          "result": "Loss",
+          "opponentId": 1309548661117554720,
+          "opponentName": "User 1309548661117554720",
+          "score": "4:3",
+          "average": "64.83",
+          "eloChange": -10,
+          "queue": "scolia"
+        },
+        {
+          "matchId": 533,
+          "result": "Loss",
+          "opponentId": 1089304921439998003,
+          "opponentName": "User 1089304921439998003",
+          "score": "4:1",
+          "average": "60.27",
+          "eloChange": -14,
+          "queue": "scolia"
+        },
+        {
+          "matchId": 531,
+          "result": "Win",
+          "opponentId": 761737659579105301,
+          "opponentName": "User 761737659579105301",
+          "score": "4-1",
+          "average": "59.55",
+          "eloChange": 14,
+          "queue": "scolia"
+        }
+      ]
     },
     "275040337507123200": {
       "userId": 275040337507123200,
@@ -1252,33 +3610,115 @@
       "avatar": "https://cdn.discordapp.com/embed/avatars/0.png",
       "worldRating": 978,
       "worldRank": 73,
-      "worldWins": 0,
-      "worldLosses": 0,
+      "worldWins": 2,
+      "worldLosses": 4,
       "monthlyRating": 0,
       "monthlyRank": null,
       "monthlyWins": 0,
       "monthlyLosses": 0,
-      "games": 0,
-      "winrate": 0,
-      "overallAverage": 0,
-      "recentMatches": []
+      "games": 6,
+      "winrate": 33.3,
+      "overallAverage": 52.74,
+      "recentMatches": [
+        {
+          "matchId": 1023,
+          "result": "Loss",
+          "opponentId": 1024998339189690448,
+          "opponentName": "User 1024998339189690448",
+          "score": "4:0",
+          "average": "47.83",
+          "eloChange": -18,
+          "queue": "scolia"
+        },
+        {
+          "matchId": 1005,
+          "result": "Loss",
+          "opponentId": 183185835477172226,
+          "opponentName": "Stefan",
+          "score": "42",
+          "average": "59.05",
+          "eloChange": -9,
+          "queue": "scolia"
+        },
+        {
+          "matchId": 852,
+          "result": "Loss",
+          "opponentId": 977270139932258375,
+          "opponentName": "User 977270139932258375",
+          "score": "4:0",
+          "average": "49.57",
+          "eloChange": -13,
+          "queue": "scolia"
+        },
+        {
+          "matchId": 851,
+          "result": "Loss",
+          "opponentId": 1309548661117554720,
+          "opponentName": "User 1309548661117554720",
+          "score": "4:2",
+          "average": "49.05",
+          "eloChange": -12,
+          "queue": "scolia"
+        },
+        {
+          "matchId": 672,
+          "result": "Win",
+          "opponentId": 1170865043227824178,
+          "opponentName": "User 1170865043227824178",
+          "score": "3:4",
+          "average": "53.48",
+          "eloChange": 14,
+          "queue": "scolia"
+        }
+      ]
     },
-    "1418551508223397889": {
-      "userId": 1418551508223397889,
-      "name": "User 1418551508223397889",
+    "253860770788540416": {
+      "userId": 253860770788540416,
+      "name": "User 253860770788540416",
       "avatar": "https://cdn.discordapp.com/embed/avatars/0.png",
       "worldRating": 978,
       "worldRank": 74,
-      "worldWins": 0,
-      "worldLosses": 0,
+      "worldWins": 1,
+      "worldLosses": 2,
       "monthlyRating": 0,
       "monthlyRank": null,
       "monthlyWins": 0,
       "monthlyLosses": 0,
-      "games": 0,
-      "winrate": 0,
-      "overallAverage": 0,
-      "recentMatches": []
+      "games": 3,
+      "winrate": 33.3,
+      "overallAverage": 49.32,
+      "recentMatches": [
+        {
+          "matchId": 663,
+          "result": "Loss",
+          "opponentId": 1458906019118841960,
+          "opponentName": "User 1458906019118841960",
+          "score": "4:3",
+          "average": "48.65",
+          "eloChange": -20,
+          "queue": "dart"
+        },
+        {
+          "matchId": 658,
+          "result": "Loss",
+          "opponentId": 1310195023370911807,
+          "opponentName": "User 1310195023370911807",
+          "score": "4:0",
+          "average": "49.93",
+          "eloChange": -12,
+          "queue": "dart"
+        },
+        {
+          "matchId": 371,
+          "result": "Win",
+          "opponentId": 1245485490421891165,
+          "opponentName": "User 1245485490421891165",
+          "score": "1:4",
+          "average": "49.37",
+          "eloChange": 10,
+          "queue": "dart"
+        }
+      ]
     },
     "550968838511001611": {
       "userId": 550968838511001611,
@@ -1287,15 +3727,36 @@
       "worldRating": 976,
       "worldRank": 75,
       "worldWins": 0,
-      "worldLosses": 0,
+      "worldLosses": 2,
       "monthlyRating": 0,
       "monthlyRank": null,
       "monthlyWins": 0,
       "monthlyLosses": 0,
-      "games": 0,
-      "winrate": 0,
-      "overallAverage": 0,
-      "recentMatches": []
+      "games": 2,
+      "winrate": 0.0,
+      "overallAverage": 45.91,
+      "recentMatches": [
+        {
+          "matchId": 255,
+          "result": "Loss",
+          "opponentId": 1309548661117554720,
+          "opponentName": "User 1309548661117554720",
+          "score": "4:0",
+          "average": "46.19",
+          "eloChange": -9,
+          "queue": "scolia"
+        },
+        {
+          "matchId": 252,
+          "result": "Loss",
+          "opponentId": 1391715482624593932,
+          "opponentName": "User 1391715482624593932",
+          "score": "4:1",
+          "average": "45.64",
+          "eloChange": -17,
+          "queue": "scolia"
+        }
+      ]
     },
     "1072957562569359442": {
       "userId": 1072957562569359442,
@@ -1304,15 +3765,26 @@
       "worldRating": 975,
       "worldRank": 76,
       "worldWins": 0,
-      "worldLosses": 0,
+      "worldLosses": 1,
       "monthlyRating": 0,
       "monthlyRank": null,
       "monthlyWins": 0,
       "monthlyLosses": 0,
-      "games": 0,
-      "winrate": 0,
-      "overallAverage": 0,
-      "recentMatches": []
+      "games": 1,
+      "winrate": 0.0,
+      "overallAverage": 51.33,
+      "recentMatches": [
+        {
+          "matchId": 412,
+          "result": "Loss",
+          "opponentId": 825420293039194123,
+          "opponentName": "User 825420293039194123",
+          "score": "4:2",
+          "average": "51.33",
+          "eloChange": -25,
+          "queue": "scolia"
+        }
+      ]
     },
     "624003156610777109": {
       "userId": 624003156610777109,
@@ -1321,15 +3793,36 @@
       "worldRating": 973,
       "worldRank": 77,
       "worldWins": 0,
-      "worldLosses": 0,
+      "worldLosses": 2,
       "monthlyRating": 0,
       "monthlyRank": null,
       "monthlyWins": 0,
       "monthlyLosses": 0,
-      "games": 0,
-      "winrate": 0,
-      "overallAverage": 0,
-      "recentMatches": []
+      "games": 2,
+      "winrate": 0.0,
+      "overallAverage": 39.83,
+      "recentMatches": [
+        {
+          "matchId": 418,
+          "result": "Loss",
+          "opponentId": 530021085522165770,
+          "opponentName": "User 530021085522165770",
+          "score": "4:0",
+          "average": "38.59",
+          "eloChange": -11,
+          "queue": "scolia"
+        },
+        {
+          "matchId": 101,
+          "result": "Loss",
+          "opponentId": 1142038943961985105,
+          "opponentName": "User 1142038943961985105",
+          "score": "1",
+          "average": "41.06",
+          "eloChange": -16,
+          "queue": "scolia"
+        }
+      ]
     },
     "1387676358527811684": {
       "userId": 1387676358527811684,
@@ -1338,15 +3831,36 @@
       "worldRating": 973,
       "worldRank": 78,
       "worldWins": 0,
-      "worldLosses": 0,
+      "worldLosses": 2,
       "monthlyRating": 0,
       "monthlyRank": null,
       "monthlyWins": 0,
       "monthlyLosses": 0,
-      "games": 0,
-      "winrate": 0,
-      "overallAverage": 0,
-      "recentMatches": []
+      "games": 2,
+      "winrate": 0.0,
+      "overallAverage": 47.51,
+      "recentMatches": [
+        {
+          "matchId": 293,
+          "result": "Loss",
+          "opponentId": 707989067777835248,
+          "opponentName": "User 707989067777835248",
+          "score": "4:0",
+          "average": "48.65",
+          "eloChange": -11,
+          "queue": "scolia"
+        },
+        {
+          "matchId": 159,
+          "result": "Loss",
+          "opponentId": 773315089595891732,
+          "opponentName": "User 773315089595891732",
+          "score": "2:4",
+          "average": "46.37",
+          "eloChange": -13,
+          "queue": "scolia"
+        }
+      ]
     },
     "1364666221114556537": {
       "userId": 1364666221114556537,
@@ -1354,16 +3868,67 @@
       "avatar": "https://cdn.discordapp.com/embed/avatars/0.png",
       "worldRating": 970,
       "worldRank": 79,
-      "worldWins": 0,
-      "worldLosses": 0,
+      "worldWins": 4,
+      "worldLosses": 7,
       "monthlyRating": 0,
       "monthlyRank": null,
       "monthlyWins": 0,
       "monthlyLosses": 0,
-      "games": 0,
-      "winrate": 0,
-      "overallAverage": 0,
-      "recentMatches": []
+      "games": 11,
+      "winrate": 36.4,
+      "overallAverage": 50.04,
+      "recentMatches": [
+        {
+          "matchId": 1043,
+          "result": "Win",
+          "opponentId": 1458906019118841960,
+          "opponentName": "User 1458906019118841960",
+          "score": "4:2",
+          "average": "51.23",
+          "eloChange": 11,
+          "queue": "dart"
+        },
+        {
+          "matchId": 306,
+          "result": "Loss",
+          "opponentId": 1474322752432377886,
+          "opponentName": "User 1474322752432377886",
+          "score": "4:1",
+          "average": "46.38",
+          "eloChange": -14,
+          "queue": "dart"
+        },
+        {
+          "matchId": 302,
+          "result": "Loss",
+          "opponentId": 1458906019118841960,
+          "opponentName": "User 1458906019118841960",
+          "score": "4.1",
+          "average": "45.04",
+          "eloChange": -21,
+          "queue": "dart"
+        },
+        {
+          "matchId": 290,
+          "result": "Win",
+          "opponentId": 1458906019118841960,
+          "opponentName": "User 1458906019118841960",
+          "score": "4:0",
+          "average": "48.48",
+          "eloChange": 13,
+          "queue": "dart"
+        },
+        {
+          "matchId": 287,
+          "result": "Loss",
+          "opponentId": 272860472141676546,
+          "opponentName": "User 272860472141676546",
+          "score": "4:2",
+          "average": "44.45",
+          "eloChange": -14,
+          "queue": "dart"
+        }
+      ]
     },
     "911368314855514163": {
       "userId": 911368314855514163,
@@ -1371,16 +3936,67 @@
       "avatar": "https://cdn.discordapp.com/embed/avatars/0.png",
       "worldRating": 968,
       "worldRank": 80,
-      "worldWins": 0,
-      "worldLosses": 0,
+      "worldWins": 3,
+      "worldLosses": 5,
       "monthlyRating": 0,
       "monthlyRank": null,
       "monthlyWins": 0,
       "monthlyLosses": 0,
-      "games": 0,
-      "winrate": 0,
-      "overallAverage": 0,
-      "recentMatches": []
+      "games": 8,
+      "winrate": 37.5,
+      "overallAverage": 51.39,
+      "recentMatches": [
+        {
+          "matchId": 712,
+          "result": "Win",
+          "opponentId": 1359231571487494265,
+          "opponentName": "User 1359231571487494265",
+          "score": "4:2",
+          "average": "46.1",
+          "eloChange": 12,
+          "queue": "scolia"
+        },
+        {
+          "matchId": 393,
+          "result": "Win",
+          "opponentId": 825420293039194123,
+          "opponentName": "User 825420293039194123",
+          "score": "4:1",
+          "average": "58.4",
+          "eloChange": 9,
+          "queue": "scolia"
+        },
+        {
+          "matchId": 269,
+          "result": "Loss",
+          "opponentId": 1213219884440489984,
+          "opponentName": "User 1213219884440489984",
+          "score": "4:0",
+          "average": "54.82",
+          "eloChange": -13,
+          "queue": "scolia"
+        },
+        {
+          "matchId": 213,
+          "result": "Loss",
+          "opponentId": 1309548661117554720,
+          "opponentName": "User 1309548661117554720",
+          "score": "4:0",
+          "average": "48.57",
+          "eloChange": -10,
+          "queue": "scolia"
+        },
+        {
+          "matchId": 204,
+          "result": "Loss",
+          "opponentId": 627469840457662464,
+          "opponentName": "User 627469840457662464",
+          "score": "4:3",
+          "average": "48.5",
+          "eloChange": -19,
+          "queue": "scolia"
+        }
+      ]
     },
     "700818115226894396": {
       "userId": 700818115226894396,
@@ -1388,16 +4004,67 @@
       "avatar": "https://cdn.discordapp.com/embed/avatars/0.png",
       "worldRating": 967,
       "worldRank": 81,
-      "worldWins": 0,
-      "worldLosses": 0,
+      "worldWins": 6,
+      "worldLosses": 9,
       "monthlyRating": 0,
       "monthlyRank": null,
       "monthlyWins": 0,
       "monthlyLosses": 0,
-      "games": 0,
-      "winrate": 0,
-      "overallAverage": 0,
-      "recentMatches": []
+      "games": 15,
+      "winrate": 40.0,
+      "overallAverage": 52.2,
+      "recentMatches": [
+        {
+          "matchId": 695,
+          "result": "Loss",
+          "opponentId": 1309548661117554720,
+          "opponentName": "User 1309548661117554720",
+          "score": "4:0",
+          "average": "51.84",
+          "eloChange": -9,
+          "queue": "scolia"
+        },
+        {
+          "matchId": 664,
+          "result": "Loss",
+          "opponentId": 707989067777835248,
+          "opponentName": "User 707989067777835248",
+          "score": "4:0",
+          "average": "58.48",
+          "eloChange": -6,
+          "queue": "scolia"
+        },
+        {
+          "matchId": 481,
+          "result": "Loss",
+          "opponentId": 1213219884440489984,
+          "opponentName": "User 1213219884440489984",
+          "score": "4:0",
+          "average": "60.79",
+          "eloChange": -12,
+          "queue": "scolia"
+        },
+        {
+          "matchId": 201,
+          "result": "Loss",
+          "opponentId": 1359231571487494265,
+          "opponentName": "User 1359231571487494265",
+          "score": "4:1",
+          "average": "55.02",
+          "eloChange": -19,
+          "queue": "scolia"
+        },
+        {
+          "matchId": 199,
+          "result": "Win",
+          "opponentId": 627469840457662464,
+          "opponentName": "User 627469840457662464",
+          "score": "4:3",
+          "average": "47.8",
+          "eloChange": 12,
+          "queue": "scolia"
+        }
+      ]
     },
     "770346293846343690": {
       "userId": 770346293846343690,
@@ -1406,15 +4073,36 @@
       "worldRating": 965,
       "worldRank": 82,
       "worldWins": 0,
-      "worldLosses": 0,
+      "worldLosses": 2,
       "monthlyRating": 0,
       "monthlyRank": null,
       "monthlyWins": 0,
       "monthlyLosses": 0,
-      "games": 0,
-      "winrate": 0,
-      "overallAverage": 0,
-      "recentMatches": []
+      "games": 2,
+      "winrate": 0.0,
+      "overallAverage": 43.04,
+      "recentMatches": [
+        {
+          "matchId": 192,
+          "result": "Loss",
+          "opponentId": 1458906019118841960,
+          "opponentName": "User 1458906019118841960",
+          "score": "4:3",
+          "average": "40.02",
+          "eloChange": -19,
+          "queue": "dart"
+        },
+        {
+          "matchId": 186,
+          "result": "Loss",
+          "opponentId": 1067374071421095936,
+          "opponentName": "User 1067374071421095936",
+          "score": "4:1",
+          "average": "46.06",
+          "eloChange": -17,
+          "queue": "dart"
+        }
+      ]
     },
     "1128030585701552169": {
       "userId": 1128030585701552169,
@@ -1422,16 +4110,67 @@
       "avatar": "https://cdn.discordapp.com/embed/avatars/0.png",
       "worldRating": 962,
       "worldRank": 83,
-      "worldWins": 0,
-      "worldLosses": 0,
+      "worldWins": 2,
+      "worldLosses": 6,
       "monthlyRating": 0,
       "monthlyRank": null,
       "monthlyWins": 0,
       "monthlyLosses": 0,
-      "games": 0,
-      "winrate": 0,
-      "overallAverage": 0,
-      "recentMatches": []
+      "games": 8,
+      "winrate": 25.0,
+      "overallAverage": 51.17,
+      "recentMatches": [
+        {
+          "matchId": 565,
+          "result": "Loss",
+          "opponentId": 721521931953635349,
+          "opponentName": "User 721521931953635349",
+          "score": "4:3",
+          "average": "50.02",
+          "eloChange": -21,
+          "queue": "dart"
+        },
+        {
+          "matchId": 561,
+          "result": "Win",
+          "opponentId": 1473034865355001856,
+          "opponentName": "User 1473034865355001856",
+          "score": "4:2",
+          "average": "57.94",
+          "eloChange": 18,
+          "queue": "dart"
+        },
+        {
+          "matchId": 557,
+          "result": "Loss",
+          "opponentId": 530021085522165770,
+          "opponentName": "User 530021085522165770",
+          "score": "4:3",
+          "average": "54.79",
+          "eloChange": -10,
+          "queue": "dart"
+        },
+        {
+          "matchId": 264,
+          "result": "Win",
+          "opponentId": 811720921782026251,
+          "opponentName": "User 811720921782026251",
+          "score": "4:1",
+          "average": "46.22",
+          "eloChange": 16,
+          "queue": "dart"
+        },
+        {
+          "matchId": 262,
+          "result": "Loss",
+          "opponentId": 806146120929640498,
+          "opponentName": "User 806146120929640498",
+          "score": "4:1",
+          "average": "44.93",
+          "eloChange": -7,
+          "queue": "dart"
+        }
+      ]
     },
     "1330887794515644456": {
       "userId": 1330887794515644456,
@@ -1440,15 +4179,46 @@
       "worldRating": 957,
       "worldRank": 84,
       "worldWins": 0,
-      "worldLosses": 0,
+      "worldLosses": 3,
       "monthlyRating": 0,
       "monthlyRank": null,
       "monthlyWins": 0,
       "monthlyLosses": 0,
-      "games": 0,
-      "winrate": 0,
-      "overallAverage": 0,
-      "recentMatches": []
+      "games": 3,
+      "winrate": 0.0,
+      "overallAverage": 46.09,
+      "recentMatches": [
+        {
+          "matchId": 836,
+          "result": "Loss",
+          "opponentId": 1233056433344348211,
+          "opponentName": "User 1233056433344348211",
+          "score": "0:4",
+          "average": "50.97",
+          "eloChange": -15,
+          "queue": "scolia"
+        },
+        {
+          "matchId": 177,
+          "result": "Loss",
+          "opponentId": 530021085522165770,
+          "opponentName": "User 530021085522165770",
+          "score": "4:1",
+          "average": "42.6",
+          "eloChange": -12,
+          "queue": "scolia"
+        },
+        {
+          "matchId": 174,
+          "result": "Loss",
+          "opponentId": 1359231571487494265,
+          "opponentName": "User 1359231571487494265",
+          "score": "4:0",
+          "average": "44.71",
+          "eloChange": -17,
+          "queue": "scolia"
+        }
+      ]
     },
     "202833515757174784": {
       "userId": 202833515757174784,
@@ -1457,49 +4227,182 @@
       "worldRating": 954,
       "worldRank": 85,
       "worldWins": 0,
-      "worldLosses": 0,
+      "worldLosses": 3,
       "monthlyRating": 0,
       "monthlyRank": null,
       "monthlyWins": 0,
       "monthlyLosses": 0,
-      "games": 0,
-      "winrate": 0,
-      "overallAverage": 0,
-      "recentMatches": []
-    },
-    "777632441359400970": {
-      "userId": 777632441359400970,
-      "name": "User 777632441359400970",
-      "avatar": "https://cdn.discordapp.com/embed/avatars/0.png",
-      "worldRating": 952,
-      "worldRank": 86,
-      "worldWins": 0,
-      "worldLosses": 0,
-      "monthlyRating": 0,
-      "monthlyRank": null,
-      "monthlyWins": 0,
-      "monthlyLosses": 0,
-      "games": 0,
-      "winrate": 0,
-      "overallAverage": 0,
-      "recentMatches": []
+      "games": 3,
+      "winrate": 0.0,
+      "overallAverage": 40.74,
+      "recentMatches": [
+        {
+          "matchId": 48,
+          "result": "Loss",
+          "opponentId": 1299471744414908459,
+          "opponentName": "User 1299471744414908459",
+          "score": "4:1",
+          "average": "40.07",
+          "eloChange": -15,
+          "queue": "scolia"
+        },
+        {
+          "matchId": 39,
+          "result": "Loss",
+          "opponentId": 1467938366183178457,
+          "opponentName": "User 1467938366183178457",
+          "score": "4:0",
+          "average": "38.5",
+          "eloChange": 0,
+          "queue": "scolia"
+        },
+        {
+          "matchId": 38,
+          "result": "Loss",
+          "opponentId": 707989067777835248,
+          "opponentName": "User 707989067777835248",
+          "score": "4:0",
+          "average": "43.65",
+          "eloChange": 0,
+          "queue": "scolia"
+        }
+      ]
     },
     "1473034865355001856": {
       "userId": 1473034865355001856,
       "name": "User 1473034865355001856",
       "avatar": "https://cdn.discordapp.com/embed/avatars/0.png",
       "worldRating": 952,
-      "worldRank": 87,
-      "worldWins": 0,
-      "worldLosses": 0,
+      "worldRank": 86,
+      "worldWins": 2,
+      "worldLosses": 8,
       "monthlyRating": 0,
       "monthlyRank": null,
       "monthlyWins": 0,
       "monthlyLosses": 0,
-      "games": 0,
-      "winrate": 0,
-      "overallAverage": 0,
-      "recentMatches": []
+      "games": 10,
+      "winrate": 20.0,
+      "overallAverage": 638.83,
+      "recentMatches": [
+        {
+          "matchId": 983,
+          "result": "Loss",
+          "opponentId": 707989067777835248,
+          "opponentName": "User 707989067777835248",
+          "score": "4:2",
+          "average": "54.48",
+          "eloChange": -5,
+          "queue": "dart"
+        },
+        {
+          "matchId": 857,
+          "result": "Loss",
+          "opponentId": 1067374071421095936,
+          "opponentName": "User 1067374071421095936",
+          "score": "2:4",
+          "average": "5899.0",
+          "eloChange": -15,
+          "queue": "dart"
+        },
+        {
+          "matchId": 855,
+          "result": "Loss",
+          "opponentId": 1330499669490667653,
+          "opponentName": "User 1330499669490667653",
+          "score": "4:0",
+          "average": "51.5",
+          "eloChange": -8,
+          "queue": "dart"
+        },
+        {
+          "matchId": 760,
+          "result": "Win",
+          "opponentId": 299164054591635456,
+          "opponentName": "User 299164054591635456",
+          "score": "4:1",
+          "average": "53.72",
+          "eloChange": 15,
+          "queue": "dart"
+        },
+        {
+          "matchId": 603,
+          "result": "Loss",
+          "opponentId": 806146120929640498,
+          "opponentName": "User 806146120929640498",
+          "score": "4:2",
+          "average": "50.53",
+          "eloChange": -6,
+          "queue": "dart"
+        }
+      ]
+    },
+    "777632441359400970": {
+      "userId": 777632441359400970,
+      "name": "User 777632441359400970",
+      "avatar": "https://cdn.discordapp.com/embed/avatars/0.png",
+      "worldRating": 952,
+      "worldRank": 87,
+      "worldWins": 1,
+      "worldLosses": 4,
+      "monthlyRating": 0,
+      "monthlyRank": null,
+      "monthlyWins": 0,
+      "monthlyLosses": 0,
+      "games": 5,
+      "winrate": 20.0,
+      "overallAverage": 56.48,
+      "recentMatches": [
+        {
+          "matchId": 800,
+          "result": "Loss",
+          "opponentId": 1007351887114285087,
+          "opponentName": "User 1007351887114285087",
+          "score": "4:3",
+          "average": "61.53",
+          "eloChange": -9,
+          "queue": "dart"
+        },
+        {
+          "matchId": 683,
+          "result": "Loss",
+          "opponentId": 1418545035577917542,
+          "opponentName": "User 1418545035577917542",
+          "score": "4:2",
+          "average": "57.84",
+          "eloChange": -14,
+          "queue": "dart"
+        },
+        {
+          "matchId": 479,
+          "result": "Win",
+          "opponentId": 1245485490421891165,
+          "opponentName": "User 1245485490421891165",
+          "score": "4:1",
+          "average": "47.8",
+          "eloChange": 10,
+          "queue": "dart"
+        },
+        {
+          "matchId": 431,
+          "result": "Loss",
+          "opponentId": 1458906019118841960,
+          "opponentName": "User 1458906019118841960",
+          "score": "4.2",
+          "average": "53.26",
+          "eloChange": -20,
+          "queue": "dart"
+        },
+        {
+          "matchId": 80,
+          "result": "Loss",
+          "opponentId": 1320524093094887438,
+          "opponentName": "User 1320524093094887438",
+          "score": "4:1",
+          "average": "61.98",
+          "eloChange": -16,
+          "queue": "dart"
+        }
+      ]
     },
     "1400468029258858666": {
       "userId": 1400468029258858666,
@@ -1508,15 +4411,56 @@
       "worldRating": 951,
       "worldRank": 88,
       "worldWins": 0,
-      "worldLosses": 0,
+      "worldLosses": 4,
       "monthlyRating": 0,
       "monthlyRank": null,
       "monthlyWins": 0,
       "monthlyLosses": 0,
-      "games": 0,
-      "winrate": 0,
-      "overallAverage": 0,
-      "recentMatches": []
+      "games": 4,
+      "winrate": 0.0,
+      "overallAverage": 57.71,
+      "recentMatches": [
+        {
+          "matchId": 408,
+          "result": "Loss",
+          "opponentId": 707989067777835248,
+          "opponentName": "User 707989067777835248",
+          "score": "4:1",
+          "average": "60.39",
+          "eloChange": -6,
+          "queue": "scolia"
+        },
+        {
+          "matchId": 357,
+          "result": "Loss",
+          "opponentId": 1092072918915219537,
+          "opponentName": "User 1092072918915219537",
+          "score": "4:2",
+          "average": "55.61",
+          "eloChange": -15,
+          "queue": "scolia"
+        },
+        {
+          "matchId": 71,
+          "result": "Loss",
+          "opponentId": 530021085522165770,
+          "opponentName": "User 530021085522165770",
+          "score": "4:1",
+          "average": "55.55",
+          "eloChange": -15,
+          "queue": "scolia"
+        },
+        {
+          "matchId": 58,
+          "result": "Loss",
+          "opponentId": 458662173091299360,
+          "opponentName": "User 458662173091299360",
+          "score": "4:3",
+          "average": "59.29",
+          "eloChange": -14,
+          "queue": "scolia"
+        }
+      ]
     },
     "1408769906664538122": {
       "userId": 1408769906664538122,
@@ -1524,16 +4468,67 @@
       "avatar": "https://cdn.discordapp.com/embed/avatars/0.png",
       "worldRating": 949,
       "worldRank": 89,
-      "worldWins": 0,
-      "worldLosses": 0,
+      "worldWins": 9,
+      "worldLosses": 15,
       "monthlyRating": 0,
       "monthlyRank": null,
       "monthlyWins": 0,
       "monthlyLosses": 0,
-      "games": 0,
-      "winrate": 0,
-      "overallAverage": 0,
-      "recentMatches": []
+      "games": 24,
+      "winrate": 37.5,
+      "overallAverage": 292.55,
+      "recentMatches": [
+        {
+          "matchId": 1020,
+          "result": "Loss",
+          "opponentId": 707989067777835248,
+          "opponentName": "User 707989067777835248",
+          "score": "4:0",
+          "average": "51.11",
+          "eloChange": -4,
+          "queue": "scolia"
+        },
+        {
+          "matchId": 945,
+          "result": "Loss",
+          "opponentId": 512983240148123648,
+          "opponentName": "User 512983240148123648",
+          "score": "4:2",
+          "average": "5710.0",
+          "eloChange": -17,
+          "queue": "scolia"
+        },
+        {
+          "matchId": 927,
+          "result": "Loss",
+          "opponentId": 1092072918915219537,
+          "opponentName": "User 1092072918915219537",
+          "score": "4:1",
+          "average": "61.42",
+          "eloChange": -10,
+          "queue": "scolia"
+        },
+        {
+          "matchId": 925,
+          "result": "Win",
+          "opponentId": 1359231571487494265,
+          "opponentName": "User 1359231571487494265",
+          "score": "4:0",
+          "average": "60.73",
+          "eloChange": 11,
+          "queue": "scolia"
+        },
+        {
+          "matchId": 922,
+          "result": "Loss",
+          "opponentId": 1309548661117554720,
+          "opponentName": "User 1309548661117554720",
+          "score": "4:0",
+          "average": "59.94",
+          "eloChange": -6,
+          "queue": "scolia"
+        }
+      ]
     },
     "512983240148123648": {
       "userId": 512983240148123648,
@@ -1541,16 +4536,67 @@
       "avatar": "https://cdn.discordapp.com/embed/avatars/0.png",
       "worldRating": 948,
       "worldRank": 90,
-      "worldWins": 0,
-      "worldLosses": 0,
+      "worldWins": 2,
+      "worldLosses": 9,
       "monthlyRating": 0,
-      "monthlyRank": null,
+      "monthlyRank": 25,
       "monthlyWins": 0,
-      "monthlyLosses": 0,
-      "games": 0,
-      "winrate": 0,
-      "overallAverage": 0,
-      "recentMatches": []
+      "monthlyLosses": 1,
+      "games": 11,
+      "winrate": 18.2,
+      "overallAverage": 563.82,
+      "recentMatches": [
+        {
+          "matchId": 1065,
+          "result": "Loss",
+          "opponentId": 1092072918915219537,
+          "opponentName": "User 1092072918915219537",
+          "score": "4:2",
+          "average": "53.98",
+          "eloChange": -8,
+          "queue": "scolia"
+        },
+        {
+          "matchId": 961,
+          "result": "Loss",
+          "opponentId": 977270139932258375,
+          "opponentName": "User 977270139932258375",
+          "score": "4:0",
+          "average": "53.19",
+          "eloChange": -10,
+          "queue": "scolia"
+        },
+        {
+          "matchId": 955,
+          "result": "Loss",
+          "opponentId": 1142038943961985105,
+          "opponentName": "User 1142038943961985105",
+          "score": "4:3",
+          "average": "57.28",
+          "eloChange": -5,
+          "queue": "scolia"
+        },
+        {
+          "matchId": 945,
+          "result": "Win",
+          "opponentId": 1408769906664538122,
+          "opponentName": "User 1408769906664538122",
+          "score": "4:2",
+          "average": "5635.0",
+          "eloChange": 17,
+          "queue": "scolia"
+        },
+        {
+          "matchId": 897,
+          "result": "Win",
+          "opponentId": 825420293039194123,
+          "opponentName": "User 825420293039194123",
+          "score": "4:1",
+          "average": "56.39",
+          "eloChange": 14,
+          "queue": "scolia"
+        }
+      ]
     },
     "1458533805508788439": {
       "userId": 1458533805508788439,
@@ -1559,15 +4605,56 @@
       "worldRating": 946,
       "worldRank": 91,
       "worldWins": 0,
-      "worldLosses": 0,
+      "worldLosses": 4,
       "monthlyRating": 0,
       "monthlyRank": null,
       "monthlyWins": 0,
       "monthlyLosses": 0,
-      "games": 0,
-      "winrate": 0,
-      "overallAverage": 0,
-      "recentMatches": []
+      "games": 4,
+      "winrate": 0.0,
+      "overallAverage": 49.62,
+      "recentMatches": [
+        {
+          "matchId": 578,
+          "result": "Loss",
+          "opponentId": 890838749280346132,
+          "opponentName": "User 890838749280346132",
+          "score": "4:1",
+          "average": "52.57",
+          "eloChange": -12,
+          "queue": "scolia"
+        },
+        {
+          "matchId": 576,
+          "result": "Loss",
+          "opponentId": 788855711601655819,
+          "opponentName": "User 788855711601655819",
+          "score": "4:0",
+          "average": "47.87",
+          "eloChange": -12,
+          "queue": "scolia"
+        },
+        {
+          "matchId": 464,
+          "result": "Loss",
+          "opponentId": 1408769906664538122,
+          "opponentName": "User 1408769906664538122",
+          "score": "4:3",
+          "average": "48.48",
+          "eloChange": -15,
+          "queue": "scolia"
+        },
+        {
+          "matchId": 462,
+          "result": "Loss",
+          "opponentId": 183185835477172226,
+          "opponentName": "Stefan",
+          "score": "4:0",
+          "average": "49.56",
+          "eloChange": -13,
+          "queue": "scolia"
+        }
+      ]
     },
     "321563218226970626": {
       "userId": 321563218226970626,
@@ -1575,16 +4662,67 @@
       "avatar": "https://cdn.discordapp.com/embed/avatars/0.png",
       "worldRating": 945,
       "worldRank": 92,
-      "worldWins": 0,
-      "worldLosses": 0,
+      "worldWins": 1,
+      "worldLosses": 5,
       "monthlyRating": 0,
       "monthlyRank": null,
       "monthlyWins": 0,
       "monthlyLosses": 0,
-      "games": 0,
-      "winrate": 0,
-      "overallAverage": 0,
-      "recentMatches": []
+      "games": 6,
+      "winrate": 16.7,
+      "overallAverage": 50.8,
+      "recentMatches": [
+        {
+          "matchId": 300,
+          "result": "Loss",
+          "opponentId": 1418878810006360084,
+          "opponentName": "User 1418878810006360084",
+          "score": "4:0",
+          "average": "54.2",
+          "eloChange": -14,
+          "queue": "scolia"
+        },
+        {
+          "matchId": 299,
+          "result": "Loss",
+          "opponentId": 1458502282219098457,
+          "opponentName": "User 1458502282219098457",
+          "score": "4:0",
+          "average": "47.25",
+          "eloChange": -12,
+          "queue": "scolia"
+        },
+        {
+          "matchId": 297,
+          "result": "Loss",
+          "opponentId": 707989067777835248,
+          "opponentName": "User 707989067777835248",
+          "score": "4:0",
+          "average": "52.79",
+          "eloChange": -12,
+          "queue": "scolia"
+        },
+        {
+          "matchId": 86,
+          "result": "Loss",
+          "opponentId": 530021085522165770,
+          "opponentName": "User 530021085522165770",
+          "score": "4:0",
+          "average": "48.72",
+          "eloChange": -19,
+          "queue": "scolia"
+        },
+        {
+          "matchId": 74,
+          "result": "Loss",
+          "opponentId": 700818115226894396,
+          "opponentName": "User 700818115226894396",
+          "score": "4:3",
+          "average": "48.14",
+          "eloChange": -17,
+          "queue": "scolia"
+        }
+      ]
     },
     "1467938366183178457": {
       "userId": 1467938366183178457,
@@ -1592,16 +4730,67 @@
       "avatar": "https://cdn.discordapp.com/embed/avatars/0.png",
       "worldRating": 941,
       "worldRank": 93,
-      "worldWins": 0,
-      "worldLosses": 0,
+      "worldWins": 4,
+      "worldLosses": 9,
       "monthlyRating": 0,
-      "monthlyRank": null,
+      "monthlyRank": 30,
       "monthlyWins": 0,
-      "monthlyLosses": 0,
-      "games": 0,
-      "winrate": 0,
-      "overallAverage": 0,
-      "recentMatches": []
+      "monthlyLosses": 1,
+      "games": 13,
+      "winrate": 30.8,
+      "overallAverage": 53.8,
+      "recentMatches": [
+        {
+          "matchId": 1066,
+          "result": "Loss",
+          "opponentId": 1092072918915219537,
+          "opponentName": "User 1092072918915219537",
+          "score": "4:0",
+          "average": "52.48",
+          "eloChange": -8,
+          "queue": "scolia"
+        },
+        {
+          "matchId": 389,
+          "result": "Loss",
+          "opponentId": 1468019197656174774,
+          "opponentName": "User 1468019197656174774",
+          "score": "4:2",
+          "average": "47.1",
+          "eloChange": -17,
+          "queue": "scolia"
+        },
+        {
+          "matchId": 155,
+          "result": "Win",
+          "opponentId": 1359231571487494265,
+          "opponentName": "User 1359231571487494265",
+          "score": "4:2",
+          "average": "55.45",
+          "eloChange": 18,
+          "queue": "scolia"
+        },
+        {
+          "matchId": 149,
+          "result": "Loss",
+          "opponentId": 773315089595891732,
+          "opponentName": "User 773315089595891732",
+          "score": "4:3",
+          "average": "55.6",
+          "eloChange": -14,
+          "queue": "scolia"
+        },
+        {
+          "matchId": 145,
+          "result": "Loss",
+          "opponentId": 1089304921439998003,
+          "opponentName": "User 1089304921439998003",
+          "score": "4:3",
+          "average": "51.27",
+          "eloChange": -15,
+          "queue": "scolia"
+        }
+      ]
     },
     "299164054591635456": {
       "userId": 299164054591635456,
@@ -1609,16 +4798,67 @@
       "avatar": "https://cdn.discordapp.com/embed/avatars/0.png",
       "worldRating": 934,
       "worldRank": 94,
-      "worldWins": 0,
-      "worldLosses": 0,
-      "monthlyRating": 0,
-      "monthlyRank": null,
-      "monthlyWins": 0,
-      "monthlyLosses": 0,
-      "games": 0,
-      "winrate": 0,
-      "overallAverage": 0,
-      "recentMatches": []
+      "worldWins": 13,
+      "worldLosses": 22,
+      "monthlyRating": 33,
+      "monthlyRank": 8,
+      "monthlyWins": 2,
+      "monthlyLosses": 2,
+      "games": 35,
+      "winrate": 37.1,
+      "overallAverage": 329.31,
+      "recentMatches": [
+        {
+          "matchId": 1090,
+          "result": "Loss",
+          "opponentId": 1245485490421891165,
+          "opponentName": "User 1245485490421891165",
+          "score": "4:3",
+          "average": "41.61",
+          "eloChange": -26,
+          "queue": "dart"
+        },
+        {
+          "matchId": 1087,
+          "result": "Win",
+          "opponentId": 906968918327967764,
+          "opponentName": "User 906968918327967764",
+          "score": "4:1",
+          "average": "51.15",
+          "eloChange": 16,
+          "queue": "dart"
+        },
+        {
+          "matchId": 1077,
+          "result": "Loss",
+          "opponentId": 906968918327967764,
+          "opponentName": "User 906968918327967764",
+          "score": "2:4",
+          "average": "5085.0",
+          "eloChange": -17,
+          "queue": "dart"
+        },
+        {
+          "matchId": 1053,
+          "result": "Win",
+          "opponentId": 283650357262024704,
+          "opponentName": "User 283650357262024704",
+          "score": "4:2",
+          "average": "39.11",
+          "eloChange": 17,
+          "queue": "dart"
+        },
+        {
+          "matchId": 832,
+          "result": "Loss",
+          "opponentId": 906968918327967764,
+          "opponentName": "User 906968918327967764",
+          "score": "4:2",
+          "average": "4723.0",
+          "eloChange": -17,
+          "queue": "dart"
+        }
+      ]
     },
     "1394121383528628366": {
       "userId": 1394121383528628366,
@@ -1626,16 +4866,67 @@
       "avatar": "https://cdn.discordapp.com/embed/avatars/0.png",
       "worldRating": 932,
       "worldRank": 95,
-      "worldWins": 0,
-      "worldLosses": 0,
+      "worldWins": 1,
+      "worldLosses": 6,
       "monthlyRating": 0,
       "monthlyRank": null,
       "monthlyWins": 0,
       "monthlyLosses": 0,
-      "games": 0,
-      "winrate": 0,
-      "overallAverage": 0,
-      "recentMatches": []
+      "games": 7,
+      "winrate": 14.3,
+      "overallAverage": 49.05,
+      "recentMatches": [
+        {
+          "matchId": 699,
+          "result": "Loss",
+          "opponentId": 1309548661117554720,
+          "opponentName": "User 1309548661117554720",
+          "score": "4:1",
+          "average": "46.61",
+          "eloChange": -7,
+          "queue": "scolia"
+        },
+        {
+          "matchId": 607,
+          "result": "Win",
+          "opponentId": 662279330910437392,
+          "opponentName": "User 662279330910437392",
+          "score": "4:2",
+          "average": "43.51",
+          "eloChange": 14,
+          "queue": "scolia"
+        },
+        {
+          "matchId": 446,
+          "result": "Loss",
+          "opponentId": 825420293039194123,
+          "opponentName": "User 825420293039194123",
+          "score": "4:3",
+          "average": "45.19",
+          "eloChange": -20,
+          "queue": "scolia"
+        },
+        {
+          "matchId": 309,
+          "result": "Loss",
+          "opponentId": 1432632159432216765,
+          "opponentName": "User 1432632159432216765",
+          "score": "0-4",
+          "average": "54.52",
+          "eloChange": -14,
+          "queue": "scolia"
+        },
+        {
+          "matchId": 251,
+          "result": "Loss",
+          "opponentId": 1233056433344348211,
+          "opponentName": "User 1233056433344348211",
+          "score": "4:2",
+          "average": "57.91",
+          "eloChange": -13,
+          "queue": "scolia"
+        }
+      ]
     },
     "391694713679380480": {
       "userId": 391694713679380480,
@@ -1643,16 +4934,67 @@
       "avatar": "https://cdn.discordapp.com/embed/avatars/0.png",
       "worldRating": 929,
       "worldRank": 96,
-      "worldWins": 0,
-      "worldLosses": 0,
+      "worldWins": 1,
+      "worldLosses": 6,
       "monthlyRating": 0,
       "monthlyRank": null,
       "monthlyWins": 0,
       "monthlyLosses": 0,
-      "games": 0,
-      "winrate": 0,
-      "overallAverage": 0,
-      "recentMatches": []
+      "games": 7,
+      "winrate": 14.3,
+      "overallAverage": 47.93,
+      "recentMatches": [
+        {
+          "matchId": 282,
+          "result": "Loss",
+          "opponentId": 1458502282219098457,
+          "opponentName": "User 1458502282219098457",
+          "score": "4:0",
+          "average": "47.95",
+          "eloChange": -12,
+          "queue": "scolia"
+        },
+        {
+          "matchId": 112,
+          "result": "Loss",
+          "opponentId": 1327898199058284545,
+          "opponentName": "User 1327898199058284545",
+          "score": "4:1",
+          "average": "46.76",
+          "eloChange": -14,
+          "queue": "scolia"
+        },
+        {
+          "matchId": 110,
+          "result": "Win",
+          "opponentId": 825420293039194123,
+          "opponentName": "User 825420293039194123",
+          "score": "4:0",
+          "average": "44.53",
+          "eloChange": 15,
+          "queue": "scolia"
+        },
+        {
+          "matchId": 56,
+          "result": "Loss",
+          "opponentId": 773315089595891732,
+          "opponentName": "User 773315089595891732",
+          "score": "4:2",
+          "average": "51.69",
+          "eloChange": -14,
+          "queue": "scolia"
+        },
+        {
+          "matchId": 55,
+          "result": "Loss",
+          "opponentId": 1233056433344348211,
+          "opponentName": "User 1233056433344348211",
+          "score": "4:2",
+          "average": "53.9",
+          "eloChange": -15,
+          "queue": "scolia"
+        }
+      ]
     },
     "283650357262024704": {
       "userId": 283650357262024704,
@@ -1661,15 +5003,66 @@
       "worldRating": 927,
       "worldRank": 97,
       "worldWins": 0,
-      "worldLosses": 0,
+      "worldLosses": 7,
       "monthlyRating": 0,
-      "monthlyRank": null,
+      "monthlyRank": 24,
       "monthlyWins": 0,
-      "monthlyLosses": 0,
-      "games": 0,
-      "winrate": 0,
-      "overallAverage": 0,
-      "recentMatches": []
+      "monthlyLosses": 5,
+      "games": 7,
+      "winrate": 0.0,
+      "overallAverage": 48.02,
+      "recentMatches": [
+        {
+          "matchId": 1062,
+          "result": "Loss",
+          "opponentId": 1488997913408438503,
+          "opponentName": "User 1488997913408438503",
+          "score": "4:0",
+          "average": "52.1",
+          "eloChange": -13,
+          "queue": "dart"
+        },
+        {
+          "matchId": 1058,
+          "result": "Loss",
+          "opponentId": 707989067777835248,
+          "opponentName": "User 707989067777835248",
+          "score": "4:2",
+          "average": "55.2",
+          "eloChange": -4,
+          "queue": "dart"
+        },
+        {
+          "matchId": 1056,
+          "result": "Loss",
+          "opponentId": 707989067777835248,
+          "opponentName": "User 707989067777835248",
+          "score": "4:0",
+          "average": "47.56",
+          "eloChange": -4,
+          "queue": "dart"
+        },
+        {
+          "matchId": 1053,
+          "result": "Loss",
+          "opponentId": 299164054591635456,
+          "opponentName": "User 299164054591635456",
+          "score": "4:2",
+          "average": "35.21",
+          "eloChange": -17,
+          "queue": "dart"
+        },
+        {
+          "matchId": 1051,
+          "result": "Loss",
+          "opponentId": 1488997913408438503,
+          "opponentName": "User 1488997913408438503",
+          "score": "4:2",
+          "average": "47.9",
+          "eloChange": -15,
+          "queue": "dart"
+        }
+      ]
     },
     "662279330910437392": {
       "userId": 662279330910437392,
@@ -1677,16 +5070,67 @@
       "avatar": "https://cdn.discordapp.com/embed/avatars/0.png",
       "worldRating": 917,
       "worldRank": 98,
-      "worldWins": 0,
-      "worldLosses": 0,
+      "worldWins": 2,
+      "worldLosses": 9,
       "monthlyRating": 0,
       "monthlyRank": null,
       "monthlyWins": 0,
       "monthlyLosses": 0,
-      "games": 0,
-      "winrate": 0,
-      "overallAverage": 0,
-      "recentMatches": []
+      "games": 11,
+      "winrate": 18.2,
+      "overallAverage": 48.39,
+      "recentMatches": [
+        {
+          "matchId": 616,
+          "result": "Win",
+          "opponentId": 1359697518513885234,
+          "opponentName": "User 1359697518513885234",
+          "score": "4:1",
+          "average": "57.93",
+          "eloChange": 21,
+          "queue": "scolia"
+        },
+        {
+          "matchId": 611,
+          "result": "Loss",
+          "opponentId": 1309548661117554720,
+          "opponentName": "User 1309548661117554720",
+          "score": "4:0",
+          "average": "52.9",
+          "eloChange": -7,
+          "queue": "scolia"
+        },
+        {
+          "matchId": 607,
+          "result": "Loss",
+          "opponentId": 1394121383528628366,
+          "opponentName": "User 1394121383528628366",
+          "score": "4:2",
+          "average": "42.64",
+          "eloChange": -14,
+          "queue": "scolia"
+        },
+        {
+          "matchId": 606,
+          "result": "Loss",
+          "opponentId": 183185835477172226,
+          "opponentName": "Stefan",
+          "score": "4:1",
+          "average": "47.52",
+          "eloChange": -11,
+          "queue": "scolia"
+        },
+        {
+          "matchId": 604,
+          "result": "Loss",
+          "opponentId": 530021085522165770,
+          "opponentName": "User 530021085522165770",
+          "score": "4:3",
+          "average": "48.95",
+          "eloChange": -8,
+          "queue": "scolia"
+        }
+      ]
     },
     "906968918327967764": {
       "userId": 906968918327967764,
@@ -1694,16 +5138,67 @@
       "avatar": "https://cdn.discordapp.com/embed/avatars/0.png",
       "worldRating": 915,
       "worldRank": 99,
-      "worldWins": 0,
-      "worldLosses": 0,
-      "monthlyRating": 0,
-      "monthlyRank": null,
-      "monthlyWins": 0,
-      "monthlyLosses": 0,
-      "games": 0,
-      "winrate": 0,
-      "overallAverage": 0,
-      "recentMatches": []
+      "worldWins": 7,
+      "worldLosses": 18,
+      "monthlyRating": 33,
+      "monthlyRank": 7,
+      "monthlyWins": 3,
+      "monthlyLosses": 6,
+      "games": 25,
+      "winrate": 28.0,
+      "overallAverage": 881.27,
+      "recentMatches": [
+        {
+          "matchId": 1100,
+          "result": "Win",
+          "opponentId": 1245485490421891165,
+          "opponentName": "User 1245485490421891165",
+          "score": "4:1",
+          "average": "5466.0",
+          "eloChange": 8,
+          "queue": "dart"
+        },
+        {
+          "matchId": 1096,
+          "result": "Loss",
+          "opponentId": 1488997913408438503,
+          "opponentName": "User 1488997913408438503",
+          "score": "4:1",
+          "average": "53.7",
+          "eloChange": -12,
+          "queue": "dart"
+        },
+        {
+          "matchId": 1095,
+          "result": "Win",
+          "opponentId": 1245485490421891165,
+          "opponentName": "User 1245485490421891165",
+          "score": "0:4",
+          "average": "4888.0",
+          "eloChange": 8,
+          "queue": "dart"
+        },
+        {
+          "matchId": 1094,
+          "result": "Loss",
+          "opponentId": 1007351887114285087,
+          "opponentName": "User 1007351887114285087",
+          "score": "2:4",
+          "average": "53.74",
+          "eloChange": -6,
+          "queue": "dart"
+        },
+        {
+          "matchId": 1093,
+          "result": "Loss",
+          "opponentId": 1007351887114285087,
+          "opponentName": "User 1007351887114285087",
+          "score": "4:0",
+          "average": "45.83",
+          "eloChange": -7,
+          "queue": "dart"
+        }
+      ]
     },
     "1170865043227824178": {
       "userId": 1170865043227824178,
@@ -1712,15 +5207,66 @@
       "worldRating": 913,
       "worldRank": 100,
       "worldWins": 0,
-      "worldLosses": 0,
+      "worldLosses": 8,
       "monthlyRating": 0,
-      "monthlyRank": null,
+      "monthlyRank": 27,
       "monthlyWins": 0,
-      "monthlyLosses": 0,
-      "games": 0,
-      "winrate": 0,
-      "overallAverage": 0,
-      "recentMatches": []
+      "monthlyLosses": 1,
+      "games": 8,
+      "winrate": 0.0,
+      "overallAverage": 52.7,
+      "recentMatches": [
+        {
+          "matchId": 1089,
+          "result": "Loss",
+          "opponentId": 1024998339189690448,
+          "opponentName": "User 1024998339189690448",
+          "score": "4:0",
+          "average": "48.0",
+          "eloChange": -13,
+          "queue": "scolia"
+        },
+        {
+          "matchId": 732,
+          "result": "Loss",
+          "opponentId": 1213219884440489984,
+          "opponentName": "User 1213219884440489984",
+          "score": "4:0",
+          "average": "51.96",
+          "eloChange": -10,
+          "queue": "scolia"
+        },
+        {
+          "matchId": 722,
+          "result": "Loss",
+          "opponentId": 1142038943961985105,
+          "opponentName": "User 1142038943961985105",
+          "score": "4:",
+          "average": "55.23",
+          "eloChange": -7,
+          "queue": "scolia"
+        },
+        {
+          "matchId": 709,
+          "result": "Loss",
+          "opponentId": 707989067777835248,
+          "opponentName": "User 707989067777835248",
+          "score": "4:0",
+          "average": "56.54",
+          "eloChange": -5,
+          "queue": "scolia"
+        },
+        {
+          "matchId": 693,
+          "result": "Loss",
+          "opponentId": 1302224986051838068,
+          "opponentName": "User 1302224986051838068",
+          "score": "4:1",
+          "average": "48.62",
+          "eloChange": -8,
+          "queue": "scolia"
+        }
+      ]
     },
     "1359697518513885234": {
       "userId": 1359697518513885234,
@@ -1729,15 +5275,66 @@
       "worldRating": 905,
       "worldRank": 101,
       "worldWins": 0,
-      "worldLosses": 0,
+      "worldLosses": 5,
       "monthlyRating": 0,
       "monthlyRank": null,
       "monthlyWins": 0,
       "monthlyLosses": 0,
-      "games": 0,
-      "winrate": 0,
-      "overallAverage": 0,
-      "recentMatches": []
+      "games": 5,
+      "winrate": 0.0,
+      "overallAverage": 46.69,
+      "recentMatches": [
+        {
+          "matchId": 942,
+          "result": "Loss",
+          "opponentId": 1468019197656174774,
+          "opponentName": "User 1468019197656174774",
+          "score": "4:1",
+          "average": "44.17",
+          "eloChange": -20,
+          "queue": "scolia"
+        },
+        {
+          "matchId": 941,
+          "result": "Loss",
+          "opponentId": 1468019197656174774,
+          "opponentName": "User 1468019197656174774",
+          "score": "4:2",
+          "average": "45.07",
+          "eloChange": -22,
+          "queue": "scolia"
+        },
+        {
+          "matchId": 805,
+          "result": "Loss",
+          "opponentId": 1309548661117554720,
+          "opponentName": "User 1309548661117554720",
+          "score": "4:1",
+          "average": "50.1",
+          "eloChange": -10,
+          "queue": "scolia"
+        },
+        {
+          "matchId": 646,
+          "result": "Loss",
+          "opponentId": 1359231571487494265,
+          "opponentName": "User 1359231571487494265",
+          "score": "4:2",
+          "average": "42.3",
+          "eloChange": -22,
+          "queue": "scolia"
+        },
+        {
+          "matchId": 616,
+          "result": "Loss",
+          "opponentId": 662279330910437392,
+          "opponentName": "User 662279330910437392",
+          "score": "4:1",
+          "average": "51.79",
+          "eloChange": -21,
+          "queue": "scolia"
+        }
+      ]
     },
     "1468019197656174774": {
       "userId": 1468019197656174774,
@@ -1745,16 +5342,67 @@
       "avatar": "https://cdn.discordapp.com/embed/avatars/0.png",
       "worldRating": 903,
       "worldRank": 102,
-      "worldWins": 0,
-      "worldLosses": 0,
-      "monthlyRating": 0,
-      "monthlyRank": null,
-      "monthlyWins": 0,
-      "monthlyLosses": 0,
-      "games": 0,
-      "winrate": 0,
-      "overallAverage": 0,
-      "recentMatches": []
+      "worldWins": 17,
+      "worldLosses": 47,
+      "monthlyRating": 72,
+      "monthlyRank": 1,
+      "monthlyWins": 3,
+      "monthlyLosses": 7,
+      "games": 64,
+      "winrate": 26.6,
+      "overallAverage": 154.28,
+      "recentMatches": [
+        {
+          "matchId": 1108,
+          "result": "Win",
+          "opponentId": 1432632159432216765,
+          "opponentName": "User 1432632159432216765",
+          "score": "4:2",
+          "average": "47.98",
+          "eloChange": 26,
+          "queue": "scolia"
+        },
+        {
+          "matchId": 1105,
+          "result": "Loss",
+          "opponentId": 1432632159432216765,
+          "opponentName": "User 1432632159432216765",
+          "score": "4-1",
+          "average": "55.87",
+          "eloChange": -7,
+          "queue": "scolia"
+        },
+        {
+          "matchId": 1104,
+          "result": "Loss",
+          "opponentId": 890838749280346132,
+          "opponentName": "User 890838749280346132",
+          "score": "4:1",
+          "average": "56.38",
+          "eloChange": -6,
+          "queue": "scolia"
+        },
+        {
+          "matchId": 1082,
+          "result": "Loss",
+          "opponentId": 1432632159432216765,
+          "opponentName": "User 1432632159432216765",
+          "score": "4-0",
+          "average": "25.65",
+          "eloChange": -8,
+          "queue": "scolia"
+        },
+        {
+          "matchId": 1081,
+          "result": "Loss",
+          "opponentId": 1432632159432216765,
+          "opponentName": "User 1432632159432216765",
+          "score": "4-3",
+          "average": "54.5",
+          "eloChange": -8,
+          "queue": "scolia"
+        }
+      ]
     },
     "721521931953635349": {
       "userId": 721521931953635349,
@@ -1762,16 +5410,67 @@
       "avatar": "https://cdn.discordapp.com/embed/avatars/0.png",
       "worldRating": 891,
       "worldRank": 103,
-      "worldWins": 0,
-      "worldLosses": 0,
+      "worldWins": 4,
+      "worldLosses": 17,
       "monthlyRating": 0,
       "monthlyRank": null,
       "monthlyWins": 0,
       "monthlyLosses": 0,
-      "games": 0,
-      "winrate": 0,
-      "overallAverage": 0,
-      "recentMatches": []
+      "games": 21,
+      "winrate": 19.0,
+      "overallAverage": 46.39,
+      "recentMatches": [
+        {
+          "matchId": 933,
+          "result": "Win",
+          "opponentId": 1245485490421891165,
+          "opponentName": "User 1245485490421891165",
+          "score": "0:4",
+          "average": "44.87",
+          "eloChange": 10,
+          "queue": "dart"
+        },
+        {
+          "matchId": 675,
+          "result": "Loss",
+          "opponentId": 134975678327160832,
+          "opponentName": "User 134975678327160832",
+          "score": "4:2",
+          "average": "48.56",
+          "eloChange": -8,
+          "queue": "dart"
+        },
+        {
+          "matchId": 565,
+          "result": "Win",
+          "opponentId": 1128030585701552169,
+          "opponentName": "User 1128030585701552169",
+          "score": "4:3",
+          "average": "46.65",
+          "eloChange": 21,
+          "queue": "dart"
+        },
+        {
+          "matchId": 524,
+          "result": "Loss",
+          "opponentId": 183185835477172226,
+          "opponentName": "Stefan",
+          "score": "4:2",
+          "average": "52.55",
+          "eloChange": -7,
+          "queue": "dart"
+        },
+        {
+          "matchId": 508,
+          "result": "Win",
+          "opponentId": 1245485490421891165,
+          "opponentName": "User 1245485490421891165",
+          "score": "4:1",
+          "average": "45.4",
+          "eloChange": 14,
+          "queue": "dart"
+        }
+      ]
     },
     "1458906019118841960": {
       "userId": 1458906019118841960,
@@ -1779,16 +5478,67 @@
       "avatar": "https://cdn.discordapp.com/embed/avatars/0.png",
       "worldRating": 877,
       "worldRank": 104,
-      "worldWins": 0,
-      "worldLosses": 0,
+      "worldWins": 12,
+      "worldLosses": 35,
       "monthlyRating": 0,
       "monthlyRank": null,
       "monthlyWins": 0,
       "monthlyLosses": 0,
-      "games": 0,
-      "winrate": 0,
-      "overallAverage": 0,
-      "recentMatches": []
+      "games": 47,
+      "winrate": 25.5,
+      "overallAverage": 54.26,
+      "recentMatches": [
+        {
+          "matchId": 1046,
+          "result": "Win",
+          "opponentId": 1007351887114285087,
+          "opponentName": "User 1007351887114285087",
+          "score": "4:0",
+          "average": "61.98",
+          "eloChange": 28,
+          "queue": "dart"
+        },
+        {
+          "matchId": 1045,
+          "result": "Win",
+          "opponentId": 1245485490421891165,
+          "opponentName": "User 1245485490421891165",
+          "score": "4.2",
+          "average": "60.68",
+          "eloChange": 10,
+          "queue": "dart"
+        },
+        {
+          "matchId": 1043,
+          "result": "Loss",
+          "opponentId": 1364666221114556537,
+          "opponentName": "User 1364666221114556537",
+          "score": "4:2",
+          "average": "48.5",
+          "eloChange": -11,
+          "queue": "dart"
+        },
+        {
+          "matchId": 1041,
+          "result": "Loss",
+          "opponentId": 707989067777835248,
+          "opponentName": "User 707989067777835248",
+          "score": "4:!",
+          "average": "52.7",
+          "eloChange": -3,
+          "queue": "dart"
+        },
+        {
+          "matchId": 980,
+          "result": "Loss",
+          "opponentId": 1007351887114285087,
+          "opponentName": "User 1007351887114285087",
+          "score": "0:4",
+          "average": "53.29",
+          "eloChange": -5,
+          "queue": "dart"
+        }
+      ]
     },
     "761737659579105301": {
       "userId": 761737659579105301,
@@ -1796,16 +5546,67 @@
       "avatar": "https://cdn.discordapp.com/embed/avatars/0.png",
       "worldRating": 872,
       "worldRank": 105,
-      "worldWins": 0,
-      "worldLosses": 0,
-      "monthlyRating": 0,
-      "monthlyRank": null,
-      "monthlyWins": 0,
-      "monthlyLosses": 0,
-      "games": 0,
-      "winrate": 0,
-      "overallAverage": 0,
-      "recentMatches": []
+      "worldWins": 14,
+      "worldLosses": 36,
+      "monthlyRating": 17,
+      "monthlyRank": 15,
+      "monthlyWins": 1,
+      "monthlyLosses": 3,
+      "games": 50,
+      "winrate": 28.0,
+      "overallAverage": 48.89,
+      "recentMatches": [
+        {
+          "matchId": 1098,
+          "result": "Win",
+          "opponentId": 773315089595891732,
+          "opponentName": "User 773315089595891732",
+          "score": "4:0",
+          "average": "41.75",
+          "eloChange": 17,
+          "queue": "scolia"
+        },
+        {
+          "matchId": 1061,
+          "result": "Loss",
+          "opponentId": 773315089595891732,
+          "opponentName": "User 773315089595891732",
+          "score": "4:0",
+          "average": "37.11",
+          "eloChange": -16,
+          "queue": "scolia"
+        },
+        {
+          "matchId": 1057,
+          "result": "Loss",
+          "opponentId": 1327898199058284545,
+          "opponentName": "User 1327898199058284545",
+          "score": "4:3",
+          "average": "44.43",
+          "eloChange": -16,
+          "queue": "scolia"
+        },
+        {
+          "matchId": 1055,
+          "result": "Loss",
+          "opponentId": 530021085522165770,
+          "opponentName": "User 530021085522165770",
+          "score": "4:2",
+          "average": "49.43",
+          "eloChange": -12,
+          "queue": "scolia"
+        },
+        {
+          "matchId": 1036,
+          "result": "Loss",
+          "opponentId": 530021085522165770,
+          "opponentName": "User 530021085522165770",
+          "score": "4:2",
+          "average": "51.72",
+          "eloChange": -12,
+          "queue": "scolia"
+        }
+      ]
     },
     "773315089595891732": {
       "userId": 773315089595891732,
@@ -1813,16 +5614,67 @@
       "avatar": "https://cdn.discordapp.com/embed/avatars/0.png",
       "worldRating": 869,
       "worldRank": 106,
-      "worldWins": 0,
-      "worldLosses": 0,
-      "monthlyRating": 0,
-      "monthlyRank": null,
-      "monthlyWins": 0,
-      "monthlyLosses": 0,
-      "games": 0,
-      "winrate": 0,
-      "overallAverage": 0,
-      "recentMatches": []
+      "worldWins": 33,
+      "worldLosses": 47,
+      "monthlyRating": 16,
+      "monthlyRank": 17,
+      "monthlyWins": 1,
+      "monthlyLosses": 1,
+      "games": 80,
+      "winrate": 41.2,
+      "overallAverage": 50.6,
+      "recentMatches": [
+        {
+          "matchId": 1098,
+          "result": "Loss",
+          "opponentId": 761737659579105301,
+          "opponentName": "User 761737659579105301",
+          "score": "4:0",
+          "average": "39.98",
+          "eloChange": -17,
+          "queue": "scolia"
+        },
+        {
+          "matchId": 1061,
+          "result": "Win",
+          "opponentId": 761737659579105301,
+          "opponentName": "User 761737659579105301",
+          "score": "4:0",
+          "average": "37.58",
+          "eloChange": 16,
+          "queue": "scolia"
+        },
+        {
+          "matchId": 1028,
+          "result": "Loss",
+          "opponentId": 1309548661117554720,
+          "opponentName": "User 1309548661117554720",
+          "score": "4:3",
+          "average": "62.8",
+          "eloChange": -4,
+          "queue": "scolia"
+        },
+        {
+          "matchId": 1025,
+          "result": "Loss",
+          "opponentId": 761737659579105301,
+          "opponentName": "User 761737659579105301",
+          "score": "4:2",
+          "average": "53.01",
+          "eloChange": -17,
+          "queue": "scolia"
+        },
+        {
+          "matchId": 1022,
+          "result": "Loss",
+          "opponentId": 761737659579105301,
+          "opponentName": "User 761737659579105301",
+          "score": "4:3",
+          "average": "54.82",
+          "eloChange": -19,
+          "queue": "scolia"
+        }
+      ]
     },
     "1327898199058284545": {
       "userId": 1327898199058284545,
@@ -1830,16 +5682,67 @@
       "avatar": "https://cdn.discordapp.com/embed/avatars/0.png",
       "worldRating": 865,
       "worldRank": 107,
-      "worldWins": 0,
-      "worldLosses": 0,
-      "monthlyRating": 0,
-      "monthlyRank": null,
-      "monthlyWins": 0,
-      "monthlyLosses": 0,
-      "games": 0,
-      "winrate": 0,
-      "overallAverage": 0,
-      "recentMatches": []
+      "worldWins": 12,
+      "worldLosses": 29,
+      "monthlyRating": 16,
+      "monthlyRank": 18,
+      "monthlyWins": 1,
+      "monthlyLosses": 5,
+      "games": 41,
+      "winrate": 29.3,
+      "overallAverage": 54.99,
+      "recentMatches": [
+        {
+          "matchId": 1103,
+          "result": "Loss",
+          "opponentId": 977270139932258375,
+          "opponentName": "User 977270139932258375",
+          "score": "4:2",
+          "average": "55.03",
+          "eloChange": -8,
+          "queue": "scolia"
+        },
+        {
+          "matchId": 1086,
+          "result": "Loss",
+          "opponentId": 1024998339189690448,
+          "opponentName": "User 1024998339189690448",
+          "score": "4:0",
+          "average": "48.06",
+          "eloChange": -12,
+          "queue": "scolia"
+        },
+        {
+          "matchId": 1084,
+          "result": "Loss",
+          "opponentId": 1302224986051838068,
+          "opponentName": "User 1302224986051838068",
+          "score": "4:0",
+          "average": "50.57",
+          "eloChange": -7,
+          "queue": "scolia"
+        },
+        {
+          "matchId": 1068,
+          "result": "Loss",
+          "opponentId": 1092072918915219537,
+          "opponentName": "User 1092072918915219537",
+          "score": "4:3",
+          "average": "62.09",
+          "eloChange": -5,
+          "queue": "scolia"
+        },
+        {
+          "matchId": 1057,
+          "result": "Win",
+          "opponentId": 761737659579105301,
+          "opponentName": "User 761737659579105301",
+          "score": "4:3",
+          "average": "46.51",
+          "eloChange": 16,
+          "queue": "scolia"
+        }
+      ]
     },
     "627469840457662464": {
       "userId": 627469840457662464,
@@ -1847,16 +5750,67 @@
       "avatar": "https://cdn.discordapp.com/embed/avatars/0.png",
       "worldRating": 861,
       "worldRank": 108,
-      "worldWins": 0,
-      "worldLosses": 0,
+      "worldWins": 2,
+      "worldLosses": 15,
       "monthlyRating": 0,
       "monthlyRank": null,
       "monthlyWins": 0,
       "monthlyLosses": 0,
-      "games": 0,
-      "winrate": 0,
-      "overallAverage": 0,
-      "recentMatches": []
+      "games": 17,
+      "winrate": 11.8,
+      "overallAverage": 43.37,
+      "recentMatches": [
+        {
+          "matchId": 518,
+          "result": "Loss",
+          "opponentId": 977270139932258375,
+          "opponentName": "User 977270139932258375",
+          "score": "4:1",
+          "average": "43.23",
+          "eloChange": -9,
+          "queue": "scolia"
+        },
+        {
+          "matchId": 517,
+          "result": "Loss",
+          "opponentId": 761737659579105301,
+          "opponentName": "User 761737659579105301",
+          "score": "4:1",
+          "average": "38.78",
+          "eloChange": -13,
+          "queue": "scolia"
+        },
+        {
+          "matchId": 494,
+          "result": "Loss",
+          "opponentId": 1338229961848389662,
+          "opponentName": "User 1338229961848389662",
+          "score": "4:1",
+          "average": "42.62",
+          "eloChange": -11,
+          "queue": "scolia"
+        },
+        {
+          "matchId": 367,
+          "result": "Loss",
+          "opponentId": 788855711601655819,
+          "opponentName": "User 788855711601655819",
+          "score": "4:0",
+          "average": "44.79",
+          "eloChange": -10,
+          "queue": "scolia"
+        },
+        {
+          "matchId": 216,
+          "result": "Loss",
+          "opponentId": 1142038943961985105,
+          "opponentName": "User 1142038943961985105",
+          "score": "4:0",
+          "average": "56.48",
+          "eloChange": -11,
+          "queue": "scolia"
+        }
+      ]
     },
     "1326545695506698375": {
       "userId": 1326545695506698375,
@@ -1865,15 +5819,66 @@
       "worldRating": 861,
       "worldRank": 109,
       "worldWins": 0,
-      "worldLosses": 0,
+      "worldLosses": 13,
       "monthlyRating": 0,
-      "monthlyRank": null,
+      "monthlyRank": 29,
       "monthlyWins": 0,
-      "monthlyLosses": 0,
-      "games": 0,
-      "winrate": 0,
-      "overallAverage": 0,
-      "recentMatches": []
+      "monthlyLosses": 3,
+      "games": 13,
+      "winrate": 0.0,
+      "overallAverage": 353.47,
+      "recentMatches": [
+        {
+          "matchId": 1083,
+          "result": "Loss",
+          "opponentId": 1432632159432216765,
+          "opponentName": "User 1432632159432216765",
+          "score": "4-0",
+          "average": "4044.0",
+          "eloChange": -7,
+          "queue": "scolia"
+        },
+        {
+          "matchId": 1080,
+          "result": "Loss",
+          "opponentId": 1468019197656174774,
+          "opponentName": "User 1468019197656174774",
+          "score": "4:1",
+          "average": "42.22",
+          "eloChange": -16,
+          "queue": "scolia"
+        },
+        {
+          "matchId": 1079,
+          "result": "Loss",
+          "opponentId": 1432632159432216765,
+          "opponentName": "User 1432632159432216765",
+          "score": "4-0",
+          "average": "46.58",
+          "eloChange": -8,
+          "queue": "scolia"
+        },
+        {
+          "matchId": 684,
+          "result": "Loss",
+          "opponentId": 1092072918915219537,
+          "opponentName": "User 1092072918915219537",
+          "score": "4:0",
+          "average": "44.38",
+          "eloChange": -9,
+          "queue": "scolia"
+        },
+        {
+          "matchId": 636,
+          "result": "Loss",
+          "opponentId": 1092072918915219537,
+          "opponentName": "User 1092072918915219537",
+          "score": "4:0",
+          "average": "50.29",
+          "eloChange": -12,
+          "queue": "scolia"
+        }
+      ]
     },
     "1359231571487494265": {
       "userId": 1359231571487494265,
@@ -1881,16 +5886,67 @@
       "avatar": "https://cdn.discordapp.com/embed/avatars/0.png",
       "worldRating": 818,
       "worldRank": 110,
-      "worldWins": 0,
-      "worldLosses": 0,
+      "worldWins": 9,
+      "worldLosses": 38,
       "monthlyRating": 0,
       "monthlyRank": null,
       "monthlyWins": 0,
       "monthlyLosses": 0,
-      "games": 0,
-      "winrate": 0,
-      "overallAverage": 0,
-      "recentMatches": []
+      "games": 47,
+      "winrate": 19.1,
+      "overallAverage": 294.77,
+      "recentMatches": [
+        {
+          "matchId": 1047,
+          "result": "Loss",
+          "opponentId": 1092072918915219537,
+          "opponentName": "User 1092072918915219537",
+          "score": "4:0",
+          "average": "58.07",
+          "eloChange": -4,
+          "queue": "scolia"
+        },
+        {
+          "matchId": 984,
+          "result": "Loss",
+          "opponentId": 707989067777835248,
+          "opponentName": "User 707989067777835248",
+          "score": "4:0",
+          "average": "45.37",
+          "eloChange": -2,
+          "queue": "scolia"
+        },
+        {
+          "matchId": 950,
+          "result": "Loss",
+          "opponentId": 1142038943961985105,
+          "opponentName": "User 1142038943961985105",
+          "score": "4:0",
+          "average": "50.48",
+          "eloChange": -3,
+          "queue": "scolia"
+        },
+        {
+          "matchId": 931,
+          "result": "Loss",
+          "opponentId": 1092072918915219537,
+          "opponentName": "User 1092072918915219537",
+          "score": "4:1",
+          "average": "49.56",
+          "eloChange": -5,
+          "queue": "scolia"
+        },
+        {
+          "matchId": 930,
+          "result": "Loss",
+          "opponentId": 1309548661117554720,
+          "opponentName": "User 1309548661117554720",
+          "score": "4:1",
+          "average": "54.88",
+          "eloChange": -3,
+          "queue": "scolia"
+        }
+      ]
     },
     "825420293039194123": {
       "userId": 825420293039194123,
@@ -1898,16 +5954,67 @@
       "avatar": "https://cdn.discordapp.com/embed/avatars/0.png",
       "worldRating": 797,
       "worldRank": 111,
-      "worldWins": 0,
-      "worldLosses": 0,
+      "worldWins": 11,
+      "worldLosses": 50,
       "monthlyRating": 0,
-      "monthlyRank": null,
+      "monthlyRank": 26,
       "monthlyWins": 0,
-      "monthlyLosses": 0,
-      "games": 0,
-      "winrate": 0,
-      "overallAverage": 0,
-      "recentMatches": []
+      "monthlyLosses": 2,
+      "games": 61,
+      "winrate": 18.0,
+      "overallAverage": 52.02,
+      "recentMatches": [
+        {
+          "matchId": 1088,
+          "result": "Loss",
+          "opponentId": 1024998339189690448,
+          "opponentName": "User 1024998339189690448",
+          "score": "4:2",
+          "average": "54.21",
+          "eloChange": -9,
+          "queue": "scolia"
+        },
+        {
+          "matchId": 1085,
+          "result": "Loss",
+          "opponentId": 1302224986051838068,
+          "opponentName": "User 1302224986051838068",
+          "score": "4:0",
+          "average": "49.73",
+          "eloChange": -5,
+          "queue": "scolia"
+        },
+        {
+          "matchId": 1017,
+          "result": "Loss",
+          "opponentId": 1302224986051838068,
+          "opponentName": "User 1302224986051838068",
+          "score": "4:2",
+          "average": "49.7",
+          "eloChange": -5,
+          "queue": "scolia"
+        },
+        {
+          "matchId": 1011,
+          "result": "Loss",
+          "opponentId": 1327898199058284545,
+          "opponentName": "User 1327898199058284545",
+          "score": "4:3",
+          "average": "50.57",
+          "eloChange": -13,
+          "queue": "scolia"
+        },
+        {
+          "matchId": 1001,
+          "result": "Win",
+          "opponentId": 530021085522165770,
+          "opponentName": "User 530021085522165770",
+          "score": "4:2",
+          "average": "48.75",
+          "eloChange": 25,
+          "queue": "scolia"
+        }
+      ]
     },
     "811720921782026251": {
       "userId": 811720921782026251,
@@ -1915,16 +6022,67 @@
       "avatar": "https://cdn.discordapp.com/embed/avatars/0.png",
       "worldRating": 753,
       "worldRank": 112,
-      "worldWins": 0,
-      "worldLosses": 0,
+      "worldWins": 5,
+      "worldLosses": 33,
       "monthlyRating": 0,
       "monthlyRank": null,
       "monthlyWins": 0,
       "monthlyLosses": 0,
-      "games": 0,
-      "winrate": 0,
-      "overallAverage": 0,
-      "recentMatches": []
+      "games": 38,
+      "winrate": 13.2,
+      "overallAverage": 325.72,
+      "recentMatches": [
+        {
+          "matchId": 865,
+          "result": "Loss",
+          "opponentId": 1067374071421095936,
+          "opponentName": "User 1067374071421095936",
+          "score": "4:2",
+          "average": "5058.0",
+          "eloChange": -6,
+          "queue": "dart"
+        },
+        {
+          "matchId": 845,
+          "result": "Win",
+          "opponentId": 1245485490421891165,
+          "opponentName": "User 1245485490421891165",
+          "score": "4:0",
+          "average": "5872.0",
+          "eloChange": 18,
+          "queue": "dart"
+        },
+        {
+          "matchId": 697,
+          "result": "Loss",
+          "opponentId": 707989067777835248,
+          "opponentName": "User 707989067777835248",
+          "score": "4:0",
+          "average": "34.63",
+          "eloChange": -2,
+          "queue": "dart"
+        },
+        {
+          "matchId": 696,
+          "result": "Loss",
+          "opponentId": 707989067777835248,
+          "opponentName": "User 707989067777835248",
+          "score": "4:0",
+          "average": "39.89",
+          "eloChange": -2,
+          "queue": "dart"
+        },
+        {
+          "matchId": 592,
+          "result": "Loss",
+          "opponentId": 1245485490421891165,
+          "opponentName": "User 1245485490421891165",
+          "score": "4:0",
+          "average": "37.55",
+          "eloChange": -13,
+          "queue": "dart"
+        }
+      ]
     },
     "1245485490421891165": {
       "userId": 1245485490421891165,
@@ -1932,16 +6090,67 @@
       "avatar": "https://cdn.discordapp.com/embed/avatars/0.png",
       "worldRating": 695,
       "worldRank": 113,
-      "worldWins": 0,
-      "worldLosses": 0,
-      "monthlyRating": 0,
-      "monthlyRank": null,
-      "monthlyWins": 0,
-      "monthlyLosses": 0,
-      "games": 0,
-      "winrate": 0,
-      "overallAverage": 0,
-      "recentMatches": []
+      "worldWins": 10,
+      "worldLosses": 54,
+      "monthlyRating": 26,
+      "monthlyRank": 11,
+      "monthlyWins": 1,
+      "monthlyLosses": 5,
+      "games": 64,
+      "winrate": 15.6,
+      "overallAverage": 200.42,
+      "recentMatches": [
+        {
+          "matchId": 1106,
+          "result": "Loss",
+          "opponentId": 1007351887114285087,
+          "opponentName": "User 1007351887114285087",
+          "score": "4:0",
+          "average": "55.34",
+          "eloChange": -2,
+          "queue": "dart"
+        },
+        {
+          "matchId": 1101,
+          "result": "Loss",
+          "opponentId": 1330499669490667653,
+          "opponentName": "User 1330499669490667653",
+          "score": "4:2",
+          "average": "59.74",
+          "eloChange": -2,
+          "queue": "dart"
+        },
+        {
+          "matchId": 1100,
+          "result": "Loss",
+          "opponentId": 906968918327967764,
+          "opponentName": "User 906968918327967764",
+          "score": "4:1",
+          "average": "5492.0",
+          "eloChange": -8,
+          "queue": "dart"
+        },
+        {
+          "matchId": 1095,
+          "result": "Loss",
+          "opponentId": 906968918327967764,
+          "opponentName": "User 906968918327967764",
+          "score": "0:4",
+          "average": "4488.0",
+          "eloChange": -8,
+          "queue": "dart"
+        },
+        {
+          "matchId": 1091,
+          "result": "Loss",
+          "opponentId": 1007351887114285087,
+          "opponentName": "User 1007351887114285087",
+          "score": "1:4",
+          "average": "55.45",
+          "eloChange": -2,
+          "queue": "dart"
+        }
+      ]
     }
   }
 }

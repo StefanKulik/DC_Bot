@@ -1,49 +1,31 @@
 {
   "players": {
-    "183185835477172226": {
-      "userId": 183185835477172226,
-      "name": "Stefan",
-      "avatar": "https://cdn.discordapp.com/avatars/183185835477172226/a_a7eb60fc18a3a42d57f399df216629b2.gif?size=1024",
-      "worldRating": 1016,
-      "worldRank": 1,
-      "worldWins": 1,
-      "worldLosses": 0,
-      "monthlyRating": 16,
-      "monthlyRank": 1,
-      "monthlyWins": 1,
-      "monthlyLosses": 0,
-      "games": 1,
-      "winrate": 100.0,
-      "overallAverage": 70.0,
-      "recentMatches": [
-        {
-          "matchId": 1,
-          "result": "Win",
-          "opponentId": 695183644968615988,
-          "opponentName": "Stefan Kulik",
-          "score": "4:0",
-          "average": "70.0",
-          "eloChange": 16,
-          "queue": "DartCounter"
-        }
-      ]
-    },
     "695183644968615988": {
       "userId": 695183644968615988,
       "name": "Stefan Kulik",
       "avatar": "https://cdn.discordapp.com/avatars/695183644968615988/b2eafe4deabc453207aae96d9cf6f488.png?size=1024",
-      "worldRating": 984,
-      "worldRank": 2,
-      "worldWins": 0,
+      "worldRating": 1001,
+      "worldRank": 1,
+      "worldWins": 1,
       "worldLosses": 1,
-      "monthlyRating": 0,
-      "monthlyRank": 2,
-      "monthlyWins": 0,
+      "monthlyRating": 17,
+      "monthlyRank": 1,
+      "monthlyWins": 1,
       "monthlyLosses": 1,
-      "games": 1,
-      "winrate": 0.0,
+      "games": 2,
+      "winrate": 50.0,
       "overallAverage": 69.0,
       "recentMatches": [
+        {
+          "matchId": 2,
+          "result": "Win",
+          "opponentId": 183185835477172226,
+          "opponentName": "Stefan",
+          "score": "4:0",
+          "average": "69.0",
+          "eloChange": 17,
+          "queue": "Scolia"
+        },
         {
           "matchId": 1,
           "result": "Loss",
@@ -52,6 +34,44 @@
           "score": "4:0",
           "average": "69.0",
           "eloChange": -16,
+          "queue": "DartCounter"
+        }
+      ]
+    },
+    "183185835477172226": {
+      "userId": 183185835477172226,
+      "name": "Stefan",
+      "avatar": "https://cdn.discordapp.com/avatars/183185835477172226/a_a7eb60fc18a3a42d57f399df216629b2.gif?size=1024",
+      "worldRating": 999,
+      "worldRank": 2,
+      "worldWins": 1,
+      "worldLosses": 1,
+      "monthlyRating": 16,
+      "monthlyRank": 2,
+      "monthlyWins": 1,
+      "monthlyLosses": 1,
+      "games": 2,
+      "winrate": 50.0,
+      "overallAverage": 70.0,
+      "recentMatches": [
+        {
+          "matchId": 2,
+          "result": "Loss",
+          "opponentId": 695183644968615988,
+          "opponentName": "Stefan Kulik",
+          "score": "4:0",
+          "average": "70.0",
+          "eloChange": -17,
+          "queue": "Scolia"
+        },
+        {
+          "matchId": 1,
+          "result": "Win",
+          "opponentId": 695183644968615988,
+          "opponentName": "Stefan Kulik",
+          "score": "4:0",
+          "average": "70.0",
+          "eloChange": 16,
           "queue": "DartCounter"
         }
       ]

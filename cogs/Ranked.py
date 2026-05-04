@@ -28,8 +28,8 @@ from config.SqliteStore import (
 #   db struktur anpassen an die von Leon für nahtlosen übergang
 #   zurückziehen Button rausnehmen
 #   Modal auf webseite verschönern
-#
-#
+#   screenshot pflicht
+#   ergebnis eintragen, score ist irrelevant wie rum geschrieben
 
 # =============================
 # Konstanten und Parser-Patterns fuer Queue, Threads und Ergebnisse.
@@ -802,28 +802,31 @@ class PendingMatchView(discord.ui.View):
             )
         await self.cog.refresh_panels(refresh_all=True)
 
-    @discord.ui.button(label="Zurueckziehen", style=discord.ButtonStyle.danger)
-    async def withdraw_callback(self, interaction: discord.Interaction, button: discord.ui.Button) -> None:
-        del button
-        pending_match = self.cog.pending_matches.pop(self.match_id, None)
-        if pending_match is None:
-            await interaction.response.send_message("Dieses Match ist nicht mehr offen.", ephemeral=True)
-            return
-
-        self.stop()
-        await interaction.response.send_message("Match wurde zurueckgezogen.", ephemeral=True)
-        results_channel = await self.cog.fetch_results_channel()
-        if results_channel is not None:
-            try:
-                await results_channel.send(embed=build_withdrawn_match_embed(pending_match.match_id))
-            except (discord.NotFound, discord.Forbidden, discord.HTTPException):
-                pass
-        thread = await self.cog.fetch_thread(pending_match.thread_id)
-        if thread is not None:
-            try:
-                await thread.delete()
-            except (discord.NotFound, discord.Forbidden, discord.HTTPException):
-                pass
+    #
+    # in Zukunft, vielleicht mit Admin-Rechten, sodass nur auf Anfrage der Admin das Match zurückziehen kann
+    #
+    # @discord.ui.button(label="Zurueckziehen", style=discord.ButtonStyle.danger)
+    # async def withdraw_callback(self, interaction: discord.Interaction, button: discord.ui.Button) -> None:
+    #     del button
+    #     pending_match = self.cog.pending_matches.pop(self.match_id, None)
+    #     if pending_match is None:
+    #         await interaction.response.send_message("Dieses Match ist nicht mehr offen.", ephemeral=True)
+    #         return
+    #
+    #     self.stop()
+    #     await interaction.response.send_message("Match wurde zurueckgezogen.", ephemeral=True)
+    #     results_channel = await self.cog.fetch_results_channel()
+    #     if results_channel is not None:
+    #         try:
+    #             await results_channel.send(embed=build_withdrawn_match_embed(pending_match.match_id))
+    #         except (discord.NotFound, discord.Forbidden, discord.HTTPException):
+    #             pass
+    #     thread = await self.cog.fetch_thread(pending_match.thread_id)
+    #     if thread is not None:
+    #         try:
+    #             await thread.delete()
+    #         except (discord.NotFound, discord.Forbidden, discord.HTTPException):
+    #             pass
 
 
 # =============================
@@ -937,9 +940,6 @@ class ResultConfirmationView(discord.ui.View):
         upload()
         await self.cog.refresh_panels(refresh_all=True)
         await interaction.followup.send("Ergebnis bestaetigt und gepostet.", ephemeral=True)
-
-
-
 
 
 # =============================

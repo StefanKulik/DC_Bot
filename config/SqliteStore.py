@@ -230,13 +230,13 @@ class SqliteDatabase:
                 FROM (
                     SELECT winner_id AS user_id, COALESCE(elo_change, 0) AS points
                     FROM matches
-                    WHERE status = 'completed'
+                    WHERE status = 'confirmed'
                       AND winner_id IS NOT NULL
                       AND strftime('%Y-%m', timestamp) = ?
                     UNION ALL
                     SELECT loser_id AS user_id, 0 AS points
                     FROM matches
-                    WHERE status = 'completed'
+                    WHERE status = 'confirmed'
                       AND loser_id IS NOT NULL
                       AND strftime('%Y-%m', timestamp) = ?
                 )
@@ -297,7 +297,7 @@ class SqliteDatabase:
 
         async with self._lock:
             existing = self.connection.execute("SELECT status FROM matches WHERE id = ?", (match_id,)).fetchone()
-            if existing is not None and existing["status"] == "completed":
+            if existing is not None and existing["status"] == "confirmed":
                 return True, True
 
             with self.connection:
@@ -326,7 +326,7 @@ class SqliteDatabase:
                             id, player1_id, player2_id, winner_id, loser_id, platform,
                             status, score, winner_avg, loser_avg, timestamp, elo_change
                         )
-                        VALUES(?, ?, ?, ?, ?, ?, 'completed', ?, ?, ?, ?, ?)
+                        VALUES(?, ?, ?, ?, ?, ?, 'confirmed', ?, ?, ?, ?, ?)
                         """,
                         (
                             match_id,
@@ -351,7 +351,7 @@ class SqliteDatabase:
                             winner_id = ?,
                             loser_id = ?,
                             platform = ?,
-                            status = 'completed',
+                            status = 'confirmed',
                             score = ?,
                             winner_avg = ?,
                             loser_avg = ?,
@@ -405,7 +405,7 @@ class SqliteDatabase:
                     SUM(CASE WHEN m.loser_id = p.user_id THEN 1 ELSE 0 END) AS losses
                 FROM players p
                 LEFT JOIN matches m
-                    ON m.status = 'completed'
+                    ON m.status = 'confirmed'
                    AND (m.winner_id = p.user_id OR m.loser_id = p.user_id)
                 GROUP BY p.user_id, p.rating
                 ORDER BY rating DESC, wins DESC, p.user_id ASC
@@ -434,7 +434,7 @@ class SqliteDatabase:
                 FROM monthly_points mp
                 JOIN players p ON p.user_id = mp.user_id
                 LEFT JOIN matches m
-                    ON m.status = 'completed'
+                    ON m.status = 'confirmed'
                    AND strftime('%Y-%m', m.timestamp) = mp.month
                    AND (m.winner_id = p.user_id OR m.loser_id = p.user_id)
                 WHERE mp.month = ?

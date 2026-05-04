@@ -149,7 +149,7 @@ async def build_player_profiles(
                            platform, score, winner_avg, loser_avg, elo_change,
                            strftime('%Y-%m', timestamp) AS month_key
                     FROM matches
-                    WHERE status = 'completed'
+                    WHERE status = 'confirmed'
                       AND (player1_id = ? OR player2_id = ?)
                     ORDER BY id DESC
                     """,
@@ -245,6 +245,7 @@ async def generate_html(bot: commands.Bot):
     # DATA
     # =============================
 
+    print("fetch data")
     db = getattr(bot, "db", None)
     if db is not None:
         player_data = await db.fetch_world_ranking(limit=None)
@@ -311,6 +312,7 @@ async def generate_html(bot: commands.Bot):
     # PODIUM
     # =============================
 
+    print("build podium")
     html += "<div class='podium'>"
     classes = ["gold", "silver", "bronze"]
 
@@ -334,7 +336,7 @@ async def generate_html(bot: commands.Bot):
     # =============================
 
     html += "<div class='container'>"
-
+    print("build world ranking")
     # 🌍 WORLD
     html += "<div style='width:40%'><h2>🌍 World Ranking</h2><table>"
 
@@ -353,6 +355,7 @@ async def generate_html(bot: commands.Bot):
 
     html += "</table></div>"
 
+    print("build monthly ranking")
     # 🗓️ MONTHLY
     html += "<div style='width:40%'><h2>🗓️ Monatsranking</h2><table>"
 
@@ -376,15 +379,17 @@ async def generate_html(bot: commands.Bot):
     # =============================
     # Player Profiles
     # =============================
+    print("build player profiles")
 
     player_profiles = await build_player_profiles(bot, player_data, monthly_data, get_player_display)
     with open(PLAYER_DATA_FILE, "w", encoding="utf-8") as f:
         json.dump({"players": player_profiles}, f, ensure_ascii=False, indent=2)
 
+
     # =============================
     # SAVE
     # =============================
-
+    print("save")
     html += """
     <div id="player-modal-backdrop" class="modal-backdrop" aria-hidden="true">
         <div class="player-modal" role="dialog" aria-modal="true" aria-labelledby="modal-player-name">
@@ -497,7 +502,7 @@ async def generate_html(bot: commands.Bot):
 
 
 # =============================
-# Datenmodelle fuer den Laufzeit-Zustand von Panels, Matches und Ergebnissen.
+# Datenmodelle für den Laufzeit-Zustand von Panels, Matches und Ergebnissen.
 # =============================
 
 @dataclass(slots=True)
@@ -1679,6 +1684,15 @@ class Ranked(commands.Cog):
             empty_text="Für diesen Monat gibt es noch keine Ranked-Ergebnisse.",
         )
         await interaction.response.send_message(embed=embed)
+
+    @app_commands.command(name="update_leaderboard", description="Aktualisiert das HTML-Ranking")
+    @app_commands.checks.has_permissions(administrator=True)
+    @app_commands.guild_only()
+    async def update_leaderboard(self, interaction: discord.Interaction) -> None:
+        print("update_leaderboard")
+        await interaction.response.send_message("HTML-Ranking erfolgreich aktualisiert. https://stefankulik.github.io/discord-bot/", ephemeral=True)
+        await generate_html(self.bot)
+        upload()
 
     ## commands
     # - stats / spieler

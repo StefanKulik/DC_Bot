@@ -1,13 +1,10 @@
 import logging
 import os
 from pathlib import Path
-
 from dotenv import load_dotenv
-
 
 ENV_PATH = Path(__file__).with_name(".env")
 load_dotenv(ENV_PATH)
-
 logger = logging.getLogger("bot")
 
 
@@ -17,7 +14,6 @@ def load_env(key: str, default: str) -> str:
         return value
     logger.warning("Can't load env-variable for: '%s' - falling back to DEFAULT %s='%s'", key, key, default)
     return default
-
 
 def load_int_env(key: str, default: int) -> int:
     value = os.getenv(key)

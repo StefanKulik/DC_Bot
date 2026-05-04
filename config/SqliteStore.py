@@ -7,7 +7,6 @@ from pathlib import Path
 from typing import Any
 
 from discord.ext import commands
-from config.Environment import DEFAULT_PREFIX
 
 
 # =============================

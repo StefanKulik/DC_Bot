@@ -3,7 +3,6 @@ from __future__ import annotations
 import subprocess
 import json
 from dataclasses import dataclass, field
-from datetime import datetime
 from html import escape
 from pathlib import Path
 import re
@@ -11,9 +10,8 @@ import re
 import discord
 from discord import app_commands
 from discord.ext import commands
-from discord.ext.commands import has_permissions
 
-from config.Util import (
+from config.SqliteStore import (
     ensure_ranked_storage,
     fetch_monthly_ranking,
     fetch_world_ranking,

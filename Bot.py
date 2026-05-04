@@ -25,7 +25,7 @@ def get_modules() -> list[str]:
 async def load_extensions(bot: commands.Bot) -> None:
     for extension in iter_extension_names():
         await bot.load_extension(extension)
-        print(f"Geladen '{extension}'")
+        print(f"loaded '{extension}'")
 
 
 class Bot(commands.Bot):
@@ -38,8 +38,8 @@ class Bot(commands.Bot):
         )
 
     async def setup_hook(self) -> None:
-        print("lade Erweiterungen ...")
         await create_db_pool(self)
+        print("load extensions ...")
         await load_extensions(self)
         await self.tree.sync()
         print("-----")
@@ -55,7 +55,7 @@ class Bot(commands.Bot):
         await self.change_presence(
             activity=discord.Activity(
                 type=discord.ActivityType.watching,
-                name=f"{VERSION}",
+                name=f"Version {VERSION}",
             )
         )
 

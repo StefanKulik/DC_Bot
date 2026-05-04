@@ -6,11 +6,13 @@ from datetime import date, datetime, timezone
 from pathlib import Path
 from typing import Any
 
+import discord
 from discord.ext import commands
 
 
 RANKING_START_RATING = 1000
 ELO_K_FACTOR = 32
+RANKED_RESULT_STATUS_SQL = "status IN ('completed', 'confirmed') AND winner_id IS NOT NULL AND loser_id IS NOT NULL"
 
 
 async def create_db_pool(bot: commands.Bot) -> None:
@@ -140,6 +142,13 @@ async def fetch_monthly_ranking(bot: commands.Bot, month_key: date | None = None
         month_key = get_current_ranked_month_key()
     return await db.fetch_monthly_ranking(month_key)
 
+async def fetch_match_history(bot: commands.Bot, player: discord.Member):
+    db = getattr(bot, "db", None)
+    if db is None:
+        return []
+
+    return await db.fetch_match_history(player.id)
+
 
 class SqliteDatabase:
     def __init__(self, path: Path | str = "dartliga.db") -> None:
@@ -210,13 +219,13 @@ class SqliteDatabase:
                 match_id = int(max_row["match_id"])
                 self.connection.execute(
                     "INSERT INTO sqlite_sequence(name, seq) VALUES('matches', ?)",
-                    (match_id + 1,),
+                    (match_id,),
                 )
             else:
-                match_id = int(row["seq"])
+                match_id = int(row["seq"]) + 1
                 self.connection.execute(
                     "UPDATE sqlite_sequence SET seq = ? WHERE name = 'matches'",
-                    (match_id + 1,),
+                    (match_id,),
                 )
             self.connection.commit()
             return match_id
@@ -225,19 +234,17 @@ class SqliteDatabase:
         month_text = month_key_to_text(month_key)
         async with self._lock:
             rows = self.connection.execute(
-                """
+                f"""
                 SELECT user_id, SUM(points) AS points
                 FROM (
                     SELECT winner_id AS user_id, COALESCE(elo_change, 0) AS points
                     FROM matches
-                    WHERE status = 'confirmed'
-                      AND winner_id IS NOT NULL
+                    WHERE {RANKED_RESULT_STATUS_SQL}
                       AND strftime('%Y-%m', timestamp) = ?
                     UNION ALL
                     SELECT loser_id AS user_id, 0 AS points
                     FROM matches
-                    WHERE status = 'confirmed'
-                      AND loser_id IS NOT NULL
+                    WHERE {RANKED_RESULT_STATUS_SQL}
                       AND strftime('%Y-%m', timestamp) = ?
                 )
                 GROUP BY user_id
@@ -405,7 +412,9 @@ class SqliteDatabase:
                     SUM(CASE WHEN m.loser_id = p.user_id THEN 1 ELSE 0 END) AS losses
                 FROM players p
                 LEFT JOIN matches m
-                    ON m.status = 'confirmed'
+                    ON m.status IN ('completed', 'confirmed')
+                   AND m.winner_id IS NOT NULL
+                   AND m.loser_id IS NOT NULL
                    AND (m.winner_id = p.user_id OR m.loser_id = p.user_id)
                 GROUP BY p.user_id, p.rating
                 ORDER BY rating DESC, wins DESC, p.user_id ASC
@@ -422,30 +431,55 @@ class SqliteDatabase:
     async def fetch_monthly_ranking(self, month_key: date, limit: int | None = 10) -> list[tuple[int, int, int, int]]:
         month_text = month_key_to_text(month_key)
         limit_sql = "" if limit is None else "LIMIT ?"
-        params = (month_text,) if limit is None else (month_text, limit)
         async with self._lock:
             rows = self.connection.execute(
                 f"""
                 SELECT
-                    p.user_id,
-                    COALESCE(mp.points, 0) AS points,
-                    SUM(CASE WHEN m.winner_id = p.user_id THEN 1 ELSE 0 END) AS wins,
-                    SUM(CASE WHEN m.loser_id = p.user_id THEN 1 ELSE 0 END) AS losses
-                FROM monthly_points mp
-                JOIN players p ON p.user_id = mp.user_id
-                LEFT JOIN matches m
-                    ON m.status = 'confirmed'
-                   AND strftime('%Y-%m', m.timestamp) = mp.month
-                   AND (m.winner_id = p.user_id OR m.loser_id = p.user_id)
-                WHERE mp.month = ?
-                GROUP BY p.user_id, mp.points
-                ORDER BY points DESC, wins DESC, p.user_id ASC
+                    user_id,
+                    SUM(points) AS points,
+                    SUM(wins) AS wins,
+                    SUM(losses) AS losses
+                FROM (
+                    SELECT
+                        winner_id AS user_id,
+                        COALESCE(elo_change, 0) AS points,
+                        1 AS wins,
+                        0 AS losses
+                    FROM matches
+                    WHERE {RANKED_RESULT_STATUS_SQL}
+                      AND strftime('%Y-%m', timestamp) = ?
+                    UNION ALL
+                    SELECT
+                        loser_id AS user_id,
+                        0 AS points,
+                        0 AS wins,
+                        1 AS losses
+                    FROM matches
+                    WHERE {RANKED_RESULT_STATUS_SQL}
+                      AND strftime('%Y-%m', timestamp) = ?
+                )
+                GROUP BY user_id
+                ORDER BY points DESC, wins DESC, user_id ASC
                 {limit_sql}
                 """,
-                params,
+                (month_text, month_text) if limit is None else (month_text, month_text, limit),
             ).fetchall()
 
         return [
             (int(row["user_id"]), int(row["points"]), int(row["wins"] or 0), int(row["losses"] or 0))
             for row in rows
         ]
+
+    async def fetch_match_history(self, player_id: int):
+        async with self._lock:
+            rows = self.connection.execute("""
+                  SELECT player1_id, player2_id, winner_id, score, platform, elo_change
+                  FROM matches
+                  WHERE status = 'confirmed'
+                    AND (player1_id = ? OR player2_id = ?)
+                  ORDER BY id DESC LIMIT 10
+                  """, (player_id, player_id))
+            matches = rows.fetchall()
+            if not matches:
+                return []
+            return matches

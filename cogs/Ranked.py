@@ -11,8 +11,10 @@ import discord
 from discord import app_commands
 from discord.ext import commands
 
+from config.Environment import RESULT_CHANNEL
 from config.SqliteStore import (
     ensure_ranked_storage,
+    fetch_match_history,
     fetch_monthly_ranking,
     fetch_world_ranking,
     get_current_ranked_month_key,
@@ -27,16 +29,17 @@ from config.SqliteStore import (
 #   X - ranked extrahieren für Leon
 #   X - db struktur anpassen an die von Leon für nahtlosen übergang
 #   X - zurückziehen Button rausnehmen
-#   Modal auf webseite verschönern
+#   X - Modal auf webseite verschönern
 #   X - screenshot pflicht
 #   ergebnis eintragen, score ist irrelevant wie rum geschrieben
+#   backup system für result eintragen -> match speichern mit pending und command /result im thread, thread wird ja nicht gelöscht
 
 # =============================
 # Konstanten und Parser-Patterns für Queue, Threads und Ergebnisse.
 # =============================
 QUEUE_EMPTY_TEXT = "kein spieler"
 MATCHES_FIELD_NAME = ":fire: Aktuelle Matches"
-RESULTS_CHANNEL_ID = 1496937438025879723
+RESULTS_CHANNEL_ID = RESULT_CHANNEL
 MENTION_PATTERN = re.compile(r"<@!?(\d+)>")
 THREAD_SAFE_PATTERN = re.compile(r"[^a-z0-9-]")
 SCORE_PATTERN = re.compile(r"^\s*(\d{1,2})\s*[:\-]\s*(\d{1,2})\s*$")
@@ -44,6 +47,7 @@ AVERAGE_PATTERN = re.compile(r"^\s*\d+(?:[.,]\d+)?\s*$")
 REPO_ROOT = Path(__file__).resolve().parents[1]
 LEADERBOARD_FILE = "index.html"
 PLAYER_DATA_FILE = "players.json"
+RANKED_RESULT_STATUS_SQL = "status IN ('completed', 'confirmed') AND winner_id IS NOT NULL AND loser_id IS NOT NULL"
 
 # =============================
 # WEBSITE - generate static html for displaying ranking on web
@@ -124,78 +128,88 @@ async def build_player_profiles(
     monthly_ranks = {user_id: rank for rank, (user_id, *_rest) in enumerate(monthly_data, start=1)}
     world_stats = {user_id: (rating, wins, losses) for user_id, rating, wins, losses in player_data}
     monthly_stats = {user_id: (rating, wins, losses) for user_id, rating, wins, losses in monthly_data}
-    player_ids = sorted(set(world_stats) | set(monthly_stats), key=lambda user_id: world_ranks.get(user_id, 999999))
-    current_month = get_current_ranked_month_key().strftime("%Y-%m")
-
-    profiles: dict[str, dict] = {}
     db = getattr(bot, "db", None)
+    matches_by_player: dict[int, list[dict]] = {}
+    averages_by_player: dict[int, list[float]] = {}
+    recent_match_counts: dict[int, int] = {}
+    all_player_ids = set(world_stats) | set(monthly_stats)
 
-    for user_id in player_ids:
-        name, avatar = await get_player_display(user_id)
-        world_rating, world_wins, world_losses = world_stats.get(user_id, (1000, 0, 0))
-        monthly_rating, monthly_wins, monthly_losses = monthly_stats.get(user_id, (0, 0, 0))
-        averages: list[float] = []
-        matches: list[dict] = []
+    if db is not None:
+        async with db._lock:
+            rows = db.connection.execute(
+                f"""
+                SELECT id, player1_id, player2_id, winner_id, loser_id,
+                       platform, score, winner_avg, loser_avg, elo_change,
+                       strftime('%Y-%m', timestamp) AS month_key
+                FROM matches
+                WHERE {RANKED_RESULT_STATUS_SQL}
+                ORDER BY id DESC
+                """
+            ).fetchall()
 
-        if db is not None:
-            world_wins = 0
-            world_losses = 0
-            monthly_wins = 0
-            monthly_losses = 0
-            async with db._lock:
-                rows = db.connection.execute(
-                    """
-                    SELECT id, player1_id, player2_id, winner_id, loser_id,
-                           platform, score, winner_avg, loser_avg, elo_change,
-                           strftime('%Y-%m', timestamp) AS month_key
-                    FROM matches
-                    WHERE status = 'confirmed'
-                      AND (player1_id = ? OR player2_id = ?)
-                    ORDER BY id DESC
-                    """,
-                    (user_id, user_id),
-                ).fetchall()
+        opponent_ids: set[int] = set()
+        pending_entries: list[tuple[int, dict]] = []
 
-            for row_index, row in enumerate(rows):
-                del row_index
-                is_player_one = int(row["player1_id"]) == user_id
-                opponent_id = int(row["player2_id"] if is_player_one else row["player1_id"])
-                opponent_name, _opponent_avatar = await get_player_display(opponent_id)
-                won = int(row["winner_id"]) == user_id
-                if won:
-                    world_wins += 1
-                else:
-                    world_losses += 1
+        for row in rows:
+            winner_id = int(row["winner_id"])
+            loser_id = int(row["loser_id"])
+            player_one_id = int(row["player1_id"]) if row["player1_id"] is not None else winner_id
+            player_two_id = int(row["player2_id"]) if row["player2_id"] is not None else loser_id
+            participants = {player_one_id, player_two_id, winner_id, loser_id}
+            all_player_ids.update(participants)
 
-                is_current_month = row["month_key"] == current_month
-                if is_current_month:
-                    if won:
-                        monthly_wins += 1
-                    else:
-                        monthly_losses += 1
+            for user_id in (winner_id, loser_id):
+                won = user_id == winner_id
+                opponent_id = loser_id if won else winner_id
+                opponent_ids.add(opponent_id)
 
-                player_average = str(row["winner_avg"] if won else row["loser_avg"])
+                average_value = row["winner_avg"] if won else row["loser_avg"]
+                player_average = "" if average_value is None else str(average_value)
                 parsed_average = parse_stored_average(player_average)
                 if parsed_average is not None:
-                    averages.append(parsed_average)
+                    averages_by_player.setdefault(user_id, []).append(parsed_average)
 
-                if len(matches) < 5:
-                    score = row["score"] or "N/A"
-                    elo_change = int(row["elo_change"] or 0)
-                    if not won:
-                        elo_change = -elo_change
-                    matches.append(
+                if recent_match_counts.get(user_id, 0) >= 5:
+                    continue
+
+                elo_change = int(row["elo_change"] or 0)
+                if not won:
+                    elo_change = -elo_change
+
+                recent_match_counts[user_id] = recent_match_counts.get(user_id, 0) + 1
+                pending_entries.append(
+                    (
+                        user_id,
                         {
                             "matchId": int(row["id"]),
                             "result": "Win" if won else "Loss",
                             "opponentId": opponent_id,
-                            "opponentName": opponent_name,
-                            "score": score,
-                            "average": player_average,
+                            "opponentName": None,
+                            "score": row["score"] or "N/A",
+                            "average": player_average or "N/A",
                             "eloChange": elo_change,
                             "queue": row["platform"],
-                        }
+                        },
                     )
+                )
+
+        opponent_names = {
+            opponent_id: (await get_player_display(opponent_id))[0]
+            for opponent_id in opponent_ids
+        }
+        for user_id, entry in pending_entries:
+            entry["opponentName"] = opponent_names.get(entry["opponentId"], f"User {entry['opponentId']}")
+            matches_by_player.setdefault(user_id, []).append(entry)
+
+    player_ids = sorted(all_player_ids, key=lambda user_id: world_ranks.get(user_id, 999999))
+
+    profiles: dict[str, dict] = {}
+    for user_id in player_ids:
+        name, avatar = await get_player_display(user_id)
+        world_rating, world_wins, world_losses = world_stats.get(user_id, (1000, 0, 0))
+        monthly_rating, monthly_wins, monthly_losses = monthly_stats.get(user_id, (0, 0, 0))
+        averages = averages_by_player.get(user_id, [])
+        matches = matches_by_player.get(user_id, [])
 
         total = world_wins + world_losses
 
@@ -222,8 +236,13 @@ async def build_player_profiles(
 
 async def generate_html(bot: commands.Bot):
     guild = bot.guilds[0] if bot.guilds else None
+    display_cache: dict[int, tuple[str, str]] = {}
 
     async def get_player_display(user_id: int) -> tuple[str, str]:
+        cached = display_cache.get(user_id)
+        if cached is not None:
+            return cached
+
         name = f"User {user_id}"
         avatar = "https://cdn.discordapp.com/embed/avatars/0.png"
 
@@ -239,6 +258,7 @@ async def generate_html(bot: commands.Bot):
                 name = member.display_name
                 avatar = member.display_avatar.url
 
+        display_cache[user_id] = (name, avatar)
         return name, avatar
 
     # =============================
@@ -290,7 +310,7 @@ async def generate_html(bot: commands.Bot):
     .player-link:hover {text-decoration:underline;}
     .modal-backdrop {align-items:center;background:rgba(0,0,0,.72);display:none;inset:0;justify-content:center;padding:20px;position:fixed;z-index:1000;}
     .modal-backdrop.open {display:flex;}
-    .player-modal {background:#161b22;border:1px solid #30363d;border-radius:20px;box-shadow:0 20px 60px rgba(0,0,0,.45);max-width:400px;padding:30px;position:relative;text-align:center;width:min(400px, 100%);}
+    .player-modal {background:#161b22;border:1px solid #30363d;border-radius:20px;box-shadow:0 20px 60px rgba(0,0,0,.45);max-width:500px;padding:30px;position:relative;text-align:center;width:min(400px, 100%);}
     .modal-close {background:#21262d;border:1px solid #30363d;border-radius:50%;color:white;cursor:pointer;font-size:22px;height:34px;line-height:28px;position:absolute;right:14px;top:14px;width:34px;}
     .modal-avatar {border-radius:50%;height:120px;width:120px;}
     .player-modal h1 {font-size:32px;margin:18px 0;}
@@ -625,6 +645,7 @@ def build_result_embed(match: MatchState, result: PendingResultState) -> discord
     embed.add_field(name="Gewinner", value=f"<@{result.winner_id}>", inline=True)
     embed.add_field(name="Spielstand", value=result.score_text, inline=True)
     return embed
+    return embed
 
 
 def build_withdrawn_match_embed(match_id: int) -> discord.Embed:
@@ -651,6 +672,29 @@ def build_ranking_embed(
         for index, (user_id, rating, wins, losses) in enumerate(rows, start=1)
     ]
     embed.description = "\n".join(lines)
+    return embed
+
+
+def rank_value(rank: int | None) -> str:
+    return f"#{rank}" if rank is not None else "N/A"
+
+
+def build_stats_embed(
+    *,
+    player: discord.Member,
+    world_rank: int | None,
+    monthly_rank: int | None,
+    rating: int,
+    total: int,
+    winrate: int | float,
+) -> discord.Embed:
+    embed = discord.Embed(title=f"📊 Stats von {player.display_name}")
+
+    embed.add_field(name="🏆 Rating", value=str(rating), inline=False)
+    embed.add_field(name="🌍 Global Rank", value=rank_value(world_rank), inline=False)
+    embed.add_field(name="🗓️ Monthly Rank", value=rank_value(monthly_rank), inline=False)
+    embed.add_field(name="🎯 Spiele", value=str(total), inline=False)
+    embed.add_field(name="📈 Winrate", value=f"{winrate}%", inline=False)
     return embed
 
 
@@ -1689,15 +1733,83 @@ class Ranked(commands.Cog):
     @app_commands.checks.has_permissions(administrator=True)
     @app_commands.guild_only()
     async def update_leaderboard(self, interaction: discord.Interaction) -> None:
-        print("update_leaderboard")
-        await interaction.response.send_message("HTML-Ranking erfolgreich aktualisiert. https://stefankulik.github.io/discord-bot/", ephemeral=True)
+        await interaction.response.send_message("Leaderboard wird aktualisiert...", ephemeral=True)
         await generate_html(self.bot)
         upload()
+        await interaction.edit_original_response(
+            content="Aktualisierung ist fertig. https://stefankulik.github.io/discord-bot/"
+        )
 
-    ## commands
-    # - stats / spieler
-    # - match verlauf (letzten 10) / spieler
-    #
+    @app_commands.command(name="stats", description="Zeigt die Ranked-Stats eines Spielers")
+    @app_commands.guild_only()
+    async def stats(self, interaction: discord.Interaction, player: discord.Member) -> None:
+        db = getattr(self.bot, "db", None)
+        if db is None:
+            await interaction.response.send_message("Die Datenbank ist aktuell nicht verfÃ¼gbar.", ephemeral=True)
+            return
+
+        world_data = await db.fetch_world_ranking(limit=None)
+        monthly_data = await db.fetch_monthly_ranking(get_current_ranked_month_key(), limit=None)
+
+        world_ranks = {
+            user_id: rank
+            for rank, (user_id, _rating, _wins, _losses) in enumerate(world_data, start=1)
+        }
+        monthly_ranks = {
+            user_id: rank
+            for rank, (user_id, _rating, _wins, _losses) in enumerate(monthly_data, start=1)
+        }
+        world_stats = {
+            user_id: (rating, wins, losses)
+            for user_id, rating, wins, losses in world_data
+        }
+
+        rating, wins, losses = world_stats.get(player.id, (1000, 0, 0))
+        total = wins + losses
+        winrate = round((wins / total) * 100, 1) if total else 0
+
+        embed = build_stats_embed(
+            player=player,
+            world_rank=world_ranks.get(player.id),
+            monthly_rank=monthly_ranks.get(player.id),
+            rating=rating,
+            total=total,
+            winrate=winrate,
+        )
+        await interaction.response.send_message(embed=embed)
+
+    @app_commands.command(name="history", description="Match History des Users")
+    async def history(self, interaction: discord.Interaction, player: discord.Member):
+
+        matches = await fetch_match_history(self.bot, player)
+
+        if not matches:
+            await interaction.response.send_message("Keine Matches gefunden.")
+            return
+
+        text = f"📜 Match History von {player.display_name}:\n\n"
+
+        for p1, p2, winner, score, platform, elo_gain in matches:
+
+            opponent_id = p2 if player.id == p1 else p1
+            opponent = interaction.guild.get_member(opponent_id)
+
+            name = opponent.display_name if opponent else f"User {opponent_id}"
+
+            elo_gain = elo_gain if elo_gain else 0
+
+            if winner == player.id:
+                result = "🏆 Win"
+                elo_text = f"+{elo_gain}"
+            else:
+                result = "❌ Loss"
+                elo_text = f"-{elo_gain}"
+
+            text += f"{result} vs {name} ({platform}) ({elo_text} ELO)\n"
+            text += f"Score: {score}\n\n"
+
+        await interaction.response.send_message(text)
+
     # admin commands
     # - export matches
     # - edit_match

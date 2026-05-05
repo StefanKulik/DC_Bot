@@ -47,7 +47,7 @@ THREAD_SAFE_PATTERN = re.compile(r"[^a-z0-9-]")
 SCORE_PATTERN = re.compile(r"^\s*(\d{1,2})\s*[:\-]\s*(\d{1,2})\s*$")
 AVERAGE_PATTERN = re.compile(r"^\s*\d+(?:[.,]\d+)?\s*$")
 REPO_ROOT = Path(__file__).resolve().parents[1]
-LEADERBOARD_FILE = "index.html"
+LEADERBOARD_FILE = "leaderboard.html"
 PLAYER_DATA_FILE = "players.json"
 RANKED_RESULT_STATUS_SQL = "status IN ('completed', 'confirmed') AND winner_id IS NOT NULL AND loser_id IS NOT NULL"
 

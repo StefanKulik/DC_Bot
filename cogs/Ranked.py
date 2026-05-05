@@ -648,7 +648,6 @@ def build_result_embed(match: MatchState, result: PendingResultState) -> discord
     embed.add_field(name="Gewinner", value=f"<@{result.winner_id}>", inline=True)
     embed.add_field(name="Spielstand", value=result.score_text, inline=True)
     return embed
-    return embed
 
 
 def build_withdrawn_match_embed(match_id: int) -> discord.Embed:

@@ -14,12 +14,14 @@ from discord.ext import commands
 from config.Environment import RESULT_CHANNEL
 from config.SqliteStore import (
     ensure_ranked_storage,
+    fetch_active_ranked_matches,
     fetch_match_history,
     fetch_monthly_ranking,
     fetch_world_ranking,
     get_current_ranked_month_key,
     get_next_ranked_match_id,
     mark_ranked_match_result_published,
+    persist_active_ranked_match,
     persist_ranked_match_result,
 )
 
@@ -33,6 +35,7 @@ from config.SqliteStore import (
 #   X - screenshot pflicht
 #   ergebnis eintragen, score ist irrelevant wie rum geschrieben
 #   backup system für result eintragen -> match speichern mit pending und command /result im thread, thread wird ja nicht gelöscht
+#   wenn formular geöffnet aber auf abbrechen geklickt, dann soll der Button wieder aktiv sein
 
 # =============================
 # Konstanten und Parser-Patterns für Queue, Threads und Ergebnisse.
@@ -803,7 +806,7 @@ class PendingMatchView(discord.ui.View):
             await interaction.response.edit_message(embed=build_pending_match_embed(pending_match), view=self)
             return
 
-        active_match = self.cog.confirm_pending_match(self.match_id)
+        active_match = await self.cog.confirm_pending_match(self.match_id)
         if active_match is None:
             await interaction.response.send_message("Das Match konnte nicht bestätigt werden.", ephemeral=True)
             return
@@ -813,7 +816,7 @@ class PendingMatchView(discord.ui.View):
         thread = await self.cog.fetch_thread(active_match.thread_id)
         if thread is not None:
             await thread.send(
-                "Wenn euer Match beendet ist, könnt ihr hier das Ergebnis eintragen:",
+                "Wenn euer Match beendet ist, könnt ihr hier das Ergebnis eintragen: Alternativ mit /result",
                 view=ResultEntryView(self.cog, active_match.match_id),
             )
         await self.cog.refresh_panels(refresh_all=True)
@@ -963,16 +966,30 @@ class ResultConfirmationView(discord.ui.View):
 # =============================
 
 class ResultEntryView(discord.ui.View):
-    def __init__(self, cog: Ranked, match_id: int) -> None:
+    def __init__(self, cog: Ranked, match_id: int | None = None) -> None:
         super().__init__(timeout=None)
         self.cog = cog
         self.match_id = match_id
 
-    @discord.ui.button(label="Ergebnis posten", style=discord.ButtonStyle.success)
+    @discord.ui.button(
+        label="Ergebnis posten",
+        style=discord.ButtonStyle.success,
+        custom_id="ranked:result_entry",
+    )
     async def post_result(self, interaction: discord.Interaction, button: discord.ui.Button) -> None:
-        match = self.cog.get_active_match_by_id(self.match_id)
+        if self.match_id is None:
+            if not isinstance(interaction.channel, discord.Thread):
+                match = None
+            else:
+                match = self.cog.get_active_match_by_thread_id(interaction.channel.id)
+        else:
+            match = self.cog.get_active_match_by_id(self.match_id)
+
         if match is None:
-            await interaction.response.send_message("Dieses Match ist nicht mehr aktiv.", ephemeral=True)
+            await interaction.response.send_message(
+                "In diesem Thread wurde kein aktives Match gefunden.",
+                ephemeral=True,
+            )
             return
 
         if interaction.user.id not in match.player_ids:
@@ -993,7 +1010,7 @@ class ResultEntryView(discord.ui.View):
         button.disabled = True
         await self.cog.open_result_modal(
             interaction,
-            match_id=self.match_id,
+            match_id=match.match_id,
             entry_message_id=message.id if message is not None else None,
         )
         if message is not None:
@@ -1382,7 +1399,9 @@ class Ranked(commands.Cog):
 
     async def cog_load(self) -> None:
         await ensure_ranked_storage(self.bot)
+        await self.restore_active_matches()
         self.bot.add_view(QueuePanel(self))
+        self.bot.add_view(ResultEntryView(self))
 
     # In-Memory-Zustand fuer Panels, Queues und laufende Matches.
     def get_or_create_panel_state(self, message: discord.Message) -> PanelState:
@@ -1400,6 +1419,20 @@ class Ranked(commands.Cog):
 
     def get_active_match_by_id(self, match_id: int) -> MatchState | None:
         return self.active_matches.get(match_id)
+
+    async def restore_active_matches(self) -> None:
+        restored_matches = await fetch_active_ranked_matches(self.bot)
+        for restored_match in restored_matches:
+            match = MatchState(
+                match_id=restored_match["match_id"],
+                queue_name=restored_match["queue_name"],
+                player_ids=restored_match["player_ids"],
+                thread_id=restored_match["thread_id"],
+            )
+            if await self.fetch_thread(match.thread_id) is None:
+                continue
+            self.active_matches[match.match_id] = match
+            self.next_match_id = max(self.next_match_id, match.match_id + 1)
 
     def is_user_locked(self, user_id: int) -> bool:
         if any(user_id in match.player_ids for match in self.active_matches.values()):
@@ -1514,7 +1547,7 @@ class Ranked(commands.Cog):
 
         return match_started
 
-    def confirm_pending_match(self, match_id: int) -> MatchState | None:
+    async def confirm_pending_match(self, match_id: int) -> MatchState | None:
         pending_match = self.pending_matches.pop(match_id, None)
         if pending_match is None:
             return None
@@ -1526,6 +1559,7 @@ class Ranked(commands.Cog):
             thread_id=pending_match.thread_id,
         )
         self.active_matches[match_id] = active_match
+        await persist_active_ranked_match(self.bot, active_match)
         return active_match
 
     def build_embed_for_panel(self, message_id: int) -> discord.Embed:
@@ -1692,7 +1726,6 @@ class Ranked(commands.Cog):
         self.panel_states[message.id] = panel_state
 
     @app_commands.command(name="result", description="Öffnet im Match-Thread das Ergebnisformular")
-    @app_commands.checks.has_permissions(administrator=True)
     @app_commands.guild_only()
     async def result(self, interaction: discord.Interaction) -> None:
         await self.open_result_modal(interaction)

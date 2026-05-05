@@ -60,6 +60,39 @@ async def ensure_ranked_storage(bot: commands.Bot) -> None:
         print(f"Ranked DB persistence unavailable, falling back where possible: {type(exc).__name__}: {exc}")
 
 
+async def fetch_active_ranked_matches(bot: commands.Bot) -> list[dict[str, Any]]:
+    db = getattr(bot, "db", None)
+    if db is None:
+        return []
+
+    try:
+        return await db.fetch_active_ranked_matches()
+    except Exception as exc:
+        print(f"Ranked active-match restore failed: {type(exc).__name__}: {exc}")
+        return []
+
+
+async def persist_active_ranked_match(bot: commands.Bot, match: Any) -> bool:
+    db = getattr(bot, "db", None)
+    if db is None:
+        return False
+
+    try:
+        player_one_id, player_two_id = match.player_ids
+        await db.persist_active_ranked_match(
+            match_id=match.match_id,
+            queue_name=match.queue_name,
+            player_one_id=player_one_id,
+            player_two_id=player_two_id,
+            thread_id=match.thread_id,
+        )
+    except Exception as exc:
+        print(f"Ranked active-match persistence failed: {type(exc).__name__}: {exc}")
+        return False
+
+    return True
+
+
 async def rebuild_current_month_rankings(bot: commands.Bot) -> None:
     db = getattr(bot, "db", None)
     if db is None:
@@ -206,6 +239,13 @@ class SqliteDatabase:
                 );
                 """
             )
+
+            columns = {
+                str(row["name"])
+                for row in self.connection.execute("PRAGMA table_info(matches)").fetchall()
+            }
+            if "thread_id" not in columns:
+                self.connection.execute("ALTER TABLE matches ADD COLUMN thread_id INTEGER")
             self.connection.commit()
 
     async def ensure_ranked_storage(self) -> None:
@@ -229,6 +269,55 @@ class SqliteDatabase:
                 )
             self.connection.commit()
             return match_id
+
+    async def persist_active_ranked_match(
+        self,
+        *,
+        match_id: int,
+        queue_name: str,
+        player_one_id: int,
+        player_two_id: int,
+        thread_id: int,
+    ) -> None:
+        async with self._lock:
+            with self.connection:
+                self.connection.execute(
+                    """
+                    INSERT INTO matches(id, player1_id, player2_id, platform, status, thread_id, timestamp)
+                    VALUES(?, ?, ?, ?, 'active', ?, ?)
+                    ON CONFLICT(id) DO UPDATE
+                    SET player1_id = excluded.player1_id,
+                        player2_id = excluded.player2_id,
+                        platform = excluded.platform,
+                        status = 'active',
+                        thread_id = excluded.thread_id
+                    """,
+                    (match_id, player_one_id, player_two_id, queue_name, thread_id, utc_now()),
+                )
+
+    async def fetch_active_ranked_matches(self) -> list[dict[str, Any]]:
+        async with self._lock:
+            rows = self.connection.execute(
+                """
+                SELECT id, player1_id, player2_id, platform, thread_id
+                FROM matches
+                WHERE status = 'active'
+                  AND thread_id IS NOT NULL
+                  AND player1_id IS NOT NULL
+                  AND player2_id IS NOT NULL
+                ORDER BY id ASC
+                """
+            ).fetchall()
+
+            return [
+                {
+                    "match_id": int(row["id"]),
+                    "queue_name": str(row["platform"] or "Ranked"),
+                    "player_ids": (int(row["player1_id"]), int(row["player2_id"])),
+                    "thread_id": int(row["thread_id"]),
+                }
+                for row in rows
+            ]
 
     async def rebuild_current_month_rankings(self, month_key: date) -> None:
         month_text = month_key_to_text(month_key)

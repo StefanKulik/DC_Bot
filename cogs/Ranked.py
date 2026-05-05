@@ -33,9 +33,8 @@ from config.SqliteStore import (
 #   X - zurückziehen Button rausnehmen
 #   X - Modal auf webseite verschönern
 #   X - screenshot pflicht
-#   ergebnis eintragen, score ist irrelevant wie rum geschrieben
-#   backup system für result eintragen -> match speichern mit pending und command /result im thread, thread wird ja nicht gelöscht
-#   wenn formular geöffnet aber auf abbrechen geklickt, dann soll der Button wieder aktiv sein
+#   X - backup system für result eintragen -> match speichern mit pending und command /result im thread, thread wird ja nicht gelöscht
+#   X - wenn formular geöffnet aber auf abbrechen geklickt, dann soll der Button wieder aktiv sein
 
 # =============================
 # Konstanten und Parser-Patterns für Queue, Threads und Ergebnisse.

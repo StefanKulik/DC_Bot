@@ -2,7 +2,7 @@ import discord
 import asyncio
 from pathlib import Path
 from discord.ext import commands
-from config.Environment import TOKEN, VERSION
+from config.Environment import TOKEN
 from config.SqliteStore import create_db_pool
 
 

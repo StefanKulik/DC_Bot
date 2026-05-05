@@ -51,12 +51,6 @@ class Bot(commands.Bot):
 
     async def on_ready(self) -> None:
         print(f"{self.user} is ready and online!")
-        await self.change_presence(
-            activity=discord.Activity(
-                type=discord.ActivityType.watching,
-                name=f"Version {VERSION}",
-            )
-        )
 
 async def main() -> None:
     bot = Bot()

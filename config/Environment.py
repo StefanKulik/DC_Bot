@@ -28,5 +28,4 @@ def load_int_env(key: str, default: int) -> int:
 
 
 TOKEN = load_env("DISCORD_TOKEN", "unknown")
-VERSION = load_env("VERSION", "unknown")
-RESULT_CHANNEL = load_env("RESULT_CHANNEL", "not_given")
+RESULT_CHANNEL = load_env("RESULT_CHANNEL", "unknown")
